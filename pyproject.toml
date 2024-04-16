@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "snowflake-utils"
+version = "0.0.0"
+description = ""
+authors = ["Eli Yarson <eli.yarsonnabhan@remote.com>","Paolo Quadri <paolo.quadri@remote.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+snowflake-connector-python = "^3.7.1"
+pydantic-settings = "^2.2.1"
+typer = "^0.12.0"
+
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+ruff = "^0.3.4"
+snowflake-vcrpy = {git = "https://github.com/Snowflake-Labs/snowflake-vcrpy.git", rev = "50c7de2378177c39318f10eaba67e82f6fd8af39"}
+urllib3 = "<2.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
