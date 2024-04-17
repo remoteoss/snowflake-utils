@@ -2,7 +2,22 @@
 
 
 
-## v0.1.0 (2024-04-16)
+## v1.3.1 (2024-04-17)
+
+### Fix
+
+* fix: version (#2)
+
+* fix: version
+
+* chore: test
+
+* chore: bump dependencies
+
+* chore: test ([`4a24607`](https://github.com/remoteoss/snowflake-utils/commit/4a2460771b79aaf73e42b0f82b6353cb5ba1dbfe))
+
+
+## v1.3.0 (2024-04-16)
 
 ### Feature
 
