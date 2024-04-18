@@ -327,7 +327,7 @@ class Table(BaseModel):
     ):
         """Updates the value of one column with the value of another column in the same table."""
         logging.debug(
-            f"Swapping the value of {target_column.name} with {new_column.name} in the table {self.name}"
+            f"Updating the value of {target_column.name} with {new_column.name} in the table {self.name}"
         )
         cursor.execute(
             f"UPDATE {self.schema_}.{self.name} SET {target_column.name} = {new_column.name};"
