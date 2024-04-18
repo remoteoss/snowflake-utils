@@ -2,15 +2,23 @@ import logging
 
 import pytest
 import os
-from snowflake_utils.models import InlineFileFormat, Table, TableStructure
+from snowflake_utils.models import (
+    InlineFileFormat,
+    Table,
+    TableStructure,
+    Schema,
+    Column,
+)
 from snowflake_utils.queries import connect
 
-test_table_schema = TableStructure(columns={"id": "integer", "name": "text"})
+test_table_schema = TableStructure(
+    columns={"id": "integer", "name": "text", "last_name": "text"}
+)
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
 test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 storage_integration = "DATA_STAGING"
-
+test_schema = Schema(name="PUBLIC", database="SANDBOX")
 logger = logging.getLogger(__name__)
 
 
@@ -134,3 +142,20 @@ def test_merge() -> None:
         storage_integration=storage_integration,
         primary_keys=["id"],
     )
+
+
+@pytest.mark.snowflake_vcr
+def test_single_column_update() -> None:
+    with connect() as conn, conn.cursor() as cursor:
+        target_column = Column(name="name", data_type="text")
+        new_column = Column(name="last_name", data_type="text")
+        test_table.single_column_update(
+            cursor=cursor, target_column=target_column, new_column=new_column
+        )
+
+
+@pytest.mark.snowflake_vcr
+def test_schema_tables() -> None:
+    with connect() as conn:
+        cursor = conn.cursor()
+        test_schema.get_tables(cursor=cursor)

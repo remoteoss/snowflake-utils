@@ -64,6 +64,28 @@ class Column(BaseModel):
     data_type: str
 
 
+class Schema(BaseModel):
+    name: str
+    database: str | None = None
+
+    @property
+    def fully_qualified_name(self):
+        if self.database:
+            return f"{self.database}.{self.name}"
+        else:
+            return self.name
+
+    def get_tables(self, cursor: SnowflakeCursor):
+        cursor.execute(f"show tables in schema {self.fully_qualified_name};")
+        data = cursor.execute(
+            'select "name", "database_name", "schema_name" FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));'
+        ).fetchall()
+        return [
+            Table(name=name, schema_=schema, database=database)
+            for (name, database, schema, *_) in data
+        ]
+
+
 class Table(BaseModel):
     name: str
     schema_: str
@@ -299,6 +321,17 @@ class Table(BaseModel):
     def drop(self, cursor: SnowflakeCursor) -> None:
         logging.debug(f"Dropping table:{self.schema_}.{self.name}")
         cursor.execute(f"drop table {self.schema_}.{self.name}")
+
+    def single_column_update(
+        self, cursor: SnowflakeCursor, target_column: Column, new_column: Column
+    ):
+        """Updates the value of one column with the value of another column in the same table."""
+        logging.debug(
+            f"Swapping the value of {target_column.name} with {new_column.name} in the table {self.name}"
+        )
+        cursor.execute(
+            f"UPDATE {self.schema_}.{self.name} SET {target_column.name} = {new_column.name};"
+        )
 
 
 def _possibly_cast(s: str, old_column_type: str, new_column_type: str) -> str:
