@@ -2,6 +2,31 @@
 
 
 
+## v1.4.0 (2024-04-22)
+
+### Chore
+
+* chore: test ([`ca657ed`](https://github.com/remoteoss/snowflake-utils/commit/ca657ed26c774f2f1e14692a00b71a419c492d86))
+
+### Feature
+
+* feat: add column update ([`b7b0d29`](https://github.com/remoteoss/snowflake-utils/commit/b7b0d294775d2cb24047b1b742516522f5e00c5a))
+
+### Fix
+
+* fix: logging level as env var ([`f4dfd30`](https://github.com/remoteoss/snowflake-utils/commit/f4dfd30073f11624b947be6b0fd5d47157ba2318))
+
+* fix: pin python patch version ([`168c525`](https://github.com/remoteoss/snowflake-utils/commit/168c52504f29bf46966d4ffc9e2814df68d4ffff))
+
+### Unknown
+
+* Merge pull request #3 from remoteoss/add-column-update
+
+feat: add column update ([`7b5478c`](https://github.com/remoteoss/snowflake-utils/commit/7b5478c185d6b8bc72eda5be6b77de1dbc3a3ecd))
+
+* fix description ([`58f5bc6`](https://github.com/remoteoss/snowflake-utils/commit/58f5bc6290d63ab5a737b7057f47b27ef550589a))
+
+
 ## v1.3.1 (2024-04-17)
 
 ### Fix
