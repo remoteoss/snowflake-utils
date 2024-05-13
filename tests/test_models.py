@@ -8,6 +8,7 @@ from snowflake_utils.models import (
     TableStructure,
     Schema,
     Column,
+    MatchByColumnName,
 )
 from snowflake_utils.queries import connect
 
@@ -16,6 +17,7 @@ test_table_schema = TableStructure(
 )
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
 test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
+test_table_json_blob = Table(name="PYTEST_JSON_BLOB", schema_="PUBLIC", table_structure=TableStructure(columns={"payload": "variant"}))
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 storage_integration = "DATA_STAGING"
 test_schema = Schema(name="PUBLIC", database="SANDBOX")
@@ -126,6 +128,18 @@ def test_copy_full_existing_table() -> None:
         full_refresh=False,
     )
     assert result[0][0] == "Copy executed with 0 files processed."
+
+@pytest.mark.snowflake_vcr
+def test_copy_json_blob() -> None:
+    result = test_table_json_blob.copy_into(
+        path=path,
+        file_format=json_file_format,
+        storage_integration=storage_integration,
+        full_refresh=False,
+        match_by_column_name=MatchByColumnName.NONE,
+        target_columns=["payload"],
+    )
+    assert result[0][1] == "LOADED"
 
 
 @pytest.mark.snowflake_vcr

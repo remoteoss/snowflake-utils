@@ -156,6 +156,7 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
         full_refresh: bool = False,
+        target_columns: list[str] = [],
     ) -> None:
         """Copy files into Snowflake"""
         with connect() as connection:
@@ -191,7 +192,7 @@ class Table(BaseModel):
             )
             return _execute_statement(
                 f"""
-                COPY INTO {self.schema_}.{self.name}
+                COPY INTO {self.schema_}.{self.name} {f"({', '.join(target_columns)})" if len(target_columns) > 0 else ''}
                 FROM {path}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ''}
                 FILE_FORMAT = ( FORMAT_NAME ='{file_format}')
