@@ -2,6 +2,27 @@
 
 
 
+## v1.5.0 (2024-05-14)
+
+### Feature
+
+* feat: allow copying data from external storage into one blob column ([`cd2fea5`](https://github.com/remoteoss/snowflake-utils/commit/cd2fea5bb1f1eb42ef73995838f6e2530f73fbd3))
+
+### Refactor
+
+* refactor: formatting ([`3163096`](https://github.com/remoteoss/snowflake-utils/commit/3163096e64ed5fa7a9517970f20a4c789d0fcae4))
+
+### Unknown
+
+* Merge pull request #5 from remoteoss/fix-formatting
+
+chore: run tests for prs ([`ef6c1cf`](https://github.com/remoteoss/snowflake-utils/commit/ef6c1cfe5ecef6d1433a4987a3a7e08f81ff0cde))
+
+* Merge pull request #4 from giamo/copy-as-variant-blob
+
+feat: allow copying data from external storage into one blob column ([`c24a0f3`](https://github.com/remoteoss/snowflake-utils/commit/c24a0f34e029f6f1e07477d2c0633eb063f89501))
+
+
 ## v1.4.0 (2024-04-22)
 
 ### Chore
