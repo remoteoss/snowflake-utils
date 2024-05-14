@@ -17,7 +17,11 @@ test_table_schema = TableStructure(
 )
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
 test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
-test_table_json_blob = Table(name="PYTEST_JSON_BLOB", schema_="PUBLIC", table_structure=TableStructure(columns={"payload": "variant"}))
+test_table_json_blob = Table(
+    name="PYTEST_JSON_BLOB",
+    schema_="PUBLIC",
+    table_structure=TableStructure(columns={"payload": "variant"}),
+)
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 storage_integration = "DATA_STAGING"
 test_schema = Schema(name="PUBLIC", database="SANDBOX")
@@ -128,6 +132,7 @@ def test_copy_full_existing_table() -> None:
         full_refresh=False,
     )
     assert result[0][0] == "Copy executed with 0 files processed."
+
 
 @pytest.mark.snowflake_vcr
 def test_copy_json_blob() -> None:
