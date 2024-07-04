@@ -1,6 +1,5 @@
 from enum import Enum
 from functools import partial
-import json
 from pydantic import BaseModel
 from snowflake.connector.cursor import SnowflakeCursor
 from typing_extensions import Self
