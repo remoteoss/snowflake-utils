@@ -1,5 +1,5 @@
 import logging
-
+from datetime import datetime
 import pytest
 import os
 from snowflake_utils.models import (
@@ -178,3 +178,26 @@ def test_schema_tables() -> None:
     with connect() as conn:
         cursor = conn.cursor()
         test_schema.get_tables(cursor=cursor)
+
+
+@pytest.mark.snowflake_vcr
+def test_bulk_insert() -> None:
+    test_table_schema = TableStructure(
+        columns={"id": "integer", "name": "text", "loaded_at": "timestamp"}
+    )
+    test_table = Table(
+        name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema
+    )
+    records = {
+        "1": {"id": 1, "name": "test", "loaded_at": datetime(2024, 7, 4)},
+        "2": {"id": 2, "name": "test2", "loaded_at": datetime(2024, 7, 4)},
+    }
+    test_table.bulk_insert(records, full_refresh=True)
+    with connect() as conn:
+        cursor = conn.cursor()
+        results = cursor.execute("select * from SANDBOX.PUBLIC.PYTEST")
+        res = results.fetchall()
+        assert res == [
+            (1, "test", datetime(2024, 7, 4)),
+            (2, "test2", datetime(2024, 7, 4)),
+        ]
