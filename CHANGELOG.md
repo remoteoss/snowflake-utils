@@ -1,6 +1,20 @@
 # CHANGELOG
 
+## v1.6.0 (2024-07-04)
 
+### Feature
+
+* feat: add bulk inserts ([`64f16d6`](https://github.com/remoteoss/snowflake-utils/commit/64f16d6d017263020640de751ac3ec07f2c4b9a3))
+
+### Unknown
+
+* Merge pull request #6 from remoteoss/add-bulk-inserts
+
+feat: add bulk inserts ([`21433df`](https://github.com/remoteoss/snowflake-utils/commit/21433df6b14c66fdafed7ab00b4e481138158cd3))
+
+* fix ruff ([`e4df22c`](https://github.com/remoteoss/snowflake-utils/commit/e4df22cdea820c680f7f1c5ebfc74d2534b4844b))
+
+* add float type ([`5ce5db1`](https://github.com/remoteoss/snowflake-utils/commit/5ce5db1a3e2842d7d99fa8ab546273979180944a))
 
 ## v1.5.0 (2024-05-14)
 
@@ -21,7 +35,6 @@ chore: run tests for prs ([`ef6c1cf`](https://github.com/remoteoss/snowflake-uti
 * Merge pull request #4 from giamo/copy-as-variant-blob
 
 feat: allow copying data from external storage into one blob column ([`c24a0f3`](https://github.com/remoteoss/snowflake-utils/commit/c24a0f34e029f6f1e07477d2c0633eb063f89501))
-
 
 ## v1.4.0 (2024-04-22)
 
@@ -47,7 +60,6 @@ feat: add column update ([`7b5478c`](https://github.com/remoteoss/snowflake-util
 
 * fix description ([`58f5bc6`](https://github.com/remoteoss/snowflake-utils/commit/58f5bc6290d63ab5a737b7057f47b27ef550589a))
 
-
 ## v1.3.1 (2024-04-17)
 
 ### Fix
@@ -61,7 +73,6 @@ feat: add column update ([`7b5478c`](https://github.com/remoteoss/snowflake-util
 * chore: bump dependencies
 
 * chore: test ([`4a24607`](https://github.com/remoteoss/snowflake-utils/commit/4a2460771b79aaf73e42b0f82b6353cb5ba1dbfe))
-
 
 ## v1.3.0 (2024-04-16)
 
