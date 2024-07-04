@@ -1,10 +1,10 @@
 from enum import Enum
 from functools import partial
-
+import json
 from pydantic import BaseModel
 from snowflake.connector.cursor import SnowflakeCursor
 from typing_extensions import Self
-
+from datetime import datetime, date
 from .queries import connect, execute_statement
 import logging
 
@@ -148,6 +148,27 @@ class Table(BaseModel):
                 ));
             
             """
+
+    def bulk_insert(
+        self,
+        records,
+        full_refresh: bool = False,
+    ) -> None:
+        with connect() as connection:
+            cursor = connection.cursor()
+            _execute_statement = partial(execute_statement, cursor)
+            _execute_statement(self.get_create_schema_statement())
+            _execute_statement(self.get_create_table_statement(full_refresh))
+            for k in records:
+                cols = ", ".join([k for k in records[k].keys()])
+                vals = ", ".join([_type_cast(v) for v in records[k].values()])
+                _execute_statement(
+                    f"""
+                    INSERT INTO {self.schema_}.{self.name}({cols})
+                    VALUES ({vals})
+                    """
+                )
+        return None
 
     def copy_into(
         self,
@@ -356,3 +377,14 @@ def _inserts(columns: list[Column], old_columns: dict[str, str]) -> str:
         _possibly_cast(f'tmp."{c.name}"', old_columns.get(c.name), c.data_type)
         for c in columns
     )
+
+
+def _type_cast(s: any) -> any:
+    if isinstance(s, int):
+        return str(s)
+    elif isinstance(s, str):
+        return f"'{s}'"
+    elif isinstance(s, (datetime, date)):
+        return f"'{s.isoformat()}'"
+    else:
+        return f"'{s}'"
