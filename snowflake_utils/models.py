@@ -380,7 +380,7 @@ def _inserts(columns: list[Column], old_columns: dict[str, str]) -> str:
 
 
 def _type_cast(s: any) -> any:
-    if isinstance(s, int):
+    if isinstance(s, (int, float)):
         return str(s)
     elif isinstance(s, str):
         return f"'{s}'"
