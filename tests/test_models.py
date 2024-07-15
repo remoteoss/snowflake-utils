@@ -1,28 +1,37 @@
 import logging
-from datetime import datetime
-import pytest
 import os
+from datetime import datetime
+
+import pytest
+
 from snowflake_utils.models import (
+    Column,
     InlineFileFormat,
+    MatchByColumnName,
+    Schema,
     Table,
     TableStructure,
-    Schema,
-    Column,
-    MatchByColumnName,
 )
 from snowflake_utils.queries import connect
 
 test_table_schema = TableStructure(
-    columns={"id": "integer", "name": "text", "last_name": "text"}
+    columns={
+        "id": Column(name="id", data_type="integer", tags={"pii": "personal"}),
+        "name": Column(name="name", data_type="text"),
+        "last_name": Column(name="last_name", data_type="text"),
+    }
 )
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
 test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
 test_table_json_blob = Table(
     name="PYTEST_JSON_BLOB",
     schema_="PUBLIC",
-    table_structure=TableStructure(columns={"payload": "variant"}),
+    table_structure=TableStructure(
+        columns={"payload": Column(name="payload", data_type="variant")}
+    ),
 )
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
+parquet_file_format = InlineFileFormat(definition="TYPE = PARQUET")
 storage_integration = "DATA_STAGING"
 test_schema = Schema(name="PUBLIC", database="SANDBOX")
 logger = logging.getLogger(__name__)
@@ -151,16 +160,18 @@ def test_copy_json_blob() -> None:
 def test_merge() -> None:
     test_table.copy_into(
         path=path,
-        file_format=json_file_format,
+        file_format=parquet_file_format,
         storage_integration=storage_integration,
         full_refresh=False,
     )
     test_table.merge(
         path=path,
-        file_format=json_file_format,
+        file_format=parquet_file_format,
         storage_integration=storage_integration,
         primary_keys=["id"],
     )
+
+    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
 
 
 @pytest.mark.snowflake_vcr
@@ -183,7 +194,11 @@ def test_schema_tables() -> None:
 @pytest.mark.snowflake_vcr
 def test_bulk_insert() -> None:
     test_table_schema = TableStructure(
-        columns={"id": "integer", "name": "text", "loaded_at": "timestamp"}
+        columns={
+            "id": Column(name="id", data_type="integer"),
+            "name": Column(name="name", data_type="text"),
+            "loaded_at": Column(name="loaded_at", data_type="timestamp"),
+        }
     )
     test_table = Table(
         name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema
@@ -201,3 +216,21 @@ def test_bulk_insert() -> None:
             (1, "test", datetime(2024, 7, 4)),
             (2, "test2", datetime(2024, 7, 4)),
         ]
+        test_table.drop(cursor)
+
+
+@pytest.mark.snowflake_vcr
+def test_copy_with_tags() -> None:
+    result = test_table.copy_into(
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        full_refresh=True,
+        sync_tags=True,
+    )
+
+    assert result[0][1] == "LOADED"
+
+    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+
+    test_table.drop()

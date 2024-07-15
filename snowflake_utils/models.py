@@ -1,13 +1,15 @@
+import logging
+from collections import defaultdict
+from datetime import date, datetime
 from enum import Enum
 from functools import partial
-from pydantic import BaseModel
+
+from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
 from typing_extensions import Self
-from datetime import datetime, date
-from .queries import connect, execute_statement
-import logging
 
-logging.getLogger("snowflake.connector").setLevel(logging.WARNING)
+from .queries import connect, execute_statement
+from .settings import governance_settings
 
 
 class MatchByColumnName(Enum):
@@ -44,23 +46,24 @@ class FileFormat(BaseModel):
                 raise ValueError("Cannot parse file format")
 
 
+class Column(BaseModel):
+    name: str
+    data_type: str
+    tags: dict[str, str] = Field(default_factory=dict)
+
+
 class TableStructure(BaseModel):
-    columns: dict = {}
+    columns: dict = [str, Column]
 
     @property
     def parsed_columns(self):
         return ", ".join(
-            f'"{str.upper(k).strip().replace("-","_")}" {v}'
+            f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
             for k, v in self.columns.items()
         )
 
     def parse_from_json(self):
         raise NotImplementedError("Not implemented yet")
-
-
-class Column(BaseModel):
-    name: str
-    data_type: str
 
 
 class Schema(BaseModel):
@@ -91,6 +94,12 @@ class Table(BaseModel):
     table_structure: TableStructure | None = None
     role: str | None = None
     database: str | None = None
+
+    @property
+    def fqn(self):
+        if database := self.database:
+            return f"{database}.{self.schema_}.{self.name}"
+        return f"{self.schema_}.{self.name}"
 
     @property
     def temporary_stage(self):
@@ -130,12 +139,12 @@ class Table(BaseModel):
         self,
         full_refresh: bool = False,
     ):
-        logging.debug(f"Creating table: {self.schema_}.{self.name}")
+        logging.debug(f"Creating table: {self.fqn}")
         if self.table_structure:
-            return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.schema_}.{self.name} ({self.table_structure.parsed_columns})"
+            return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
         else:
             return f"""
-            {'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.schema_}.{self.name}
+            {'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn}
             USING TEMPLATE (
                 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
                 FROM TABLE(
@@ -163,7 +172,7 @@ class Table(BaseModel):
                 vals = ", ".join([_type_cast(v) for v in records[k].values()])
                 _execute_statement(
                     f"""
-                    INSERT INTO {self.schema_}.{self.name}({cols})
+                    INSERT INTO {self.fqn}({cols})
                     VALUES ({vals})
                     """
                 )
@@ -176,7 +185,8 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
         full_refresh: bool = False,
-        target_columns: list[str] = [],
+        target_columns: list[str] | None = None,
+        sync_tags: bool = False,
     ) -> None:
         """Copy files into Snowflake"""
         with connect() as connection:
@@ -207,12 +217,15 @@ class Table(BaseModel):
                 file_format = self.temporary_file_format
 
             _execute_statement(self.get_create_table_statement(full_refresh))
-            logging.info(
-                f"Starting copy into `{self.schema_}.{self.name}` from path '{path}'"
-            )
+
+            if sync_tags and self.table_structure:
+                self.sync_tags(cursor)
+
+            logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
+            col_str = f"({', '.join(target_columns)})" if target_columns else ""
             return _execute_statement(
                 f"""
-                COPY INTO {self.schema_}.{self.name} {f"({', '.join(target_columns)})" if len(target_columns) > 0 else ''}
+                COPY INTO {self.fqn} {col_str}
                 FROM {path}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ''}
                 FILE_FORMAT = ( FORMAT_NAME ='{file_format}')
@@ -221,14 +234,14 @@ class Table(BaseModel):
             )
 
     def get_columns(self, cursor: SnowflakeCursor) -> list[Column]:
-        data = cursor.execute(f"desc table {self.schema_}.{self.name}").fetchall()
+        data = cursor.execute(f"desc table {self.fqn}").fetchall()
         return [
             Column(name=name, data_type=data_type) for (name, data_type, *_) in data
         ]
 
     def add_column(self, cursor: SnowflakeCursor, column: Column) -> None:
         cursor.execute(
-            f"alter table {self.schema_}.{self.name} add column {column.name} {column.data_type}"
+            f"alter table {self.fqn} add column {column.name} {column.data_type}"
         )
 
     def exists(self, cursor: SnowflakeCursor) -> bool:
@@ -256,6 +269,7 @@ class Table(BaseModel):
                     storage_integration=storage_integration,
                     file_format=file_format,
                     match_by_column_name=match_by_column_name,
+                    sync_tags=True,
                 )
                 if qualify:
                     self.qualify(cursor, primary_keys, replication_keys)
@@ -289,6 +303,8 @@ class Table(BaseModel):
                     temp_table, new_columns, old_columns, primary_keys
                 )
             )
+            if self.table_structure:
+                self.sync_tags(cursor)
             temp_table.drop(cursor)
 
     def qualify(
@@ -302,12 +318,12 @@ class Table(BaseModel):
             f"{c} desc" for c in (replication_keys or primary_keys)
         )
         logging.debug(
-            f"Adding QUALIFY to table {self.schema_}.{self.name} on PARTITION {qualify_partition} ORDERED BY {qualify_order}"
+            f"Adding QUALIFY to table {self.fqn} on PARTITION {qualify_partition} ORDERED BY {qualify_order}"
         )
         return cursor.execute(
             f"""
-        create or replace table {self.schema_}.{self.name} as (
-            select * from {self.schema_}.{self.name}
+        create or replace table {self.fqn} as (
+            select * from {self.fqn}
             qualify row_number() over (partition by {qualify_partition} order by {qualify_order}) = 1
             )
         """
@@ -328,20 +344,22 @@ class Table(BaseModel):
         inserts = _inserts(columns, old_columns)
 
         logging.info(
-            f"Running merge statement on table: {self.schema_}.{self.name} using {temp_table.schema_}.{temp_table.name}"
+            f"Running merge statement on table: {self.fqn} using {temp_table.schema_}.{temp_table.name}"
         )
         logging.debug(f"Primary keys: {pkes}")
         return f"""
-            merge into {self.schema_}.{self.name} as dest 
+            merge into {self.fqn} as dest 
             using {temp_table.schema_}.{temp_table.name} tmp
             ON {pkes}
             when matched then update set {matched}
             when not matched then insert ({column_names}) VALUES ({inserts})
         """
 
-    def drop(self, cursor: SnowflakeCursor) -> None:
-        logging.debug(f"Dropping table:{self.schema_}.{self.name}")
-        cursor.execute(f"drop table {self.schema_}.{self.name}")
+    def drop(self, cursor: SnowflakeCursor | None = None) -> None:
+        if cursor is None:
+            cursor = connect().cursor()
+        logging.debug(f"Dropping table:{self.fqn}")
+        cursor.execute(f"drop table {self.fqn}")
 
     def single_column_update(
         self, cursor: SnowflakeCursor, target_column: Column, new_column: Column
@@ -351,7 +369,55 @@ class Table(BaseModel):
             f"Updating the value of {target_column.name} with {new_column.name} in the table {self.name}"
         )
         cursor.execute(
-            f"UPDATE {self.schema_}.{self.name} SET {target_column.name} = {new_column.name};"
+            f"UPDATE {self.fqn} SET {target_column.name} = {new_column.name};"
+        )
+
+    def current_tags(self) -> dict[str, dict[str, str]]:
+        tags = defaultdict(dict)
+        with connect() as connection:
+            cursor = connection.cursor()
+            cursor.execute(f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
+                from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))""")
+            for column_name, tag_name, tag_value in cursor.fetchall():
+                tags[column_name][tag_name] = tag_value
+        return tags
+
+    def sync_tags(self, cursor: SnowflakeCursor) -> None:
+        tags = self.current_tags()
+        existing_tags = {
+            f"{column}.{tag_name}.{tags[column][tag_name]}".casefold(): (
+                column,
+                tag_name,
+                tags[column][tag_name],
+            )
+            for column in tags
+            for tag_name in tags[column]
+        }
+
+        desired_tags = {
+            f"{column}.{tag_name}.{tag_value}".casefold(): (column, tag_name, tag_value)
+            for column in self.table_structure.columns
+            for tag_name, tag_value in self.table_structure.columns[column].tags.items()
+        }
+
+        for tag in existing_tags:
+            if tag not in desired_tags:
+                self._unset_tag(cursor, *existing_tags[tag])
+
+        for tag in desired_tags:
+            if tag not in existing_tags:
+                self._set_tag(cursor, *desired_tags[tag])
+
+    def _set_tag(
+        self, cursor: SnowflakeCursor, column: str, tag_name: str, tag_value: str
+    ) -> None:
+        cursor.execute(
+            f"ALTER TABLE {self.fqn} MODIFY COLUMN {column} SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"
+        )
+
+    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str):
+        cursor.execute(
+            f"ALTER TABLE {self.fqn} MODIFY COLUMN {column} UNSET TAG {governance_settings.fqn(tag)}"
         )
 
 
