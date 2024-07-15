@@ -22,3 +22,14 @@ class SnowflakeSettings(BaseSettings):
             "role": self.role,
             "warehouse": self.warehouse,
         }
+
+
+class GovernanceSettings(BaseSettings):
+    governance_database: str = "governance"
+    governance_schema: str = "public"
+
+    def fqn(self, object_name: str) -> str:
+        return f"{self.governance_database}.{self.governance_schema}.{object_name}"
+
+
+governance_settings = GovernanceSettings()
