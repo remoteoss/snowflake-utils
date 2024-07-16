@@ -412,12 +412,12 @@ class Table(BaseModel):
         self, cursor: SnowflakeCursor, column: str, tag_name: str, tag_value: str
     ) -> None:
         cursor.execute(
-            f"ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"
+            f"""ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
         )
 
     def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str):
         cursor.execute(
-            f"ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}"
+            f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}'
         )
 
 
