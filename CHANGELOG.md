@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v1.7.0 (2024-07-16)
+
+### Feature
+
+* feat: update readme (#8) ([`5a56a53`](https://github.com/remoteoss/snowflake-utils/commit/5a56a532d8728ae602f4059b27557d1e4a4dd7e7))
+
+### Unknown
+
+* De 528 add masking policies to snowflake utils (#7)
+
+* chore: poetry update
+
+* feat: add support for setting tags ([`ad3b1ee`](https://github.com/remoteoss/snowflake-utils/commit/ad3b1ee6662945333d370e112998b458e13545de))
+
 ## v1.6.0 (2024-07-04)
 
 ### Feature
