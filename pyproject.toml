@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snowflake-utils"
-version = "1.6.0"
+version = "1.7.0"
 description = ""
 authors = ["Eli Yarson <eli.yarsonnabhan@remote.com>","Paolo Quadri <paolo.quadri@remote.com>"]
 readme = "README.md"
