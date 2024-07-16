@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v1.7.1 (2024-07-16)
+
+### Fix
+
+* fix: triple quotes ([`57fa459`](https://github.com/remoteoss/snowflake-utils/commit/57fa459527a2ab84375976f9c705df5176b74d5b))
+
+* fix: handle columns with quotes ([`52a194a`](https://github.com/remoteoss/snowflake-utils/commit/52a194ae83df20d8c200e7f94b4b8cb0823f2922))
+
 ## v1.7.0 (2024-07-16)
 
 ### Feature
