@@ -12,7 +12,6 @@ Add the package with the following command:
 poetry add git+https://github.com/remoteoss/snowflake-utils.git
 ```
 
-
 ## Usage
 
 In order to use this package, you have to define 3 required env vars:
@@ -48,3 +47,8 @@ test_table.copy(
         storage_integration=storage_integration,
         full_refresh=True,
     )
+```
+
+## Table structure
+
+When initialising the table object you can pass a table structure that contains a dictionary of name: column, where Column is an object that contains the column data type and eventual tags to be applied to the column.
