@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.7.2 (2024-07-17)
+
+### Fix
+
+* fix: force casefold, number of arguments for unset tag ([`7d91acd`](https://github.com/remoteoss/snowflake-utils/commit/7d91acdec1d2452c8591c919d7a068c063781e1c))
+
 ## v1.7.1 (2024-07-16)
 
 ### Fix
