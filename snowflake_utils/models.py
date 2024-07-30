@@ -103,10 +103,10 @@ class Table(BaseModel):
 
     def _include_metadata(self) -> str:
         if not self.include_metadata:
-            return "INCLUDE_METADATA = NULL"
+            return ""
         else:
             metadata = ", ".join(
-                f"{k}=METADATA${v}'" for k, v in self.include_metadata.items()
+                f"{k}=METADATA${v}" for k, v in self.include_metadata.items()
             )
             return f"INCLUDE_METADATA = ({metadata})"
 
@@ -458,14 +458,15 @@ class Table(BaseModel):
         full_refresh: bool = False,
         sync_tags: bool = False,
     ) -> None:
-        query = (
-            f"""
-                COPY INTO {self.fqn} ({", ".join(column_definitions.keys())})
-                FROM @{self.temporary_stage}/
+        column_names = ", ".join(column_definitions.keys())
+        definitions = ", ".join(column_definitions.values())
+
+        query = f"""
+                COPY INTO {self.fqn} ({column_names})
+                FROM 
+                (select {definitions} from @{self.temporary_stage}/)
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
-                {self._include_metadata()}
-                """,
-        )
+                """
         return self._copy(
             query, path, file_format, storage_integration, full_refresh, sync_tags
         )
