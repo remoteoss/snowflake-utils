@@ -111,13 +111,13 @@ class Table(BaseModel):
             return f"INCLUDE_METADATA = ({metadata})"
 
     @property
-    def fqn(self):
+    def fqn(self) -> str:
         if database := self.database:
             return f"{database}.{self.schema_}.{self.name}"
         return f"{self.schema_}.{self.name}"
 
     @property
-    def temporary_stage(self):
+    def temporary_stage(self) -> str:
         return f"tmp_external_stage_{self.schema_}_{self.name}".upper()
 
     @property
@@ -137,12 +137,14 @@ class Table(BaseModel):
         """
         return file_format_statement
 
-    def get_create_schema_statement(self):
+    def get_create_schema_statement(self: str) -> str:
         """ """
         logging.debug(f"Creating schema if it not exsists: {self.schema_}")
         return f"CREATE SCHEMA IF NOT EXISTS {self.schema_}"
 
-    def get_create_temporary_external_stage(self, path: str, storage_integration: str):
+    def get_create_temporary_external_stage(
+        self, path: str, storage_integration: str
+    ) -> str:
         logging.debug(f"Creating temporate stage at path: {path}")
         return f"""
         CREATE OR REPLACE TEMPORARY STAGE {self.schema_}.{self.temporary_stage}
@@ -153,7 +155,7 @@ class Table(BaseModel):
     def get_create_table_statement(
         self,
         full_refresh: bool = False,
-    ):
+    ) -> str:
         logging.debug(f"Creating table: {self.fqn}")
         if self.table_structure:
             return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
@@ -240,12 +242,14 @@ class Table(BaseModel):
             sync_tags,
         )
 
-    def create_table(self, full_refresh, _execute_statement):
-        _execute_statement(self.get_create_table_statement(full_refresh))
+    def create_table(self, full_refresh: bool, execute_statement: callable) -> None:
+        execute_statement(self.get_create_table_statement(full_refresh))
 
-    def setup_file_format(self, file_format, _execute_statement):
+    def setup_file_format(
+        self, file_format: FileFormat | InlineFileFormat, execute_statement: callable
+    ) -> FileFormat:
         if isinstance(file_format, InlineFileFormat):
-            _execute_statement(
+            execute_statement(
                 self.get_create_temporary_file_format_statement(
                     file_format=file_format.definition
                 )
@@ -277,7 +281,7 @@ class Table(BaseModel):
         primary_keys: list[str] = ["id"],
         replication_keys: list[str] | None = None,
         qualify: bool = False,
-    ):
+    ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
             if not self.exists(cursor):
@@ -389,7 +393,7 @@ class Table(BaseModel):
 
     def single_column_update(
         self, cursor: SnowflakeCursor, target_column: Column, new_column: Column
-    ):
+    ) -> None:
         """Updates the value of one column with the value of another column in the same table."""
         logging.debug(
             f"Updating the value of {target_column.name} with {new_column.name} in the table {self.name}"
@@ -444,7 +448,7 @@ class Table(BaseModel):
             f"""ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
         )
 
-    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str):
+    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str) -> None:
         cursor.execute(
             f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}'
         )
