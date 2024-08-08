@@ -1,0 +1,3378 @@
+interactions:
+- request:
+    body: !!binary |
+      H4sIABwKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        OoXHGX8Hxfz8F+obv2U8EAAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1557'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:24 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIABwKqWYC/zWOwQrCMBBEf2XJ2YPWFsVbjREDasVE8BrjCoU2td0WWkr/3VXwOG/mwYyC6sJi
+      34oNCHlVqVVg5EGdUtB7OGcW1F0ba+By2x61FDMQjobgVY+elZcrCJkR1h0Gj/rJcMGAYzOY7lHm
+      RHkVbF7it1lF0TKJo3kcrxNevV3jSmyxIS7H6e/JKrR8aWezH54+FXG52KUAAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW3OiShB+319B8axbgLcc30Ycw1SAYWFMoltbU0Qnu55SyQHMrpXKfz89XGQ0
+        ks1DSoaevnz99Ue/fdE0fR3nsa6NtTd4gMeXOI13IhdpJg+/v+l7eNTHOiMejhjyAk7nLJgzPqOh
+        h5je0V/j7UFaLOCv63nd6VRzHKs/9sg4ir7OZj2NLR229PT3zsmb7RLsMx6EeIaZ7XDmhBhNo8Zb
+        XzGWoVujNqGu+A9xNHcZt525f8cjssRNAHNoXIQoq2PL1lBXAkQ4igj1+R3GAUcuuVciPMfbTCgx
+        vs1xuOA29Rl+hJyQ7eCLnAaKdYWQhxmaIob4PALrKpo8mKDok1jVbWgVpzM+Qf6UM+xi8AYpYB9N
+        XDxtsLjMtDTgAMgtBO1Bm8g9gvsEUIS2Qy4co4hxs91FlUDVgPY+m0rJDcX8T7rQSrMr7TmhF2JA
+        HzKWKEIHfGwz2TabPf61BIf6UHJVD+QlATjLtPGQpwe14acWehRQd4lHlHExB72hUnvt/zRlbBFg
+        7qEgIP5tE0EZQ5ct1YqDBYNMeeTThwCFdyVfvrnAMC9wyYzgsPFykaesZkl9hU76nNmq85PXGkd5
+        RZKLQEQMgKqjezPsG+psVZlVsBf0wdxHPkVhSB9as2phUORSpuiEdQXDdqJfFF6FkKS4N3k5nygg
+        f0tpSiI5QFC8TaYgY0o61wPUMkTduQekg8mFuxH2I8I+VYwJ8REwp01wHfyoNsmO7hVifpDnM9NS
+        fqs5d+kt5DOjcuAZaIQUZhQiGB4cKrVdqkRN2RPclTy5oFIfNeY6MpCljUFfKIOJ5ARUit5hv7UB
+        IHztX4JGGK6UCuwDwGvZ/RiopbhSAoGoaMGhG1MYxuJbFTnUVQR0OLBuVMpX0NR63XwduINRyCYY
+        wfezmCXfXjTV9oZng4PmjNrUO5ON6zDWgWz3bIwvi2pkC8SjlVYqetdUxZY9CMAXWSKpok3+ZTzt
+        R6dcJdLkd358Eed7RJbH+SGDO3LveIozuTnAU7b6JXZx+RvOt9Xx/rDdlk+y8I5e+BvrufiTw6Wn
+        Yy5csf+Z/9LH5nA0GlnmsKNvP5xkq1g6lM46+ksqVptsk+zrg1UCMfLTwbuafybyIv3vejCfuMTW
+        4m0q4vVRE382WZ51NFmO2Il9rmWH1UqItVh/1X+cXORJHm+lB7PGROSHdC/W6tl/B5EeSXGkG+bT
+        0OgPn7uGafS7xmgUdw3DsLrm88AyjNVoMOoJvfJVIxikyetmLVLps6ixhP95s4+30wplX25x8F6P
+        YBeYUPjsKUZRAX5tcuniIU7Fr+SQidpAB1LCBoj5g3PmJky2jQ2ybTr3YXnxCDCkDLY/7J5ESp8n
+        m/26WC+N6kWcpvFRnkaHl5ckzUt8CjpVFiecGTCqxMrq3/Ss6vUr7KuygwrSmdivQ5EdtjnblLWb
+        I8vqDfqW0R+MBtXFAvvSbJaku7hot/5vBr5UCzvZF5wD/+WeDJsyND3diHJNPp3C+aboZFVasVPn
+        kAAUsHsp8muyGN5Y/X/KMOXunW6SdJMfpZlRQKZpQMfi1zv8f5e2+ipZF62s+6SD8yz+eX5WsDEr
+        kpOT8+X9f47GE7TsCwAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1212'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:24 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIABwKqWYC/1WOywrCMBBFf6Vk7aLGPtSd1oIFRaF1JS5iHCHQpG2SQkvJvzvxsXA59545MxMx
+      XV3BYMk6IJcyD8psnx83wfmyPRQZmQWEmVHxfACOxJPVBjAz0PWgOBQPDCkGOOqx7O9SGCMaVQkJ
+      2MxTShdxRMMoThOkWqaZBAvaYDm5317WKIsf7KqTjwkoqwV45DoR4S+ESFpUGstk++9NljRaebUW
+      jRZ2/NL8o3yfcTfnXnb25hnnAAAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '192'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW3OiShB+319h8axbgLc9vo04hqkAw8KYRLe2poiOG0+peLhk10rlv58eQBmN
+        ZPOQkqGnL19//dFvX1otbRVlkdYatd7gAR4PURLtRCaSVB7+eNP28KiNNEZcHDLk+pzOmD9jfEoD
+        FzGtrb1G21xazOGv47qdyaRl22Zv5JJRGH6dTrsttrDZwtXe22dvlkOwx7gf4Clmls2ZHWA0CWtv
+        PcVYhm6MWoe64T/A4cxh3LJn3j0PyQLXAYyBfhWirI4tGkPdCBDiMCTU4/cY+xw55EGJsI62qVBi
+        fJ/hYM4t6jH8BDkhy8ZXOfUV6wohFzM0QQzxWQjWVTR5MEbhJ7Gq29AqTqd8jLwJZ9jB4A1SwB4a
+        O3hSY3GdaWnAAZA7CNqFNpEHBPcJoAhth1w4RiHjRrOLKoGqAc19NpSSa4p5n3ShkWY32nNGL8CA
+        PmQsUYQOeNhism0We/prCTb1oOSqHshLAnCRae0hS3K14ecWuhRQd4hLlHEx+t2BUvvJ/3nK2NzH
+        3EW+T7y7OoIyhg5bqBX7cwaZ8tCjjz4K7ku+fHeAYa7vkCnBQe3lKk9ZzYJ6Cp20GbNU52evJxzl
+        FUkuAhExAKqO7rdBT1dnq8qsgr2gD+Ye8igKAvrYmFUDg0KHMkUnzBsYNhP9qvAqhCTFg8HL+UQ+
+        +VtKExLKAYLiLTIBGVPSuR3gJEPUmblAOphcuBtiLyTsU8UYEw8Bc5oE18ZPapOs8EEh5gd5vjAt
+        5beac4feQT5TKgeegUZIYUYBguHBgVLbtUqcKHuGu5InB1Tqo8bcRgaytDDoC2UwkZyAStF77DU2
+        AISv+UtQC8ONUoF9APhJdj8GaiiulEAgKppz6MYEhrH4VoU2dRQBHfTNbyrlK2hOel1/HbiNUcDG
+        GMH3s5glz5rX1XYHF4ODZoxa1L2QjdswngJZzsUYXxdVyxaIRyOtVPRuqYole+CDL7JAUkXr/Mt4
+        rZ/tcpVI4t/Z8SAu94g0i7I8hTty73iOUrk5wFO6fBG7qPwN59vqeJ9vt+WTLLytFf5GWib+ZHDp
+        +ZgJR+x/ZS/ayBgMh0PTGLS17YeTdBlJh9JZWzskYrlJN/H+dLCMIUZ2PnhX809FVqT/Qwshb7ET
+        +6wl/ohlnolVK82XS5Gma3B7/Kr9PN/L4izaymvGCQiR5clerNSz/3KRHElxpOnG80DvDdYd3dB7
+        HX04jDq6rpsdY903dX057A97plb5OsHmJ/HrZiUS6bMorMR8vdlH20kFrSdXN3ivhbAAjCl86xSj
+        sED8bOLPxg6xLiweo0S8xHkqzkbARlj9MH+0LwyDeFvbIMuiMw+2FpcANcqA+3z3LBK6Hm/2q2Kv
+        1KsXUZJER3ka5odDnACqMt+CR5WF5EuBOwMqlXgZQ6NvVq9fYVGVrVPQTsV+FYg032ZsU9ZvDE2z
+        2++ZgPGgW10s8C/NpnGyi4o+a/+m4Eu1sOJ9QTbwXy7IsCIDCZKNKPfj8ymcb4rkq9KKZTqDBKCA
+        3aHIr86iP/zH7JVhyqU72cTJJjtKM72ArNUCHha/3uH/u7TVlvGqaOep3Ro4T6Nfl2cVKaUnOTJf
+        3v8Hn/y1+OULAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1208'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:24 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIABwKqWYC/1WQUWvCMBSF/0roiy+rrbHqJvjQ1SCFWksbYbKNEuudC2iqSQRF+t93q46xvOU7
+      J+ee3KtjjjsOZ+uMiRPlLOSMLHKSsywJI0Y4m2eLPMxXpODhjJFs+ZrEUZfPs5K9cZanYVLelPKu
+      lNmKs4J/KPI4yzyZdEx/7HlW6C1Y92RcEMa6PddYsZVq6201gPquTwbctXSrWimobK09BNp4YHfl
+      RliYUJ8G/sgPuP8cUDryEIruQejjCWznb2DBsS/2iVPOZnnI40VKJmQa8vBWNE5nzhNxhLmoip2h
+      wm9/iZ0BZAYwSlUQbxD2EeBVX4rTei+NkbXicg+o9EaU9gcB9YPhkKILK4g9WOyK4rX5fRfVyuJa
+      p3zRYgeU1RJay/vVke0EH50WI3EN+8P/3MHohQZttJa1lvbycFf3yNuY5rNpfgB17/+qvAEAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '340'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VW23LiOBB9n69w+RmmbHPL8iaMiFXxbWyRBKamVA6ICVuAWdtkl0rl37flqyA4
+        k4cUltt9OX36qN+/KYq6jrJIVcbKOzzA4zFKoj3PeJKKw5/v6gEe1bFKiYNDihyfeXPqzymbeYGD
+        qNpR36LdSVgs4K/rON3pVLEsoz92yDgMv89mPYUuLbp01I9O7c20CXYp8wM8w9S0GLUCjKZh460v
+        GYvQrVGbUDf8Bzic25SZ1tx9YCFZ4iaAPtSuQhTV0WVrqBsBQhyGxHPZA8Y+QzZ5lCJsol3KpRg/
+        5jhYMNNzKX6GnJBp4aucBpJ1iZCDKZoiitg8BOsymjiYoPCLWOXX0CrmzdgEuVNGsY3BG6SAXTSx
+        8bTB4jrTwoABIPcQtAdtIo8IvieAIrQdcmEYhZTp7S7KBMoGtPdZl0puKOZ+0YVWmt1oT41egAF9
+        yFigCB1wsUlF20z6/McSLM+Fkst6IC8BwEWmjYcsOckNr1voeIC6TRwijYs+6A2l2iv/9ZTRhY+Z
+        g3yfuPdNBGkMbbqUK/YXFDJloes9+Sh4KPjywwaGOb5NZgQHjZerPEU1S8+V6KTOqSk7r71WOIpP
+        BLkIRMQAqDy6d8O+Js9WmVkJe04fzFzkeigIvKfWrFoYFNoelXTCuIFhO9GvCi9DCFI86qyYT+ST
+        P6U0JaEYICjeJFOQMSmd2wEqGfLsuQOkg8mFb0PshoR+qRgT4iJgTpvgWvhZbpIZPkrE/CTPF6aF
+        /JZzbnv3kM/MEwNPQSOEMKMAwfDgQKrtWiUqytZwl/Jkg0p91pjbyECWJgZ98ShMJCOgUt4Ddlsb
+        AMLXfhM0wnCjVGAfAF7J7udALcUVEghERQsG3ZjCMOZ3VWh5tiSgw4FxJ1O+hKbS6+Z2YBZGAZ1g
+        BPdnPkuuuWiq7Q0vBgfNqWd6zoVs3IaxCmTaF2N8XVQjWyAerbSS0bulKqbogQ++yBIJFW3yL+Ip
+        vzrFKpHE/2bnI7/cI9Isyk4pfCP2jpcoFZsDPKWrV76Pit9wviuPD6fdrngShXfUl3PGbX74nb2q
+        Y304Go0MfdhRd59O8rhjNeP/ZbnzSDgUzjrqMeGrbbqND9XBKoYYWX3wIeef8ixP/6caZtFvrkQJ
+        jxQKSxBc4ThwEehrfkn684lNTAZwwS2jpKfViqfpBuKdlRV8kvH1d/VX7TiLs2gn/OoVUjw7JQe+
+        ls/+OfHkTPIjVdNfhlp/uOlqutbvaqMN72qaZnT1zcDQtNWoPxpEaumrwtVP4rftmifCZ1550ZTN
+        9hDtpiX2rtjt4L0awoYw8eAylIzCvCW1SVHihcUTwPEan1JeGwFdYTfE7Mm6MAziXWODTNObu7DW
+        OAS4UwQ8nPYvPPE2k+1hnS+eWvkiSpLoLE7D0/EYJwCkyDcnWmkhCMX3/JBR4FqBl9G/6xnl6zfY
+        ZEVvJbRTflgHPD3tMrot6tdHhtEb9A1t0OtXkXP8C7NZnOyjnAjq3yn4Kl3nFmZ8yFkG/osNGnZo
+        SCbZ8mKBrk/hfJsnXwbIt+0MEoAC9sc8vyYL46+7u5IcxVaebONkm52FmZZDpihA1PzXB/z/ECmp
+        q3idt7NqtwrOU6Ct+Ko+K8kpzsRMffv4H3zMFJUGDAAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1230'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:25 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB0KqWYC/1WPwWrDMBBEf2XRuZTEcWha6MF1FTDYWFU2B9MW47pbEMRyIikQY/zvler0kL3t
+      m9kZdmT2dEC6OPYELJU8QQ6lBMlFnqQckBeilImsYJvlHLalLBIEsX/Js/QeC1EHXM+4nnEtKuQ7
+      /NBwHawEh2cQiXzbc2R3wBo76JZfqPWlP83BkmeWTmfSLWXfHsYe+NUMu/NXp6xVvUbVkVeWD1G0
+      WsfRYr2KF951bEzTkSNjvThO/3dpr51/6hXLgBlpZxQFy/vIVGgIt85HWtd0x9vc6HGzWYZoo3qj
+      3HB1t3PkX830OU2//r76sjoBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '248'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWXXOiShB9319B8axb4GfKtxHHMBVgWBiT6NbWFNFx4y0VLx/Za6Xy328PoIxG
+        snlIydDTffp096Hfv2mavoqySNdG2js8wOMhSqKdyESSysOf7/oeHvWRzoiLQ4Zcn9MZ82eMT2ng
+        Iqa39Ldom0uLOfy1Xbc9mWi23emNXDIKw+/TaVdjC5stXP2jdfZmOQR7jPsBnmJm2ZzZAUaTsPbW
+        U4xl6Maodagb/gMczhzGLXvmPfCQLHAdwBwYVyHK7NiiMdSNACEOQ0I9/oCxz5FDHpUI62ibCiXG
+        jxkO5tyiHsPPgAlZNr7C1FesK4ZczNAEMcRnIVhX0eTBGIVfxKpuQ6k4nfIx8iacYQeDN4CAPTR2
+        8KTm4hppacCBkHsI2oUykUcE9wmwCGUHLByjkHGz2UUFoCpAc51NJeW6xbwvqtDYZjfKc2YvwMA+
+        IJYsQgU8bDFZNos9/zUFm3qQcpUP4JIEXCCtPWRJrhb8XEKXAusOcYkyLma/O1ByP/k/Txmb+5i7
+        yPeJd19HUMbQYQs1Y3/OACkPPfrko+Ch7JcfDnSY6ztkSnBQe7nCKbNZUE9pJ33GLNX52euJR3lF
+        NheBiBgIVUf3btAz1NmqkFW0F+2DuYc8ioKAPjWiauig0KFM0YnODQ6bG/0q8SqEbIpHk5fziXzy
+        N0gTEsoBguQtMgEZU+DcDnCSIerMXGg6mFy4G2IvJOxLxRgTD0HnNAmujZ/VIlnho9KYn+T5wrSU
+        32rOHXoPeKZUDjwDjZDCjAIEw4MDJbdrlTi17JnuSp4cUKnPGnObGUBpYdAXymAiOQGVog/YaywA
+        CF/zl6AWhhupQvcB4SfZ/RyoIblSAqFR0ZxDNSYwjMW3KrSpowjooN+5U1u+ouak1/XXgdsYBWyM
+        EXw/i1nyrHmdbXdwMThoxqhF3QvZuE3jKZDlXIzxdVK1bIF4NLaVyt4tVbFkDXzwRRZIqmiNv4yn
+        /WqVq0QS/8mOB3G5R6RZlOUp3JF7x0uUys0BntLlq9hF5W8431bH+3y7LZ9k4i395ZgJR+x/Z6/6
+        yBwMh8OOOWjp208nRdyRnon/ssJ5JB1KZy39kIjlJt3E+9PBMoYY2fngQ8WfiqyA/1OfbrZCW8fJ
+        Lso0BlvQlIAClEPG/dnYIRYHsuAbo6X5cinSdA3RjtoyEVEmVt/1X2e3WZxFW+nVPPEksjzZi5V6
+        9m8ukiMpjnTDfBkYvcG6bZhGr20M16JtGEanba77HcNYDnvDvtArXydW/SR+26xEIn0WeZclWW/2
+        0XZSMe/JzQ7e6yHsB2MKn0LFKCwKcjYpU7yweIoS8RrnqTgbQbPCZoj5k31hGMTb2gZZFp15sNS4
+        BDqnDLjPdy8ioevxZr8q1k6jehElSXSUp2F+OMQJECnxFm1WWch2Ejuxzxh0WslXp3fX7VSv32CP
+        lZVV2E7FfhWINN9mbFPmbw47nW6/1zH6vV6vuljwX5pNi6IXRP2Tgi/Vwor3RY+B/3J/hg0awCQb
+        Ua7P51M43xTgq9SKXTsDAJDA7lDgq1F0jWG3AlLu5MkmTjbZUZoZBWWaBm1a/PqA/x8Skr6MV0U5
+        T+XWwXka/b48q5pTepIT9e3jf6fjTkUEDAAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1224'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:25 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB0KqWYC/1WNy2rDMBBFf0XMqoVQXD8IdKc4WhicxNjqotQhqO60CGI5kRSIMf73jvqAZnnP
+      3Dl3Anc+Srx6eGKQ14JLwXY1q0VV8lwwyVelYNXzqizyh+pFikayuxaKdQtMG4+faBeshS3fCCKe
+      PCGWvJGHf+weFgyUG00nrtjR0oc6OiTm8HxB02HxTjAjQNGOzeWt187pwUjdI10el3GcZGkcZWka
+      WidlVY8eraPjNP/95YMJa2u5CxjQeKsxVF4n0GEhoqYnpfOqP916k2iZpEFt9WC1H3/b3Y/ye2be
+      z/MX55fSPS8BAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '239'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWXXOiShB9319B8axbgIq5vo04hqnwtTAm0a2tKaLjxlsqXj5yr5XKf789gDIa
+        yeYhJUNP9+nT3Yd+/6Yo6irOY1UZKe/wAI+HOI13POdpJg5/vqt7eFRHKiUujihyA+bPaDCjbOqH
+        LqJqR32Lt4WwmMNf13W7k4li20Z/5JJRFH2fTnsKXdh04aofnbM3yyHYoywI8RRTy2bUDjGaRI23
+        vmQsQrdGbULd8B/iaOZQZtkz74FFZIGbALqpXYWosqOL1lA3AkQ4iojvsQeMA4Yc8ihFWMfbjEsx
+        fsxwOGeW71H8DJiQZeMrTAPJumbIxRRNEEVsFoF1HU0cjFH0Raz6NpSK+VM2Rt6EUexg8AYQsIfG
+        Dp40XFwjrQwYEHIPQXtQJvKI4D4BFqHsgIVhFFGmt7uoAdQFaK+zLqXctJj3RRVa2+xGec7shRjY
+        B8SCRaiAhy0qymbR5z+mYPsepFznA7gEARdIGw95WsgFP5fQ9YF1h7hEGhd90DOl3E/+z1NG5wFm
+        LgoC4t03EaQxdOhCzjiYU0DKIs9/ClD4UPXLDwc6zA0cMiU4bLxc4RTZLHxPaid1Ri3Z+dnriUdx
+        RTQXgYgYCJVH987sa/Js1chq2sv2wcxDno/C0H9qRdXSQZHjU0knjBsctjf6VeJ1CNEUjzqr5hMF
+        5E+QJiQSAwTJW2QCMibBuR3gJEO+M3Oh6WBy4W6EvYjQLxVjTDwEndMmuDZ+lotkRY9SY36S5wvT
+        Sn7rOXf8e8Az9cXAU9AIIcwoRDA8OJRyu1aJU8ue6a7lyQGV+qwxt5kBlBYGffEpTCQjoFL+A/Za
+        CwDC1/4laIThRqrQfUD4SXY/B2pJrpJAaFQ0Z1CNCQxj+a2KbN+RBNQcGHdyy9fUnPS6+TowG6OQ
+        jjGC72c5S541b7LtmReDg2bUt3z3QjZu03gKZDkXY3ydVCNbIB6tbSWzd0tVLFGDAHyRBRIq2uCv
+        4im/OtUqkSb/5scDv9wjsjzOiwzuiL3jJc7E5gBP2fKV7+LqN5xv6+N9sd1WTyLxjlr6G6k5/y+H
+        Sy/HnDt8/zt/VUe6ORwODd3sqNtPJ9kyFg6Fs456SPlyk22S/elgmUCM/HzwIePPeF7C/6lSAUMB
+        PuAzomTFcsmzbA0Oj8oy5XHOV9/VX+ebeZLHW3FRP1HB8yLd85V89k/B0yMpj1RNfzG1vrnuarrW
+        72rDYdzVNM3o6uuBoWnL4WDYN9Xa14m4IE3eNiueCp9lahXr680+3k5qcj2xvMF7NYIVYOzD104y
+        ikrOzybBbOwQ68LiKU75a1Jk/GwE/QjLH2ZP9oVhmGwbG2RZ/syDvcUl0BxVwH2xe+Gpvx5v9qty
+        s9TqF3GaxkdxGhWHQ5ICkQJv2Um1hegYvuP7nEIzVXwZ/bter379BquqKJ7Edsb3q5BnxTanmyp/
+        fWgYvUHf0AamcVdfLPmvzKZJuovLSqt/Z+BLtrCSfdlu4L9akWFJBjDphlcb8vkUzjcl+Dq1cp3O
+        AQAksDuU+BoUumn8NazCVGt3uknSTX4UZlpJmaJAJ5a/PuD/h7BVl8mqLOep3Co4z+Lfl2d1cwpP
+        Ymi+ffwPqhqdyecLAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1211'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:25 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB0KqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        bEYjOE75yyrm53+i4pK6PBAAAA==
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1558'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:25 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB0KqWYC/11QTUvDQBD9K8tekkAomlqkHlt7KBRa6HoQhDDdTjQwu2t3NtpS+t+dRIvinOa9
+      N19vzpoPZPCY9IPSjIQ2KQqfGHMbqHO+9uCwUMDqDy5/ShK8/upXUA7ZB1CHL179iyYGJ/qOMG99
+      E6KD1AZfs31DB6O+MWKDEb1FroGo/t7KebZ5mq2W89Hm2Sy2JitVNkzJikKXSgOfvF0c0YqLBojl
+      CDFz6Po5y72Qt0IIjKdtt3Mtsyw1rcNeua+q8eSuuplMp2OpeocoJhJGFvF8ufbNg0/ypUezHujL
+      FzM9VAw4AQAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '237'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA9VX227iSBB9n69A1j6Slc3FTHhrTBO3Yrs97oYEVqOWA84ECTBrm8ygKP++1b7g
+        huDMvq2WB4SLcl1OnTpuv31ptbRVmIVaa9h6gwu43IdJuI2yKEml8a83bQeX2lDjxMWMI9cXdMr9
+        KRcTGriIa23tNdwcpMccPjeuezMet2y70xu6ZMjYn5NJt8UXNl+42nv7FM1yCPa48AM8wdyyBbcD
+        jMasjtZTnGXqxqx1qivxA8ymDheWPfXuBSMLXCcwTP0iRdEdXzSmupKAYcYI9cQ9xr5ADpkpGZ7D
+        TRopOb5NcTAXFvU4foSakGXji5r6ineJkIs5GiOOxJSBd5lNGkaIfZKrvBtGJehEjJA3Fhw7GKJB
+        CdhDIwePaywuKy0cBAByB0m7MCYyQ3A/ARRh7FCLwIhxYTSHKAsoB9A8Z0NpuaaY98kUGml2ZTwn
+        9AIM6EPFEkWYgIctLsdm8cfftmBTD1ou+4G6JABnldYRsuSgDvw0QpcC6g5xibIuRr9rKr1X8U9b
+        xuc+Fi7yfeLd1RmUNXT4Qu3Yn3OoVDCPPvgouC/48s0Bhrm+QyYEB3WUizplNwvqKXTSptxSg5+i
+        VjjKWyS5CGTEAKi6ul/Nnq7uVllZCXtOHyw85FEUBPShsaoGBjGHckUnOlcwbCb6ReNlCkmKmSGK
+        /UQ++V1JY8LkAkHzFhmDjCnlXE9QyRB1pi6QDjYX7mXYY4R/qhgj4iFgTpPg2vhRHZLFZgoxP8jz
+        mWshv+WeO/QO6plQufAcNEIKMwoQLA8OlN4uVaKi7AnuUp4cUKmPGnMdGajSwqAvlMNGCgIqRe+x
+        1zgAEL7mJ0EtDFdaBfYB4JXsfkzU0FwhgUBUNBcwjTEsY/6sYjZ1FAE1+52vKuVLaCq9rp8OwsYo
+        4COM4PmZ75Jnzetuu+bZ4qAppxZ1z2TjOoxVIss5W+PLpmrZAvFopJWK3jVVseQMfIhFFkiqaF1/
+        ka/1vV0cJZL4Z3bcR+fnCKtYAg/oBTfKw8dTmMrjA1yly5doGxa/wb4pzbvDZlNcye7b2tMxi5xo
+        9yN70YaGORgMOobZ1vJUQy2LfmUQavPh/3QZyoAyWFvbJ9Fyna7jXWVYxpAjOxkUVYGHIKjV/6na
+        GXKm/w5cNmd/iBnBD6LTBdD+C6BVtqRRNgIymD1JGSBEQaMszsKNtOgVr6LskOyilWr7+xAlR5Kb
+        NN14MvWe+XyjG3rvRh/onRtdhy/jud/R9eWgexuGVfCKgH4Sv65XUSJj5hQpcj+vd+FmXJLUkydh
+        WRmD89SIwtFBcWI5dyuXyxAPYRK9xIc0qhw0WGw4RWPxYJ+FCeJN7YMsi049OAC6BLasSLY7bJ+i
+        hD6P1rtVfkSvUAmTJDxKKzvs93GSFfjkK1nemmZhFm2jXcZhKwusevqtWf77Ckd+yX9o0KhuiHar
+        IEoPm4yvi9aNQafT7fc6utnr3JZeOfSF2yROtmGWYwTlxD+ronMXK97lywkJincNeNuAYpJ1VLxq
+        nKxgX6vDzd9LMqgAGtju8wKVMnp9c1BUUry/JOs4WWdH6abnkLVa763v+a93+H6XvtoyXuWjrOak
+        QfA0/HFuSw/LJZhlJCk8X97/AVFfh2swDQAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1224'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:26 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB4KqWYC/81VTY/cNgz9K4u57CUbeGa/urn2WqAFciwKg5ZpWxlZUiR6ZjyL/e+lSGuTHoJe
+      CjSHGeuDEsn3HqnXnQtj3n26+fN1N2POMCJPXnd9sidMLa2xzHd/rDQF/2vwHg2FtPtwUy34l23w
+      xej+437/sSl7OSzJ/OhgvdM4i55aO8eQCPs2gjmy+1xsTuAWMXq9hZRgvf1wcxtDthcZiKH1Y5lM
+      CPFrGRhMZAdbhh1kfHoQUwc0hDSXsTpytisTILxYknNzL5+0RgpjgjiJtzwtZJ2ci9D3ibEpk9HI
+      pkRsgiewngEoa54i0CR3pzFCyiiry9xtBpkSxxwTRols7cGTNW1GIl4XkzO7l6AG40mcfznLvLfD
+      sEVevOKFTqC3xsi3io0lRiAEJ8tLcpv91wUXfMevxkh2lkUDDn0PSZwmMMRc6r0rXcVACGzT4t+P
+      BG+WlFC95ixx9oHQnxTyZRwFQnedQSgikpQHPwOZ6RsWCqU5ot7ECZRviJiAtSJh4hwH62S9R2Nn
+      cBpCL0vTDGa7bjFyCXEO2LFAqpmRbHAGJbNn4msitvegZlHiTeD7IFJxoeCi2dhcNXNGOCYcRGE2
+      ozqcIE/b/julJiT8fkGEc7UCQrdYx3xLVI7FY8BMYkzhiF7kk1UCizfvdM4ccqkbmejll1kSymtm
+      QgYrYLIJw9qyPNDnyuSXHLyWDdVIoTMqjcDqEbl4W8BidASR7npQ4tQHt4habpxF5SOuWORUhkdc
+      zyH1FcyEYht7cTaywDkiQTwo0RfVtCp1sf0mONTMOSUlVS/n2KhuUZirrmtp91YLQfCzVwkNPWdT
+      i2reJL8VznacyzBtQ0zJB2XVQzZWEKEpIfRVpD6cBwdHbEtTkFvDViX/2FZ3KU8q02xHr6MS91H7
+      zRmSr6GZfFKVX6iUfhn/HtF//vzbxqYSzgrDi+a1aCvzOW76i8exNirIfq9tTA4tXUzBbH2L1ZKi
+      0cS5I2TKG5vaFeUAOunRGtlUOhi1nhEGx7BKOUZrjkr+6MJGLvc/a2pbGWBxNHEdOT3AVZJQfXWq
+      BsirN6oDqmEU6YWoJdZ1KZyzng6xFrq2s/utgsE4yFmxWUE1et3ItEXJtR7A+8Aq4sflG5aSpXp1
+      ZVjLRGvn9m33Vt4orjfW3xzLG7R/PhzuHx8OzePLy6Fs/19PZYmKm4vPC38H1j21/C4x4sWWWU1r
+      a/ti3+y7p+bhabhr9s3DXfPcHO6ahv/2w+Ohaczz/QvA98/s3f7HST89HH75aZJm3v+rnJt/S/mv
+      t78B6kK2TR0JAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '980'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:26 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB4KqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:26 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB4KqWYC/02PwUrDQBCGX2XYSy8S2mhSKnhokyiB1BSzPRTrYRtHWUh2t7sbaQh5dydWweP8
+      8833MwNz54bjxbN7YOuCZy/A15sig91+U+RJsDvwrOKwLdP88QBJWey3z3BkeXpkUGWc4Cf41F9o
+      lVA1BqY7NbIOjJTwADOD1mklmhm7ASZcr+rsgjU1fYjGIWUOzx3SXf5OYUwBjbavulMrnZNacdki
+      bRbLMLyN7sJ5HMUrooywokVPdloO499dopWnT1JeTjFD5a3ECXkdmJwa5kR6UjovWvPfG8WLOFwt
+      J7WV2krf/9L1VflTM76N4zdWx4uLLwEAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '253'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW2/iOhB+31+B8gyrJIVQ8WaCaazmtolpC6uVlYLZcgSEk0vPoor/fsa5EENJ
+        tw8VccZz+eabL/PxrdNRVlEWKZ1R5wMe4PEQJdGOZzxJxeHPD2UPj8pIocTBIUWOz7wZ9WeUTb3A
+        QVTpKu/RNhcWc/jrOU5vMulYlt4fOWQUht+n07sOXVh04Sin7tmbaRPsUuYHeIqpaTFqBRhNwsZb
+        XzIWoVujNqFu+A9wOLMpM62Z+8hCssBNAM1Qr0KU1dFFa6gbAUIchsRz2SPGPkM2eZIirKNtyqUY
+        P2Y4mDPTcyl+gZyQaeGrnAaSdYWQgymaIIrYLATrKpo4GKPwi1jVbWgV86ZsjNwJo9jG4A1SwC4a
+        23jSYHGdaWnAAJAHCHoHbSJPCO4TQBHaDrkwjELKtHYXVQJVA9r7rEklNxRzv+hCK81utOeMXoAB
+        fchYoAgdcLFJRdtM+vLXEizPhZKreiAvAcBFpo2HLMnlhp9b6HiAuk0cIo2LNrgzpNpr/+cpo3Mf
+        Mwf5PnEfmgjSGNp0IVfszylkykLXe/ZR8Fjy5YcNDHN8m0wJDhovV3mKahaeK9FJmVFTdn72WuMo
+        rghyEYiIAVB5dO+NvirPVpVZBXtBH8xc5HooCLzn1qxaGBTaHpV0Qr+BYTvRrwqvQghSPGmsnE/k
+        k7+lNCGhGCAo3iQTkDEpndsBahny7JkDpIPJhbshdkNCv1SMMXERMKdNcC38IjfJDJ8kYn6S5wvT
+        Un6rObe9B8hn6omBp6ARQphRgGB4cCDVdq0SNWXPcFfyZINKfdaY28hAliYGffEoTCQjoFLeI3Zb
+        GwDC1/4laIThRqnAPgC8lt3PgVqKKyUQiIrmDLoxgWEsvlWh5dmSgBoD/V6mfAVNrdfN14FZGAV0
+        jBF8P4tZcs15U+2dcTE4aEY903MuZOM2jHUg074Y4+uiGtkC8WillYzeLVUxRQ988EUWSKhok38Z
+        r/OrW64SSfxfdjzwyz0izaIsT+GO2Dteo1RsDvCULt/4Lip/w/m2Ot7n2235JArvKq/HjNt8/zt7
+        U0aaMRwOdc3oKttPJ0XckZLxP1nhPBIOhbOuckj4cpNu4n19sIwhRnY+OMn5pzwr0v+phJA33/F9
+        1uF/+DLP+KqT5sslT9M1uD1+V36d72VxFm3FNa0Ggmd5sucr+ezfnCdHUhwpqvZqqH1j3VM1td9T
+        h2veU1VV72nrga6qy2F/aOhK5auGzU/i982KJ8JnUViJ+Xqzj7aTClpXrG7wXglhARh78K2TjMIC
+        8bOJPxvbxLyweI4S/hbnKT8bARth9cPs2bowDOJtY4NM05u5sLU4BKhRBtznu1eeeOvxZr8q9kq1
+        ehElSXQUp2F+OMQJoCryLXhUWQi+FLhToFKJlz7QtWH1+h0WVdE6Ce2U71cBT/NtRjdl/dpQ1+8G
+        fV01jPs6coF/aTaNk11U9Fn5JwVflevCwoz3BYnAf7kgw4oMJEg2vNyPz6dwvimSrwIUy3QGCUAB
+        u0ORX5MFdHTYL8OUS3eyiZNNdhRmagFZpwM8LH6d4P9J2CrLeFW0s263As7T6PflWUVK4UmMzLfT
+        /zbfPmzlCwAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1206'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:26 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIAB4KqWYC/22QYWvCMBCG/8oRBirIptXZIQjrujgK1hbNYLKN0NUIgTbVJIIi/e+7rNuY2/Il
+      l/fee+5yJ2J2BRMHS8ZAwiRdQTRnCaSPd7MovExXjC4ZtOW6CyorRReKzFjuws6Lgl9nukhi+Cu3
+      jShEbuGiP3YcvBoUBt802OiqhFsWp5w+MbqYBzO+ZMED5c0kvJnk6r+u0YzyabKIAwYTaEMT8nkQ
+      U5i0HPGH4xzX6pAukMwcVU4PIscVbLLC4GjEiN1eqFxEaxR9FPCpj8v9WymNkZVishSY6fueN7ge
+      er3R6GaArm2m8TNWaIPJU/1VF1bK4orvWeJkIpTVUjjL84lI16GHTotIY7Nye871h74/dGgtKy3t
+      8dOdN8iPNvVrXb8DhSyYZsgBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '305'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1479'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:28 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACAKqWYC/91VwW7jNhD9lcCXXDYL2ZblbK+9FmiBPRaFMaJGEtcUySWp2HKQf+9wRsomh01T
+      bIFucjBMUsOZefPeDO9XxnVx9cvVn/erAWOEDmlzv2qCvsNwSJPP+9UfU+qd/dVZiyq5sPpwtVjQ
+      L2pns9H243r9scjfohuD+t7FxacyGm066MG7kLA5eFBHCh+zzR2YkY3uryEEmK4/XF17F/WZF2yo
+      bZc3PYL/mhcKQ9KtzssaIlYlmxpIrQtDXksgo+u8gYRnnfje0PBfmHxyXQDfc7TYj0kbvuehaQLV
+      Jm86xR85Y+VsAm2pAPnMJg+pZ9+h8xAi8uk41LNBTIFy9gE9ZzY1YJNWh4gp0TmbnCg8J9Uqmzj4
+      lxPvG922c+Y5Kp7THYhX78kr2+hEFXDO8PEYzGz/dcQRH+u35Jj0wIcKDNoGAgcNoBJxKX6ndGED
+      JvAQRvt4xVk1hoASNUbOs3EJ7Z2UfOw6LqG5DMAUpcSQWztAUv23Wkgp1RHFEwHI/85jANIKp4mD
+      b7Xh8waVHsBICg0f9QOo2d2o2EkiDFiTQBYzxWhwACGzIeIXILqxIGae8w1gG8dSMS7XRdDouGjm
+      hHAM2LLCdEQJ2EPs5++PlCoX8OkBC+eiuQj1qA3xzVkZEo8C1bNxcke0LJ8oEhiteqRzoJRz3/BG
+      nJ8HBhSnSIS0motJJlTWA8kDbVyY/BKdlbZJS6ZQK5GGI/WwXKzOxaLqcEXqy0aIkxg0IpZ2IxQL
+      H37CLKe8POJ0cqFZihmQbX3DwToSOGXEFXdC9Fk0LUoddTMLDgU5QRJSxTnllpZPyQ2LrpfWbrQ0
+      AtdPXzg1tIRmaaphlvzcOPN1asMwLzEE64RVC1FprkjqA0KziNS6U2vgiIc8FNirm7vk2WcJF2Iv
+      Mo26s7LKeR9l3pwg2CU1Fe9E5eeUWz+vf/doP3/+bWZTCCeF4VlwjTLKbPSz/vyxWwYVRLuWMcaX
+      xtoHp+a5RWoJXglwmggxxZlNmYp8AQ3PaMmszxMsHSxVGAyVldvRa3UU8jvjZnJp/mm1jJUWRpN6
+      6iMjF6hLAkqsWtQAcbJKdJCWNLL0nJcWq+vgTlFuO780uoyz7dzBoAzEKLWZQDR6mcnUWclLP4C1
+      jlREj8u3WjJKiWrycmkT6Z3rh9VDfqOo30h/g89v0Hq/2Wx35aYoy9td/vx/PZU5KxouNo7035Lu
+      04HeJap4tiVWw3TQTbYv1nVVlFV7U6yL8qbY7+GmKIrNzbrdbYpC7Xf7LT59ZosXMO/2Pw9mov2/
+      grx+EXL1TmguN08x37wEuqo274Pn55iLNwL53/Dc4nPM5X4Hr8S825bFW6T5vUD+QZpfO7V3ZVm+
+      E5pfO7UJ8nt5nMvqKebNC5irbfFOhnb1WmX/TJB/rJurZw/V9vuYq+p2+yYxE9xnmLefAF+J+bba
+      fnqL0v4nyOuXIOeH6q+HvwFFWwxTlBMAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1108'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:28 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACAKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:28 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACAKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        i+14DMcJf8eK+fkvL+EquTwQAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:29 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+      transfer-encoding:
+      - chunked
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACEKqWYC/02PzQrCMBCEX2XJpZciWhWp4MXaQ0FQMB48SYxbDCapZiMq4ru79Qc87nwzzOxD
+      0NlKvEUxBkFoUUeIamdx65VDqEPjwPi6CU5F0/gt6QM61XlbCK4HDPjvN9YcEZLlRpYrmYDy+y/9
+      5GDCbD2dV0UiUhCK7l6XN9RcXitLmLYbzhf0Gqs9iz0W+Az31WXnDBEvkMZhS0ZZ1h8Osm7ey3J2
+      nVTg/oiBGD6ev1zR+MjPzeTiLT9fZ/MDNe8AAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1578'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/81VTY/bNhD9Kwtf9pINJO/G2+Taa4EWyLEojBE1khhTJEOObMuL/e8dzoib9JCe
+      CjQHwyQ1nI/33gxfdi6Meffp7s+X3Yw5w4i8edn1yZ4xHWmNZb/7Y6Up+F+D92gopN27u2rBv2yD
+      L0aP79v2fVO+5bAk86OL1adxFj0d7RxDIuyPEcyJw+dicwa3iNHLPaQE6/27u/sYsr3KQgytH8tm
+      Qohfy8JgIjvYsuwg4+FJTB3QENJc1hrI2a5sgPBqSe7NvfylNVIYE8RJouVpIevkXoS+T4xN2YxG
+      PkrGJngC6xmAcuYpAk3iO40RUkY5XeZuM8iUOOeYMEpmaw+erDlmJOJzMblweElqMJ4k+JeL7Hs7
+      DFvmJSpe6QzqNUb2KjaWGIEQnBwvyW32Xxdc8A2/miPZWQ4NOPQ9JAmawBBzqX5XuomBEHhMi3+7
+      ErxZUkKNmrPk2QdCf1bIl3EUCN1tBqGISEoe/Axkpm9YKJTmhOqJCyj/IWIC1oqkiXMcrJPzHo2d
+      wWkKvRxNM5jN3WLECXEN2LFAqpmRanAGJbNn4mshtvegZlHyTeD7IFJxoeCi1dhcNXNBOCUcRGE2
+      owacIE/b9zdKTUj4/YEI52YFhG6xjvmWrByLx4CZxJjCCb3IJ6sEFm/e6Jw55dI3slHn11kKymtm
+      QgYrYLIJw3pkeaDPlckvOXhtG6qZQmdUGoHVI3LxtoDF6Agi3W2vxGkMHhG13biKykdcscipLE+4
+      XkLqK5gJxTb2EmxkgXNGgnhQoq+qaVXqYvtNcKiVc0lKqjrn3Kh+ojBXXdfW7q02guBnb5Iaeq6m
+      NtW8SX5rnO06t2HalpiSD8qqh2ysIEJTQuirSH24DA5OeCxDQbyGrUv+8VnDpTypTLMdva5K3ied
+      NxdIvqZm8llVfqXS+mX9e0T/+fNvG5tKOCsMr1rXoqPM57jpL57GOqgg+1bHmFxaupiC2eYWqyVF
+      o4XzRMiUNzZ1KsoFdDKjNbOpTDA6ekYYHMMq7RitOSn5owsbuTz/rKljZYDF0cR95PQCd0lCjdWp
+      GiCv3qgOqKZRpBeitljXpXDJejvE2ug6zh63DgbjIGfFZgXV6G0j0xYl134A7wOriB+Xb1hKlRrV
+      lWVtE+2d+9fda3mjuN9Yf3Msb1D7vN8/fnjaNx/b/cfy+f96KktWPFx8Xvh/YN3Tkd8lRrzYMqtp
+      Pdq+2Ddtd2ieDsND0zZPD83z0y8PTdPsH9rhw75pzPPhgIfvn9nHH9bc8rXDT1Mz0/5fldz+a8nP
+      u9e/Xv8GJI7f6hwJAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '983'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA5VXWZOiSBB+31/R4WtPjxdeHbEPBRRSLYdCgcfGBoGIiBfdHB49Mf99E8V2ZsB2
+        2zcLMvnyy8wvs3789fBQmtmxXXp4fviR/tnYUeyGNFi52/SstHPD5/rTwt/Gz41Oq95uVSr1SrPN
+        1JknTOWI9xBCE4xpw14iVmM1U94NKi+8VGWlQVWuGl1hNemuk8keI8QihEmymsx5Z7MZxu1us/di
+        PDZEZQVOOG/LSs7jeOxI3c1unzQbiea6B23jjYKy464O095QeCv7U2/A7XzfXa51N2lpw/pQRP31
+        IGpoXKDU68gxpO1BTkJutDuMO4Tjj8h83+ybK9ykPV0PKLuZeowy7K7LwsEmM1IT/YRRvYG4MefO
+        0ZuLw059OKi9sg3PfMTEfPcnfvNlpk2X7JZzveXBW5RHO2a66Bzi/Shomd6RnUzxYPFaRo+sicqG
+        25VbYTeMD8sdj5Axl6pMwicrecCvkDkci5FbS/yWhL3x36VvKenx1+meiv+LbkWYN0YMXtRkwenN
+        F44xEtjROKUbtROt+dKxBe3F7Haa777a7C0fh7XtQWgsYxpXD8fYMOOD/0Y2tUonKc+o1BrJ5QF5
+        ccLlajRe7NBiqUfr2Xsyb83ZXkTjecOrHUj70WCWU2Mnr/Daj950hh46sR4oYTPQ1UToj167LVnA
+        6NioJ2/RUZkeB2/DN7zpeIP6HuvxcB2HQqXittkWNxi32E6ABHLw6rv9Y2/EHHtvfqQr7YX/4pTZ
+        43pwpnBnr/2ZHx/JVnedYDuL0uqtNyuVE8HnqjaL3qkyTPbSzI9e1/bRiNxQsTfuqfzPzuEE+sB0
+        w8gPzm3R/l5rfa+en879MIqlwPNPj+IwcU/fDN2N7H400jZZr6/HhUjOUBeuvY4X3MJ1VmQLrQiB
+        pUiYxsl66+65te9uYyEIjVcvtGcnnB/eIzdKMZJZanNp2Gat06hUmZODVzuE2MDviaB/Tk0PFbi9
+        BEyJjHWK5L6lGrRvUEtQNRnRU6TwHqBJzsyM4fcky088/yCKNeZZJs+6/l0Q6g90ItKJXILC/vkt
+        55+TCFao1dewgCknWlTUMOL1nH+m2DyFdw/ZFc7nGDSsGxK1ONFQepZOJjgHotqs3IZxZolO7sH5
+        HISOdZ2oitXDuG8hiZh5FHN7HbnFOAYG1sYWpyoUjyASxIm4OJJGsX2WDRlTxCOKLEMH+wxResAi
+        /Ut4Mn9QOpYqWCxSeItiCYN/gIkVxEqYz7H8SXxnEwuo7gKwOpQNMRF4JJAxKEzAa2GkU+vcib/W
+        5ydOM5BZ+u9WYrWYumujKPdr4GazfF4cH3nRMGQa4kzzA9lWMEfTouHo6CtsZoGLqgLUZX8Ae0rk
+        b9HkfKaaVsxC5kXGsgoZlohM8lJRbdSbn1pfP07HfWzJqN8nSjeHonR9T6KTG8z1xxTis3RFHfaR
+        1jtX9ECCrpD7EhEI1nJ+b0eXfnCiKvkWKBmUuwHg48uXnKVO0oYggApD8grErt2EGVRMURZPlvRT
+        yWNLQYqKNE0dfiGWG1WvSyrNq2+tGMylZu629G1KMxdpIZtV66xfqE++HghP9FROgFaO8DBS8kHc
+        BXEZAKpkyNBMoHXgTceKTugXdZglCoL6vzMyRTy6UTScbv7SgrdG7i3j80jNtFJSuxCFoKaiSUF5
+        02GLNARSgrU8R/dl8qrf2WCQYD7c1PK7nENsHAYdVylomEVgPqg9rHwh/TCW7m4AV7n9nDLoKkj3
+        ZXDeBHOfpPOAgpZEYwtqgQf5Om02uqhK+YHXbNTaN9o9a4/LDL5uBZaIkUZZjGAjOymLwo1zrKX7
+        bnHnIoOqnCoXyfPdlF3AcFKRFH5Czm96fa85bmSqSM+5tAL64J1MUDoHczx8YHr497T0Xrbi7TxI
+        9+L0ogu7QnrvndqR+7Hs67CvsOrHSI2chbuxL08vKzYY7u3QXQTJL5ZALezK2BqKFyxhsL46Rhyn
+        GgrsWDJRznECgpI/y98OsjOz6KZyvh+EbvQabCOXz27tF1ylzdzO+7scFjv86+eJHif44xaxgVuE
+        7f1xs0gcB45T/k4V8/M/DJ7GszwQAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1562'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/zWOwQqCQBRFf+Ux6xZqSdTOpokGKqOZoO1oLxB0TJ+CIv57r6DlPfceuJOgprQ4
+      dGILQt5UYhUYeVTnBPQBLqkF9dDGGrjedyctxQKEo9HnasCclZcrCZkRNj36HPWTYciAYzuaPqsK
+      oqL2tqjw26yjaBmvojCIgw2v3q51FXbYEpfT/Pdk7Tu+tLfpD88f1p8DLqUAAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '161'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW3OiShB+319B8axb4DXHtxHHMBVgWBiT6NbWFNFx11MqHsDsWqn899PDRUYj
+        2TykZOjpy9dff/TbF03TV1EW6dpIe4MHeDxESbQTmUhSefj9Td/Doz7SGXFxyJDrczpj/ozxKQ1c
+        xPSW/hptj9JiDn9t121PJpptd3ojl4zC8Ot02tXYwmYLV39vnb1ZDsEe436Ap5hZNmd2gNEkrL31
+        FGMZujFqHeqG/wCHM4dxy555DzwkC1wHMAfGVYiiOrZoDHUjQIjDkFCPP2Dsc+SQRyXCOtqmQonx
+        bYaDObeox/Az5IQsG1/l1FesS4RczNAEMcRnIViX0eTBGIWfxCpvQ6s4nfIx8iacYQeDN0gBe2js
+        4EmNxXWmhQEHQO4haBfaRB4R3CeAIrQdcuEYhYybzS7KBMoGNPfZVEquKeZ90oVGmt1ozxm9AAP6
+        kLFEETrgYYvJtlns+a8l2NSDkst6IC8JwEWmtYcsOaoNP7fQpYC6Q1yijIvZ7w6U2iv/5yljcx9z
+        F/k+8e7rCMoYOmyhVuzPGWTKQ48++Sh4KPjyzQGGub5DpgQHtZerPGU1C+opdNJnzFKdn71WOMor
+        klwEImIAVB3du0HPUGerzKyEPacP5h7yKAoC+tSYVQODQocyRSc6NzBsJvpV4WUISYpHkxfziXzy
+        t5QmJJQDBMVbZAIypqRzO0AlQ9SZuUA6mFy4G2IvJOxTxRgTDwFzmgTXxs9qk6zwUSHmB3m+MC3k
+        t5xzh95DPlMqB56BRkhhRgGC4cGBUtu1SlSUPcNdypMDKvVRY24jA1laGPSFMphITkCl6AP2GhsA
+        wtf8JaiF4UapwD4AvJLdj4EaiiskEIiK5hy6MYFhzL9VoU0dRUAH/c6dSvkSmkqv668DtzEK2Bgj
+        +H7ms+RZ87ra7uBicNCMUYu6F7JxG8YqkOVcjPF1UbVsgXg00kpF75aqWLIHPvgiCyRVtM6/iKf9
+        aBWrRBL/zk4HcblHpFmUHVO4I/eOlyiVmwM8pctfYhcVv+F8Wx7vj9tt8SQLb+kvp0w4Yv8z+6WP
+        zMFwOOyYg5a+/XCSxx3pmfiT5c4j6VA6a+mHRCw36SbeVwfLGGJk54N3Nf9UZHn633V/NnaIpUXb
+        RESrkyb+bNIsbWmyHLET+0xLj8ulECux+qr/OLvI4izaSg9mhYnIjslerNSz/44iOZH8SDfMl4HR
+        G6zbhmn02sZwLdqGYXTa5rrfMYzlsDccDPTSV4Wgn8Svm5VIpM+8xgL+9WYfbSclyp7c4uC9HsIu
+        MKbw2VOMwhz8yuTaxVOUiF/xMRWVgQ6khA0Q8yf7wk0Qb2sbZFl05sHy4hJgSBFsf9y9iISux5v9
+        Kl8vjfJFlCTRSZ6Gx8MhTrICn5xOpcUZZwaMKrDq9O66nfL1K+yrsoMK0qnYrwKRHrcZ2xS1m8NO
+        p9vvdUyjf/dPeTHHvjCbxskuytut/5uCL9XCivc5l8B/sSfDpgxNTzaiWJPPp3C+yTtZlpbv1Bkk
+        AAXsDnl+ShZdaG0Rpti9k02cbLKTNDNyyDQN6Jj/eof/79JWX8arvJVVn3RwnkY/L89yNqZ5cnJy
+        vrz/D6IBrCfsCwAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1209'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/1WOywrCMBBFf6Vk7SJNLT52WgsWFIXWlbiIcYRAk7ZJCi0l/+7Ex8Ll3Dn3MRHb
+      1RUMjqwjcinzqMz2+XETnS/bQ5GRWUS4HbXIBxBIPHltATULXQ9aQPFAkaGApxnL/q6ktbLRlVSA
+      n3jBWJLOWUzTFUWq5YYrcGAsPif/82WNdrhgV52CTEA7IyEg14nI0BC8DiOt46r9z10mlIYBrZGN
+      kW780uIT+a7xN+9f7lRW6OcAAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '191'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW3PaOhB+769g/Ew6NhfTw5swItbEtlxbJIFOR+OAaDgDOMeXtEwm//2sfMGC
+        4DQPTCyv9vLtt5/37Uuno62jLNI6484bPMDjS5REe5GJJJWHP960AzxqY40RF4cMuT6nc+bPGZ/R
+        wEVM62qv0S6XFgv4u3Hdm+m0Y9u9wdgl4zD8Opv1O2xps6WrvXdP3iyHYI9xP8AzzCybMzvAaBo2
+        3gaKsQzdGrUJdcV/gMO5w7hlz707HpIlbgIYpn4RoqyOLVtDXQkQ4jAk1ON3GPscOeReibCJdqlQ
+        Ynyf42DBLeox/Ag5IcvGFzkNFesKIRczNEUM8XkI1lU0eTBB4SexqtvQKk5nfIK8KWfYweANUsAe
+        mjh42mBxmWlpwAGQWwjahzaRewT3CaAIbYdcOEYh40a7iyqBqgHtfTaUkhuKeZ90oZVmV9pzQi/A
+        gD5kLFGEDnjYYrJtFnv8awk29aDkqh7ISwJwlmnjIUtyteGnFroUUHeIS5RxMYZ9U6m99n+aMrbw
+        MXeR7xPvtomgjKHDlmrF/oJBpjz06IOPgruSL98dYJjrO2RGcNB4uchTVrOknkInbc4s1fnJa42j
+        vCLJRSAiBkDV0f1mDnR1tqrMKtgL+mDuIY+iIKAPrVm1MCh0KFN0oncFw3aiXxRehZCkuDd4OZ/I
+        J39LaUpCOUBQvEWmIGNKOtcD1DJEnbkLpIPJhbsh9kLCPlWMCfEQMKdNcG38qDbJCu8VYn6Q5zPT
+        Un6rOXfoLeQzo3LgGWiEFGYUIBgeHCi1XapETdkT3JU8OaBSHzXmOjKQpYVBXyiDieQEVIreYa+1
+        ASB87V+CRhiulArsA8Br2f0YqKW4UgKBqGjBoRtTGMbiWxXa1FEE1Bz2vqmUr6Cp9br5OnAbo4BN
+        MILvZzFLnrVoqu2bZ4OD5oxa1D2Tjesw1oEs52yML4tqZAvEo5VWKnrXVMWSPfDBF1kiqaJN/mW8
+        zs9uuUok8e/s+CLO94g0i7I8hTty73iKUrk5wFO6ehb7qPwfznfV8SHf7conWXhXezpmwhGHX9mz
+        NjbM0WjUM8yuVkQZa5n4k4Gr3Yf36SqSDqWzrvaSiNU23caH+mAVQ4zsdPCu5p+KrEj/hxZC3mIv
+        DllH/BGrPBPrTpqvViJNN+D2+FX7ebqXxVm0k9eMGgiR5clBrNWz/3KRHElxpOnGk6kPzM2NbuiD
+        G32k9250HX6MzbCn66tR/5+nnlb5qmHzk/h1uxaJ9FkUVmK+2R6i3bSC1pOrG7zXQlgAJhS+dYpR
+        WCB+MvHnE4dYZxYPUSKe4zwVJyNgI6x+mD/YZ4ZBvGtskGXRuQdbi0uAGmXAQ75/EgndTLaHdbFX
+        6tWLKEmiozwN85eXOAFUZb4FjyoLyZcCdwZUKvEyRsawV71+hUVVtk5BOxWHdSDSfJexbVm/Mer1
+        +sNBz9DNUX2xwL80m8XJPir6rP2bgq/KdWFhxYeCVuC/XJBhRQYSJFtR7senUzjfFslXpRXLdAYJ
+        QAH7lyK/JgvT7A/NMky5dCfbONlmR2mmF5B1OsDD4r93+H2XttoqXhftrNutgfM0+nV+VpFSepIj
+        8+X9f28es23lCwAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1209'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/1VQ0WrCQBD8lSMvvjQmRk2K4EMaDwnEJCQnVNoSzri1B+aidydUJP/ejVpK7+1m
+      Zmdm92rp04HBt7FmxIoKGjJKsoIUNE/CiBJGV3lWhMWGlCxcUpKvX5I4GrJVXtFXRos0TKobU92Z
+      Kt8wWrKqn3uX5PHWRTIf6PHMcQxXezD2WdvAtbFHtjZ8L+Te2SsA+dWeNdhbYdetlFCbVjkIKO2A
+      OVQ7bmDuud7EDdwJc58nnhc4CPLhkavTGczgL7BkWBpLxSmjyyJkcZaSOVmELLy1jdOl9UQsri+y
+      pt9Q4+6f/KABMQ1oJWuIdwiOEcCvupTnbSO0Fq1kogFkRoHnjacTb+T6Qa/CCrwBg12RvHa/c1Er
+      Dd52wbIetkAaJaCXvF0t0Se4qDRoiWdojv99fX889XtrJVolzOWhru+Wt5juo+t+ANotJeLBAQAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '342'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWXXOiShB9319B8axb4Gfi24hjmAowLIxJdGtriui48ZZKLmD2Wqn899sDCKOR
+        7D5shbGn+/Tp0z39/k3T9FWURbo20t7hAz5foyTaiUwkqTz8+a7v4VMf6Yy4OGTI9TmdMX/G+JQG
+        LmJ6S3+LtgdpMYd/bddtTyaabXd6I5eMwvD7dNrV2MJmC1f/aFXeLIdgj3E/wFPMLJszO8BoEtbe
+        eoqxDN0YtQ51xX+Aw5nDuGXPvHsekgWuA5gD4yJEkR1bNIa6EiDEYUiox+8x9jlyyIMSYR1tU6HE
+        +DHDwZxb1GP4CTAhy8YXmPqKdcmQixmaIIb4LATrMpo8GKPwi1jlbSgVp1M+Rt6EM+xg8AYQsIfG
+        Dp7UXFwiLQw4EHIHQbtQJvKA4D4BFqHsgIVjFDJuNrsoAZQFaK6zqaRcS8z7ogqNMrtSnoq9AAP7
+        gFiyCBXwsMVk2Sz29NcUbOpBymU+gEsScIa09pAlB7XgVQldCqw7xCVKu5j97kDJ/eS/6jI29zF3
+        ke8T766OoLShwxZqxv6cAVIeevTRR8F9oZcfDijM9R0yJTiovVzglNksqKfISZ8xS3VeeT3xKK9I
+        cRGIiIFQtXVvBj1D7a0SWUl7Lh/MPeRRFAT0sRFVg4JChzJlTnSucNgs9IvEyxBSFA8mL/oT+eRv
+        kCYklA0EyVtkAmNMgXM9wGkMUWfmguigc+FuiL2QsC8nxph4CJTTNHBt/KQWyQofFGF+Gs9npsX4
+        LfvcoXeAZ0plwzOYEXIwowBB8+BAye1ySpwkW9FdjicHptTnGXOdGUBpYZgvlEFHcgJTit5jr7EA
+        MPiaX4J6MFxJFdQHhJ/G7udADckVIxCEiuYcqjGBZszfqtCmjjJAB/3OjSr5kprTvK5fB25jFLAx
+        RvB+5r3kWfM62+7grHHQjFGLumdj4zqNp0CWc9bGl0nVYwuGR6OsVPauTRVL1sAHX2SB5BSt8Rfx
+        tF+tYpVI4j/Z8VWc7xFpFmWHFO7IveM5SuXmAF/p8kXsouJvON+Wx/vDdlt8ycRb+vMxE47Y/85e
+        9JE5GA6HHXPQ0refTvK4Iz0T/2W580g6lM5a+msilpt0E+9PB8sYYmTVwYeKPxVZDv+nHmbRb6FF
+        iYg0BksQPOE48BDM1/yR9Gdjh1gc6JKvDDSRr6WH5VKk6RqCHrUl3MvE6rv+q/KexVm0lc7NE10i
+        OyR7sVLP/j2I5EjyI90wnwdGb7BuG6bRaxvDtWgbhtFpm+t+xzCWw95wEOmlrxO5fhK/bVYikT7z
+        9IvKrDf7aDspC+DJBQ9+10NYE8YUXkTFKMzrUpkUeZ5ZPAInL/EhFZURaBYWRMwf7TPDIN7WNsiy
+        6MyD3cYlIKAi4P6wexYJXY83+1W+fRrlD1GSREd5Gh5eX+MEiJR4c7WVFlJVYif2GQPBFXx1ejfd
+        TvnzG6yzssAK26nYrwKRHrYZ2xT5m8NOp9vvdUzjxuiXF3P+C7NpnOyiXA36Pyn4Ui2seJ9LDfwX
+        azQs0gAm2Yhii65O4XyTgy9Ty1fuDABAArvXHF+FYnh7e9srgRSrebKJk012lGZGTpmmgVrzvz7g
+        /w8JSV/Gq7ycp3Lr4DwF7cpb1VkpTnkmG+vbx/++qvd1CwwAAA==
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1234'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/1WPUUvDMBSF/8olzyJd7ZwVfKg1g0JLY5Y9FJUSa4TAmm5JBiul/90bOx+8b/c7
+      557DnYg7HYS6ePIIJOc0ExRqDpyyMsspCFqxmme8gW1RUtjWvMoEsP1zWeS3omJtwO2C2wW3rBF0
+      J9pw+m7gOqJhFJ6AZfx1TwW5ASLdaDp6UR02f8uDU8icOp2V6VTxhTBBgKsdd+fPXjunByN0r1BZ
+      beL4bp3Eq+ghukfXUVrZK6+sQ3Ga/+7ywXj87EXUARNlvNUqWN4mokNDhE6Pkc7L/vgvd5OmabIO
+      0VYPVvvx6u6WyN+a+WOefwCHViuNPwEAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '253'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWXXOiShB9319B8Wy2wM/EtxHHMBVgWBiT6NbWFNFx4y0VL2D2Wqn899sDCKOR
+        bB6sMPR0nz7dfej3b5qmL6Ms0rWh9g4P8LiPkmgrMpGk8vDnu76DR32oM+LikCHX53TK/CnjExq4
+        iOkt/S3aHKTFDP5uXPdmPNZsu90dumQYht8nk47G5jabu/pHq/JmOQR7jPsBnmBm2ZzZAUbjsPbW
+        VYxl6Maodagr/gMcTh3GLXvqPfCQzHEdwOwbFyGK7Ni8MdSVACEOQ0I9/oCxz5FDHpUIq2iTCiXG
+        jykOZtyiHsPPgAlZNr7A1FOsS4ZczNAYMcSnIViX0eTBCIVfxCpvQ6k4nfAR8sacYQeDN4CAPTRy
+        8Ljm4hJpYcCBkHsI2oEykUcE9wmwCGUHLByjkHGz2UUJoCxAc51NJeW6xbwvqtDYZlfKU7EXYGAf
+        EEsWoQIetpgsm8We/5qCTT1IucwHcEkCzpDWHrLkoBa8KqFLgXWHuEQZF7PX6Su5n/xXU8ZmPuYu
+        8n3i3dcRlDF02FzN2J8xQMpDjz75KHgo+uWHAx3m+g6ZEBzUXi5wymzm1FPaSZ8yS3VeeT3xKK/I
+        5iIQEQOh6uje9ruGOlslspL2vH0w95BHURDQp0ZUDR0UOpQpOtG+wmFzo18kXoaQTfFo8mI+kU/+
+        BmlMQjlAkLxFxiBjCpzrAU4yRJ2pC00Hkwt3Q+yFhH2pGCPiIeicJsG18bNaJCt8VBrzkzyfmRby
+        W865Q+8Bz4TKgWegEVKYUYBgeHCg5HapEqeWregu5ckBlfqsMdeZAZQWBn2hDCaSE1Ap+oC9xgKA
+        8DV/CWphuJIqdB8QfpLdz4EakiskEBoVzThUYwzDmH+rQps6ioD2e+1bteVLak56XX8duI1RwEYY
+        wfcznyXPmtXZdvpng4OmjFrUPZON6zSeAlnO2RhfJlXLFohHY1up7F1TFUvWwAdfZI6kitb4i3ja
+        r1axSiTxn+y4F+d7RJpF2SGFO3LveIlSuTnAU7p4Fduo+B/ON+Xx7rDZFE8y8Zb+csyEI3a/s1d9
+        aPYHg0Hb7Lf0PMpQz8R/GbjafHqfLiLpUDpr6ftELNbpOt6dDhYxxMiqgw8VfyqyHP5PfbLeCG0V
+        J9so0xhsQRMCClAMGfenI4dYHMiS3xgYIV9LD4uFSNMVhDxqi0REmVh+139VvrM4izbStXkiS2SH
+        ZCeW6tm/B5EcSX6kG+ZL3+j2VzeGaXRvjIHRvjEM+DFXvbZhLAadu5e+Xvo6Uesn8dt6KRLpM0++
+        qMtqvYs245J+T6538F4PYUkYUfgeKkZhXpXKpMjzzOIpSsRrfEhFZQQdC+sh5k/2mWEQb2obZFl0
+        6sFm4xJonyLg7rB9EQldjda7Zb57GuWLKEmiozwND/t9nACREm/ea6WF7CmxFbuMQbsVfLW7t512
+        +foNlllZXoXtVOyWgUgPm4yti/zNQbvd6XXbpnFn9MqLOf+F2SSvfE7UPyn4Ui2seJe3HvgvlmhY
+        owFMshbFDl2dwvk6B1+mli/cGQCABLb7HF+F4vbu9s68LcIUi3myjpN1dpRmRk6ZpkGv5v99wO+H
+        tNUX8TIv56ncOjhPo9/nZ2VzSk9yrL59/A/kBJitCQwAAA==
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1231'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:30 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACIKqWYC/1WNXUvDMBSG/0o4VwpD2uq09S7rclGornTxQuwYsR4lsKZdksFK6X/3xA/Qy/c5
+      z3nfCdzxIPHs4Z5BXgsuBdvUrBZVyXPBJF+VglVPq7LIr6pnKbZy77Eb2EUDxboBpo3HD7QL1sAj
+      fxBEPJWFWHJy/7BLWDBQbjStOGNLc+/q4JCYw+MJTYvFG8ElAYp23J5eO+2c7o3UHdIlvkuS6+VN
+      EkdZdEvWoKzq0KN1dJzm37+8N2FtLTcBAxpvNQblZQIdFiIyPVU6r7rhX2+apVmchmqre6v9+GO3
+      35VfM/Nunj8Blpq+UDQBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '245'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWXXOiShB9319B8Wy2wM9c30Ycw1SAYWFMoltbU0THjbdUvIC510r5328PHzIa
+        yebBCkNP9+nT3Yf++KZp+jLKIl0bah/wAI/7KIm2IhNJKg9/fug7eNSHOiMuDhlyfU6nzJ8yPqGB
+        i5je0t+jzUFazODvznXvxmPNttvdoUuGYfh9MulobG6zuaufWmdvlkOwx7gf4Almls2ZHWA0Dmtv
+        XcVYhm6MWoe64T/A4dRh3LKn3iMPyRzXAcy+cRWiyI7NG0PdCBDiMCTU448Y+xw55EmJsIo2qVBi
+        /JjiYMYt6jH8ApiQZeMrTD3FumTIxQyNEUN8GoJ1GU0ejFD4RazyNpSK0wkfIW/MGXYweAMI2EMj
+        B49rLq6RFgYcCHmAoB0oE3lCcJ8Ai1B2wMIxChk3m12UAMoCNNfZVFKuW8z7ogqNbXajPGf2Agzs
+        A2LJIlTAwxaTZbPYyx9TsKkHKZf5AC5JwAXS2kOWHNSCn0voUmDdIS5RxsXsdfpK7pX/85SxmY+5
+        i3yfeA91BGUMHTZXM/ZnDJDy0KPPPgoei3754UCHub5DJgQHtZcrnDKbOfWUdtKnzFKdn71WPMor
+        srkIRMRAqDq69/2uoc5WiaykPW8fzD3kURQE9LkRVUMHhQ5lik60b3DY3OhXiZchZFM8mbyYT+ST
+        P0Eak1AOECRvkTHImALndoBKhqgzdaHpYHLhboi9kLAvFWNEPASd0yS4Nn5Ri2SFT0pjfpLnC9NC
+        fss5d+gD4JlQOfAMNEIKMwoQDA8OlNyuVaJq2TPdpTw5oFKfNeY2M4DSwqAvlMFEcgIqRR+x11gA
+        EL7mL0EtDDdShe4DwivZ/RyoIblCAqFR0YxDNcYwjPm3KrSpowhov9e+V1u+pKbS6/rrwG2MAjbC
+        CL6f+Sx51qzOttO/GBw0ZdSi7oVs3KaxCmQ5F2N8nVQtWyAejW2lsndLVSxZAx98kTmSKlrjL+Jp
+        v1rFKpHE/2bHvbjcI9Isyg4p3JF7x2uUys0BntLFm9hGxf9wvimPd4fNpniSibf012MmHLH7nb3p
+        Q7M/GAzaZr+l51GGeib+y8DV5tP7dBFJh9JZS98nYrFO1/GuOljEECM7H5xU/KnIcvg/dSZhaMCH
+        /IzAlPhaelgsRJquwOtRWyQiysTyu/7rfD2Ls2gjb5sVHyI7JDuxVM/+OYjkSPIj3TBf+0a3v7oz
+        TKN7ZwyM9p1hwI+56rUNYzHo/PUa6aWvij0/id/XS5FIn3l+BfWr9S7ajEuGPbnBwXs9hD1gROGT
+        pxiFOfFnE386coh1YfEcJeItPqTibARNCRsg5s/2hWEQb2obZFl06sHy4hLokCLg7rB9FQldjda7
+        Zb5eGuWLKEmiozwND/t9nACREm/eTqWFbBuxFbuMQUcVfLW7951O+fod9lVZQYXtVOyWgUgPm4yt
+        i/zNQbvd6XXbpmn0qos5/4XZJE62UV5u/e8UfJWucwsr3uXdBf6LPRk2ZQCTrEWxJp9P4Xydgy9T
+        y3fqDABAAtt9jq9G0R107u+LMMXunazjZJ0dpZmRU6Zp0I75fyf4PUlbfREv83JW5dbBeRr9vjwr
+        m1N6kpPz7fQ/1Knk7ewLAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1214'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:31 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACMKqWYC/22QfWvCMBDGv8oRBlaQzfoyRRDWuTgK1paawWQboasRAm2qSQRF+t29Wjf2Yv7J
+      5bnnfne5IzHbjIm9JSMgkzBagj9nIUQvjzN/chstGV0wbkW+AUeuWqCSXLQgS4zlVdh8V/DnTOMw
+      gP+yY0QmUgs37qji4FWjMPimwVoXOTywIOL0ldF47s34gnnPlNfj8Ms4jAbR3bXW/ozyaRgHHoMx
+      OFCHfO4FFMaNCvvDcYXZaJIWkMQcVEr3IsWNrJPM4JDEiO1OqFT4KxTvUcCnPix2n7k0RhaKyVxg
+      xh10Ot1+r+O67f4QXZtE47es0AaTx/KrblIoixt/YmElE6GslqKyvB2JrDq00WkRaWySb35ze4Pu
+      8IzWstDSHi7utEae25QfZXkCuXp3oNcBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '311'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1478'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:32 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACQKqWYC/91VTW8jNwz9Kwtfctksxh+xk157LdACeywKg6PhzGitkbSSJvY4yH8vRY6ym0Ma
+      F1ugmxwMSxqK5ON7pB4WxnVx8cuHPx8WA8YIHdLmYdEEfY9hnyaf94s/ptQ7+6uzFlVyYfHxQ7Gg
+      X9TOZqP1p+XyU5W/RTcG9dLF4lMZjTbt9eBdSNjsPagDhY/Z5h7MyEYPVxACTFcfP1x5F/WJF2yo
+      bZc3PYL/mhcKQ9KtzssaIm43bGogtS4MeS2BjK7zBhKedOJ7Q8N/YfLJdQF8z9FiPyZt+J6HpglU
+      m7zpFH/kjJWzCbSlAuQzmzyknn2HzkOIyKfjUM8GMQXK2Qf0nNnUgE1a7SOmROdscqTwnFSrbOLg
+      X468b3TbzpnnqHhK9yBevSevbKMTVcA5w8djMLP91xFHfKpfyTHpgQ8VGLQNBA4aQCXiUvxO6cwG
+      TOA+jPbpirNqDAElaoycZ+MS2nsp+dh1XEJzHoApSokht3aApPpvtZBSqgOKJwKQ/53HAKQVThMH
+      32rD5w0qPYCRFBo+6gdQs7tRsZNEGLAmgRQzxWhwACGzIeILEN1YEDPP+QawjWOpGJfrImh0LJo5
+      IhwCtqwwHVEC9hD7+fsTpcoF/P6AhXPWXIR61Ib45qwMiUeB6tk4uQNalk8UCYxWPdE5UMq5b3gj
+      zk8DA4pTJEJazcUkEyrrnuSBNhYmv0RnpW1SyRRqJdJwpB6Wi9W5WFQdrkh9XglxEoNGRGk3QlH4
+      8BNmOeXlAaejC00pZkC29Q0H60jglBFX3AnRJ9G0KHXUzSw4FOQESUgV55RbKp+SG4quS2s3WhqB
+      66fPnBpaQlOaapglPzfOfJ3aMMxLDME6YdVCVJorkvqA0BSRWndsDRxwn4cCe3Vzlzz7LOFC7EWm
+      UXdWVjnvg8ybIwRbUlPxXlR+Srn18/p3j/bz599mNoVwUhieBNcoo8xGP+vPH7oyqCDapYwxvjTW
+      Pjg1zy1SS/BKgNNEiCnObMpU5AtoeEZLZn2eYGlvqcJgqKzcjl6rg5DfGTeTS/NPqzJWWhhN6qmP
+      jFygLgkosWpRA8TJKtFBKmlk6TkvLVbXwR2j3Ha+NLqMs/XcwaAMxCi1mUA0ep7J1FnJpR/AWkcq
+      osflWy0ZpUQ1eVnaRHrn6nHxmN8o6jfS3+DzG7TcrVbrm81qWd1Ud/nz//VU5qxouNg40n9Luk97
+      epeo4tmWWA3TXjfZvlrW22qzba+rZbW5rnYtXldVtbpetjerqlK7zW67/f6ZXf4T5rvqp8FMtP9X
+      kKs3Avnf0Exwn2Fe39WrS2ne7tZvkebXIFdvBPIPdjNcivm2unkn3QyXKvu22r6Xbr54aN/9RJh/
+      rJsvHtp374fmZ9LevIyZXqrdO6H50m4myLdvkubN7XPM2y0+w7x+GfPqZvsmaX4NcvUa5L8e/waf
+      RkyEnxIAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1090'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:32 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACQKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:32 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACQKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        /XGziB0HjhP+ThXz81/9b2J9PBAAAA==
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1561'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:32 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACQKqWYC/03N2wqCQBAG4FcZ9qogguxE3XnYYMEs2gkKhDCbQtAtXQUjevfGIOjy/+bwv4Qt
+      c6S2FksQ/k66KAFdL5SgVhBtEORBadSw3Xuh8ofbI0qN0IuFCmIBmanpRtUAYhG5a8lS86suhq7G
+      05/1xQBEYp8mlS2lXHZNcktslsqGTErqwjhi4Fg9dXMuMmuzu8GsoG4yd5zxdOKMnMV8xluPpEoK
+      qqmyPHy9f3f+3XRtAW6+/P4ApjKUEt8AAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '197'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW3PaOhB+76/w6Jl0bK49vAkjYk9sy7VFEuh0NA4oDWcAc3xJy2Ty38/KFywI
+        TvPAxPJq99tvdz/v2xdNQ+soi5A21t7gAR4PURLtRCaSVB7+eEN7eERjxGyXhAy7Pqdz5s8Zn9HA
+        xQx10Gu0zaXFAv5uXPdmOtUsq9sfu/Y4DL/OZj2NLS22dNF75+TNdGziMe4HZEaYaXFmBQRPw8Zb
+        XzGWoVujNqGu+A9IOHcYN625d8dDe0maAMZQvwhRZseWraGuBAhJGNrU43eE+Bw79r0S4TnapkKJ
+        8X1OggU3qcfII2DCpkUuMA0U64ohlzA8xQzzeQjWVTR5MMHhJ7Gq21AqTmd8gr0pZ8Qh4A0gEA9P
+        HDJtuLhEWhpwIOQWgvagTPY9hvs2sAhlByyc4JBxo91FBaAqQHudDSXlpsW8T6rQ2mZXynNiLyDA
+        PiCWLEIFPGIyWTaTPf41BYt6kHKVD+CSBJwhbTxkSa4W/FRClwLrju3ayrgYg95Qyb32f5oytvAJ
+        d7Hv295tE0EZQ4ct1Yz9BQOkPPTog4+Du7JfvjvQYa7v2DObBI2XC5wymyX1lHZCc2aqzk9eax7l
+        FdlcNkQkQKg6ut+GfV2drQpZRXvRPoR72KM4COhDK6qWDgodyhSd6F7hsL3RLxKvQsimuDd4OZ/Y
+        t/8GaWqHcoAgedOegowpcK4HqGWIOnMXmg4mF+6GxAtt9qliTGwPQ+e0Ca5FHtUimeG90pgf5PnM
+        tJTfas4degt4ZlQOPAONkMKMAwzDQwIlt0uVqFv2RHclTw6o1EeNuc4MoDQJ6AtlMJHcBpWid8Rr
+        LQAIX/uXoBGGK6lC9wHhtex+DNSSXCmB0Kh4waEaUxjG4lsVWtRRBHQ46H5TW76iptbr5uvALYID
+        NiEYvp/FLHnmosm2NzwbHDxn1KTumWxcp7EOZDpnY3yZVCNbIB6tbaWyd01VTFkDH3zZSyxVtMFf
+        xtN+dspVIol/Z8eDON8j0izK8hTuyL3jKUrl5gBP6epF7KLyfzjfVsf7fLstn2TiHfR0zIQj9r+y
+        FzQ2hqPRqGsMO6iIMkaZ+JOBq+2H9+kqkg6lsw46JGK1STfxvj5YxRAjOx28q/hTkRXwfyBgAj4g
+        WrRNRLQ+auLPJs3SjibTETuxz7Q0X62EWIv1V/Tz5CKLs2grPRg1JyLLk71Yq2f/5SI52sUR0o2n
+        od4fPt/oht6/0Ud690bX4cd4HnR1fTXq/fMkUOWrZtBP4tfNWiTSZ5FjSf/zZh9tpxXLntzi4D0K
+        YReYUPjsKUZhQX5tcuniIUrES5ynojZA0JSwARL+YJ25CeJtY4NNk849WF5cGzqkDLbPd08ioc+T
+        zX5drJd69SJKkugoT8P8cIiTrOSnaKfK4sQzg44quer2v/V61etX2FdlBRWmU7FfByLNtxnblLkb
+        o263N+h3jZ4+rC8W3JdmszjZRUW50b8p+KpcFxZmvC+6C/yXezJsylD0ZCPKNfl0CuebopJVasVO
+        nQEASGB3KPA1KAZDfVQBKXfvZBMnm+wozfSCMk2Ddiz+e4ffdwkJreJ1Ucq6Tgicp9Gv87OiG9MC
+        nJycL+//A5Zm1gvsCwAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1212'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:33 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACUKqWYC/1WOywqDMBBFf0WyLsVHVeiyrQuhUMF0UUoXMU4hYKJmIijiv3fsY9Hl3HvmzMwM
+      +4bD6NjeYzWg9JyoGvCK6+GcH7fFjWclZxuPCZyMzEaQBD5Fg0AZQj+AkZDXFIYU0Gincqi0QlSt
+      4UoDNUEahlG8C4PITwKiOmGFBgcWqZyX396xNY4eOfHLGjMwzipYkfvM1HrBJ9KREp3Q3b83Tvw0
+      WtVWtVa56UvLj/J9ZnksywuIIPMi7gAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '196'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1366'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:33 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACUKqWYC/1WOSwvCMBCE/0rJWcS+8HG09lAQFBoPIiIxXSHQpm12hZbS/+7Wx8Hjznw7M4PA
+      tpTQkdh4ogDUHql7Cd7xtN1nyfx4lmkubwRVI2aeUNhbnXagmX6oEoE1hPYJVkNWsBiywKfr8+e9
+      MoimttJUwI6/DIIwjgI/jOKIqUY5VQGBQzaH8feX1JZ4zU4eJlmAJWdgQi6DMFPDgkniSCTFm/5y
+      w/Uq8qdoZ2pnqP/S+hP5rhmv4/gCXhYBmvMAAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1367'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:33 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACUKqWYC/3VRTWvCQBD9K8OeFESqUSyFHqzmIFgVjAVpStkmU11wN3FnQhXJf+9GY0lsu7f3
+      se89mJOg/S7AA4sHEBrtBkEZTmCxeppORu3FOvCXAUiCGIkhNFB5GSmzqTvfGXUKrNO6cz47/2+H
+      YjIOBTwWjhLUjV9bNKAlR1uMgQuQpbFkBEL+N6JVCrPhs1+RLvAqTodu3Y2jwv0xwyRcn6IMoWVo
+      lK0/DbWgJrwMpyt/CY3KwNqgX91N0QIh6Wgi/4CRO8Sn3BE6jnCfoYlwEjuy5wgH7XGZfWhFpBIT
+      KI1O6Qy6Xa/f63a8vnfvXKm0UiOjJSee8uu/UWLYHXoczAtaoGGrsLC8noQqGu6ck10ksdTpTW7P
+      G5yjrUqs4mPpji6R55r8Lc+/AU6116pOAgAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '312'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA81XXVOrSBB9v7+C4jluQRKj5m0CE6Hk68JETSyLwoRc2SKQ5cO9luV/354ZCJMY
+        vK/rQ0pmerpPnz7dDB8/JEneRFUkS1PpAx7gcR8V0S6u4qKki08fcgaP8lQmpo0DgmwvdBfEW5Bw
+        7vo2IvJAfovSmlos4e/Cti90XTKM4Xhqm9Mg+Gs+H0lkZZCVLX8ODt40y8QOCT0fzzHRjJAYPkZ6
+        0HkbC8Y0dG/ULtQZ/z4OFhYJNWPh3IWBucJdAHWinITg2ZFVb6gzAQIcBKbrhHcYeyGyzHshwjZK
+        y1iI8XOB/WWouQ7Bj4AJaQY+wXQpWDcM2ZggHREULgKwbqLRhRkKvonVnIZShe48nCFHDwm2MHgD
+        CNhBMwvrHRenSLlBCITcQtARlMm8R3DeBBah7IAlxCggodrvogHQFKC/zqqQcicx55sq9MrsTHkO
+        7PkY2AfElEWogIM1Qsumkcc/pmC4DqTc5AO4KAFHSDsPVVGLBT+U0HaBdcu0TaFd1MvRRMi99X/o
+        MrL0cGgjzzOd2y6C0IYWWYkZe0sCSMPAcR885N9xvfy0QGG2Z5lzE/udlxOcNJuV6whykhdEE50f
+        vLY80iNUXCZExECo2LrXk7Ei9laDrKGdyQeHDnJc5PvuQy+qHgUFlkuEOTE8w2G/0E8Sb0JQUdyr
+        Ie9P5Jl/gqSbAW0gSF4zdRhjApzzAdox5FoLG0QHnQtnA+wEJvl2YsxMB4Fy+gaugR/FImnBvSDM
+        L+P5yJSP36bPLfcW8Mxd2vAEZgQdzMhH0DzYF3I7nRKtZA90N+PJgin1dcacZwZQahjmi0ugI0MT
+        ppR7h53eAsDg638TdIPhTKqgPiC8HbtfA/Ukx0cgCBUtQ6iGDs3I3lWB4VrCAJ1cDq9FyTfUtPO6
+        ezuEBkY+mWEE70/WS4627LIdTY4aBy2Iq7n20dg4T2MbSLOO2vg0qW5swfDolZXI3rmpotEaeODL
+        XCE6RTv8PJ70POBXiSL/t3rfx8f3iKzevcSFlG8l2C6lJCvjooo34IReRF6ikl4l4Klcv8a7iP8P
+        62mznNVpyp9YsIH88l7FVpz9ql7lKd0cyCzmVN4mv5nb9GizXEfUlTKQ90W8Tsokz+SpejOQ1zk4
+        rtgjdSOMlRPE9R6A/g8Bi7SXccVYf5IVoHKoTq7l58N+lVdRSrfVtk5xVRcZpCSs/VPHxbvJlmRF
+        fZko48n2QlGV8YVypQwvFAV+1O3lUFHWV6Ob9URufLVF9Ir8LdnEBfXJysIlsU2yKNWbQjv0Zgn7
+        cgD3k5kLr2LBKGD1b01OXTxERfya12XcGsjQKHArxeGDceTGz9POBmmau3DgQmWboFoejFfX3c6S
+        bMOuvEqzUVZRxRb4xRiuxmDqg2bNVrIAvTHuNvU4hcsz4+3L3qJRDpyjJeFx+FF9l+r1Pk3WIC2O
+        gqH7bLBERRG9U4RBvd/nrF/ACe8AngZFG+/irCLQcbxu6mikDhsHb3Cfp9qGU23Vyzjb+HFZpxVJ
+        eB3Uq+FwdDkeqqOb63FzkOmAm83zYhcxXcl/l+BLtNDyrIp/s80DXQCmSHg2T83XBfvCSI7ZAQIq
+        AAAJ7PYMX4fi6ka9nPAw/NukSPIiqd6pmcLylqRP6ZlTBb+MLujkDZNVqxkZnJfRr+O1sl6vYZl6
+        oiP1x+d/0cng+AwNAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1268'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:33 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACYKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        HEf8xRXz8181N0+iPBAAAA==
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1555'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:34 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACYKqWYC/11QTWvDMAz9K8aXJBAKTTvGdmzXQ2GwQr3DYBBUV9kCsr1aTj8o/e9TspWN6qT3
+      nr6ezpp3ZPCY9KPSjIQ2KQoHjLkN1Dlfe3BYKGD1D5e/JQk+/vQrKIdsD9Thu1c30cTgRN8Q5q1v
+      QnSQ2uBrtp/oYNQ3RmwworfINRDVP1s5z1avs+flfLR6M4u1yUqVDVOyotCl0sAnbxdHtOKiAWI5
+      Qszsun7OcivkWAiB8bTuNq5llqWmddgr91U1uZtW4+nkoa/6gigmEkYW8Xy59s2DT/KlJ/My0Jdv
+      TUd4FDgBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '236'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        NQP84VAUAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '2003'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:34 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACYKqWYC/81VTY/bNhD9Kwtf9pINJK+z2+baa4EWyLEojBE1khhTJEOObMuL/e8dzoib5NCc
+      CjQHwyQ1nI/33gxfdi6Meffx7q+X3Yw5w4i8edn1yZ4xHWmNZb/7c6Up+N+C92gopN27u2rBv2yD
+      L0aP79v2fVO+5bAk828Xq0/jLHo62jmGRNgfI5gTh8/F5gxuEaOXe0gJ1vt3d/cxZHuVhRhaP5bN
+      hBC/lIXBRHawZdlBxqeDmDqgIaS5rDWQs13ZAOHVktybe/lLa6QwJoiTRMvTQtbJvQh9nxibshmN
+      fJSMTfAE1jMA5cxTBJrEdxojpIxyuszdZpApcc4xYZTM1h48WXPMSMTnYnLh8JLUYDxJ8M8X2fd2
+      GLbMS1S80hnUa4zsVWwsMQIhODlektvsvyy44Bt+NUeysxwacOh7SBI0gSHmUv2udBMDIfCYFv92
+      JXizpIQaNWfJsw+E/qyQL+MoELrbDEIRkZQ8+BnITF+xUCjNCdUTF1D+Q8QErBVJE+c4WCfnPRo7
+      g9MUejmaZjCbu8WIE+IasGOBVDMj1eAMSmbPxNdCbO9BzaLkm8D3QaTiQsFFq7G5auaCcEo4iMJs
+      Rg04QZ6272+UmpDw2wMRzs0KCN1iHfMtWTkWjwEziTGFE3qRT1YJLN680TlzyqVvZKPOr7MUlNfM
+      hAxWwGQThvXI8kCfK5Ofc/DaNlQzhc6oNAKrR+TibQGL0RFEutteidMYPCJqu3EVlY+4YpFTWZ5w
+      vYTUVzATim3sJdjIAueMBPGgRF9V06rUxfab4FAr55KUVHXOuVH9RGGuuq6t3VttBMHP3iQ19FxN
+      bap5k/zWONt1bsO0LTElH5RVD9lYQYSmhNBXkfpwGRyc8FiGgngNW5d891nDpTypTLMdva5K3ied
+      NxdIvqZm8llVfqXS+mX9R0T/6dPvG5tKOCsMr1rXoqPM57jpL57GOqgg+1bHmFxaupiC2eYWqyVF
+      o4XzRMiUNzZ1KsoFdDKjNbOpTDA6ekYYHMMq7RitOSn5owsbuTz/rKljZYDF0cR95PQCd0lCjdWp
+      GiCv3qgOqKZRpBeitljXpXDJejvE2ug6zh63DgbjIGfFZgXV6G0j0xYl134A7wOriB+Xr1hKlRrV
+      lWVtE+2d+9fda3mjuN9Yf3Msb1D7vN8/fjjs28Pjr235/H89lSUrHi4+L/w/sO7pyO8SI15smdW0
+      Hm1f7Ju2e2oOT8ND0zaHh+Z5wIemafYP7fBh3zTm+fD8vP/2md3/oOZfmuanqZlp/69Kbn9YMtP8
+      9+s/uFcKgRwJAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '980'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:34 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACYKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:34 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACYKqWYC/02O2wqCQBCGX0X2OiJPiV1mXghBgttFRMSmEyzoqrsjKOK7N9sBupx/vv8wM9PX
+      HEZkO4dVuu0cFI8anPy8P2bJOr/wtOB3hKZjK4cJM6kyHaEk+ilqA6QZ6AdQJWQViSEJdOqpGB6N
+      NEa2issG6ONGnueHgecGcbAhqhNaNICgDT3n5edLWoW05sBPVmagUEuwyHVm0jZYL1KkQUGb/nL9
+      OIrdcGujtWy1xOlLl5/Id81yW5YXfodULfMAAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VW23LiOBB9n6+g9EymbK5Z3oQRsSq25bFFEpiaUjkgJmwRzNomu1Qq/74tX7Ag
+        OJMHKpZbfTl9+rjfv7VaaBVlEWqNWu/wAI/7KIleZSaTVB3+fEc7eEQjxKlLQo5dX7AZ92dcTFng
+        Yo7a6C3aHpTFHP5uXPdmMmnZdqc3cukoDL9Pp90WX9h84aKP9smb5VDiceEHZEq4ZQtuBwRPwtpb
+        TzNWoRuj1qGu+A9IOHO4sOyZdy9CuiB1AHNgXIQoquOLxlBXAoQkDCnzxD0hvsAOfdAirKNtKrUY
+        P2YkmAuLeZw8QU7YsslFTn3NukTIJRxPMMdiFoJ1GU0djHH4RazyNrRKsKkYY28iOHEIeIMUiIfH
+        DpnUWFxmWhgIAOQOgnahTfQBw30KKELbIRdBcMiF2eyiTKBsQHOfTa3kmmLeF11opNmV9pzQCwig
+        DxkrFKEDHrG4apvFn/5Ygs08KLmsB/JSAJxlWnvIkoPe8FMLXQaoO9Sl2riY/e5Aq73yf5oyPveJ
+        cLHvU++ujqCNocMXesX+nEOmIvTYo4+D+4IvPxxgmOs7dEpJUHu5yFNVs2CeRic045bu/OS1wlFd
+        UeSiEJEAoPro3g56hj5bZWYl7Dl9iPCwx3AQsMfGrBoYFDqMazrRuYJhM9EvCi9DKFI8mKKYT+zT
+        P6U0oaEaICjeohOQMS2d6wEqGWLOzAXSweTC3ZB4IeVfKsaYehiY0yS4NnnSm2SFDxoxP8nzmWkh
+        v+WcO+wO8pkyNfAcNEIJMw4wDA8JtNouVaKi7AnuUp4cUKnPGnMdGcjSIqAvjMNECgoqxe6J19gA
+        EL7mL0EtDFdKBfYB4JXsfg7UUFwhgUBUPBfQjQkMY/6tCm3maAI66HdudcqX0FR6XX8dhE1wwMcE
+        w/cznyXPmtfVdgdng4NnnFnMPZON6zBWgSznbIwvi6plC8SjkVY6etdUxVI98MEXXWClonX+RbzW
+        r3axSiTxv9lxL8/3iDSLskMKd9Te8RylanOAp3T5Il+j4n8435bHu8N2Wzypwtvo+ZhJR+5+Zy9o
+        ZA6Gw2HHHLRRHmWEMvlfBq62n96ny0g5VM7aaJ/I5SbdxLvqYBlDjOx08KHnn8osT/8nAiTUBwTm
+        w2+lh+VSpuka/B1bqyTe7+XqO/p1upjFWbRV98wKCZkdkp1c6Wf/HGRypPkRMszngdEbrG8M0+jd
+        GEOjc2MY8GOu+x3DWA67fy0jVPqqcPOT+G2zkonymVdWgL7e7KLtpMTWU7sbvEchbABjBh87zSjM
+        Ia9MLl08Rol8iQ+prAwQUBH2PiIe7TM3QbytbbBlsZkHK4tLgRdFsN3h9VkmbD3e7Fb5UmmUL6Ik
+        iY7qNDzs93GSFfjkJCotFFnkq9xlHHhUYNXpd3u98vUbbKmqbxrSqdytApkethnfFLWbw06n2+91
+        zL5x2ykv5tgXZtM4eY3yJqO/U/ClW1jxLucU+C+2Y9iPIZlkI4vl+HQK55u8k2Vp+SadQQJQwOs+
+        z6/OYji47Q2LMMXGnWziZJMdlZmRQ9ZqAQnz/z7g90PZomW8yltZ9QmB8zT6fX5WElN5UvPy7eN/
+        4xMN0OILAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1205'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/91VTW/kNgz9K8FcctksPN/JXnst0AJ7LIoBLdO2dmRJK8kz4wny30uRVjY5ZFtg
+      C3TTw4z1QYl8fI/U48K4Li4+3fzxuBgwRuiQJo+LJugThkOafJ4vfp9S7+wvzlpUyYXFh5tiQb+o
+      nc1G64/L5ccq70U3BvXWwXKnMhptOujBu5CwOXhQR3Ifs80JzMhGj7cQAky3H25uvYv6wgM21LbL
+      kx7Bf80DhSHpVudhDRF3GzY1kFoXhjwWR0bXeQIJLzrxuaHhT5h8cl0A37O32I9JGz7noWkC5SZP
+      OsWbHLFyNoG2lIC8ZpOH1PPdofMQIvLqONSzQUyBYvYBPUc2NWCTVoeIKdE6m5zJPQfVKpvY+Zcz
+      zxvdtnPk2Ste0gnkVu/pVrbRiTLgnOHlMZjZ/uuIIz7nr8SY9MCLCgzaBgI7DaAScSn3TunKBkzg
+      IYz2+YizagwBxWuMHGfjEtqTpHzsOk6huQ7AFKXEkFs7QFL9t1xIKtUR5SYCkL/OYwDSCoeJg2+1
+      4fUGlR7ASAgNL/UDqPm6UfEliTBgTQIpZorR4ABCZkPEFyC6sSBmnuMNYBvHUjEu50XQ6Fg0c0Y4
+      BmxZYTqiOOwh9vP+M6XKBXy5wMK5ak5CPWpDfHNUhsSjQPVsnNwRLcsnigRGq57pHCjkXDc8kcsv
+      AwOKUyRCWs3JJBNK64HkgTYWJr9EZ6VsUokUaiXScKQelovVOVmUHc5IfV0JceKDWkQpN0JR+PAT
+      Zjnl4RGnswtNSWZAtvUNO+tI4BQRZ9wJ0RfRtCh11M0sOBTkBElIlcsptlS2khuKrktpN1oKgfOn
+      rxwaWkJTimqYJT8XznycyjDMQwzBOmHVQlSaM5L6gNAUkVp3bg0c8ZCbAt/q5ip5tS3uQuxFplF3
+      VkY57qP0mzMEW0JT8SQqv6Rc+nn8m0f7+fOvM5tCOCkML4JrlFZmo5/1549daVQQ7VLaGB8aax+c
+      mvsWqSV4JcCpI8QUZzalK/IBNNyjJbI+d7B0sJRhMJRWLkev1VHI74ybyaX+p1VpKy2MJvVUR0YO
+      UJUEFF+1qAHiZJXoIJUwsvSclxKr6+DOUU47Xwpd2tl6rmBQBmKU3EwgGr3OZOqs5FIPYK0jFdHj
+      8i2XjFK8mjwsZSK1c/u0eMpvFNUb6W/w+Q1a7ler9XazWq4e9tu8/V89lTkqai42jvRtSffpQO8S
+      ZTzbEqthOugm21fLeldtdu1dtaw2d9W+Wt1VFf0t2+2qqtR+/VDjy2f2bv026HW1q94l6BZfg97s
+      d69AP3wH82a7/mkwk9b/LcjVO4H8Y9pWq1faXn4H9HZ9/x55/jvM1TuB/IM8715ivt+8DXpT7f43
+      oOGfintb3S8XT38+/QUAzxvH4w0AAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1048'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA51X25KiSBB9n6/o8NWZUUTR7oh9KKAQWm5C4W1jg0AFtFVQ8NI6Mf++CWI7M6Bu
+        r28WZHLyZObJrB9fnp5KU2frlJ5enn4kf1ZOvHUjEi7cIDkr7d3ohf42mwfbl8Zzk241q1W6yrTq
+        dP0bJkrM+wihEcaEWS8Ra7BGT9l3q6+8TLFyl1Ioqy0sRu3lbnTACLEIYZGbrp2Np726z933nrFs
+        9Hi5XAcnnI+lVYsyjg4Ts/NoMKAE0QmWLZcNF/zs7dnptTxVqwkB9mSrP+qzcZ95rbmhO/VCVnSH
+        tQURulwcyosZaoVNo2d6NH8UXGuoDnvbzXrS7tHmvEz5RtkMqrQwDzUzHnrH6XQ0PniqFceSWpPa
+        6I3QnOF7fWp2ikKRrqnYWHtu5M8r5cBVTwpdKVusNzu9vnK7MnXUKK3iV/W1sz9tgiPVRYxV7i62
+        2gTv3dPgbekjyyHRST5OlMGurAMHvDAZvVtttaNR1l+lrwnp2/9B9/N/ohuZYcsxfIGb+Aa7c8pj
+        7BLNSuhG7faObfj7Ybe8rrblstdskg6/ak9r+zbuS8xe7/jmKqyPdXE33EwkZ+ItTTyQ+5LRjrsL
+        wwwrVGVzwMcdw1UH0Wo1jJyGu17OXzuHLT0dK/5uQA30d2bwPPFH9XgsspNGtJ0yM1/wynHNi4Hk
+        0ftmtxujWtxjKwG/4g9Nvral8fBU275Vxt0eGisbS7SQIGzUcafyFrb37zrTkcNqmYjsgT+FC3Sm
+        cO8s59P59igFpjsJg2mcVC/NVKspweeq7hW9Q9Xr2UvTebxeOkcrdiPVWblp+Z+dwwn0Qc+N4nl4
+        bovW91rzO3V+6s2jeCuH/jx9tI12bvrNyF0p7kcjBbvl8npciOQMdeY6y+2Mm7mThRRAK0JgCZJ6
+        I7UO3AO3nLvBVggja+1HzjTF+eE9duMEozRNbC4Ny9AU02rWUwdrJ4LYwG9K0N9p00MFBpeAiaRg
+        kyBFtzWL6BaxBc1QEEkjhfcAze7MzBB+3xTlG88/iWKt/qJIL6b5XRDoJzISyUgpQWH//Jrzz8kS
+        VomtG1jAhBNtIhoY8WbOf73YPIH3CNkVzn0MBjYtmdicaKkd25RGOAeCYqq3YZxZIqNHcO6DMLFp
+        SppqdzDWbSRLvTwKz1nGbjGOroWNoc1pKsEDiARxIi6OpFFsn2VDwQTxiCDbMsE+Q5QcsMj8FJ7M
+        H5SOrQk2i1TeJljG4B9gYhWxMuZzLN+J72xiA9VtAEZD2Ug9BB4lyBgUJuC1MTKJfe7EX+vzjtMM
+        ZJb+h5VIFVN3bRT1cQ3cbJb7xfGRFwNDpiHOJD+QbRVzJCkajgw+w2YWuKipQF32B7AnRP4WTc5n
+        omnFLGReFKxokGFZUqS8VFANmrlrff04GerYVpCuS2o7h6J0fU8moxvM6UMC8dmmqvV1ZHTOFd2V
+        oSsUXZYECRs5v7ejSz440tR8C5Qswt0A8PHlS84SJ0lDSIAKQ/IKxK7FwAwqpiiLJ0t6WvLYVpGq
+        IcPQ+p+I5UbVm7JG8upbKwZzqZmHLX2b0sxFUsg9yj7rF9KlzwfCS2YiJ0ArJ/EwUvJBPARxGQCa
+        bCnQTKB14M3EqimRT+owK6kI6v/ByBTx4EbRcGbvlxa8NXJvGZ9HaqaVstaGKAQtEU0CypsMW2Qg
+        kBJs5Dl6LJNX/c4Ggwzz4aaWP+QcYuMw6LhGQMNsCeaD1sHqJ9IPY+nhBnCV2/uUQVdBui+D8yaY
+        xySdBxS0JBraUAs8yFe62ZiiJucHHtOotW60e9Yelxl83QpsESODsBjBRpYqi8oNc6wl+25x5yKL
+        aJymFMnzw5RdwHBykRTeIec3vX7UHDcyVaTnXFIBOniXRiiZgzkePjA9/ZMuvZetOPDCZC9OLrqw
+        KyT33rETux/Lvgn7Cqt9jNR4MnNXzuXpZcUGw4MTubNw94slUAu7Mrb74gVLFC6vjhHHaZYKO5Yi
+        qec4AUFpPs3fDrKzXtFN5Xw/iNx4HQaxy2e39guu0spz8v4uh8UOv/xM6ZmEf9wiVnCLcPw/bha7
+        yQSOE/7Sivn5L+FcKa48EAAA
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1557'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/11QTWvCQBD9K8tekkAQjAahx1oPQkHB7aFQCON20gZmd+vOxirif+8krbR0TvPe
+      m683F80HMnhK+k5pRkKbFIVPjLkN1DvfeHBYKGD1B5c/JQnefvUbKMfsCNTji1f/oo3Bib4nzDvf
+      huggdcE3bN/RwWRojNhiRG+RGyBqvrdynm2f7h/Xy8n22ax2JitVNk7JikKXSgOfvV2d0IqLFojl
+      CDFz6Ic561chp0IIjOddv3cdsyw1ncNBWVTVrJ5X07quF1L1AVFMJIws4uV661sGn+RLD2Yz0tcv
+      djWufzgBAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '236'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        SfLChFAUAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '2003'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/81VTY/jNgz9K4Nc5rKzsDPJTNtrrwVaYI9FEdAybWsjS1qJnsQZzH8vRVqzu4fu
+      qUB7SKwPSiTfe6Redy6MeffL3Z+vuxlzhhF58rrrk33BdKI1lvnuj5Wm4H8N3qOhkHYf7qoF/7IN
+      vhg9fmzbj03Zy2FJ5p8O1juNs+jpZOcYEmF/imDO7D4Xmxdwixi93kNKsN5/uLuPIdurDMTQ+rFM
+      JoT4pQwMJrKDLcMOMj4dxNQBDSHNZayOnO3KBAivluTc3MsnrZHCmCBO4i1PC1kn5yL0fWJsymQ0
+      sikRm+AJrGcAypqnCDTJ3WmMkDLK6jJ3m0GmxDHHhFEiW3vwZM0pIxGvi8mF3UtQg/Ekzj9fZN7b
+      YdgiL17xSi+gt8bIt4qNJUYgBCfLS3Kb/ZcFF3zHr8ZIdpZFAw59D0mcJjDEXOq9K93EQAg8pcW/
+      HwneLCmhes1Z4uwDoX9RyJdxFAjdbQahiEhSHvwMZKavWCiU5ox6EydQviFiAtaKhIlzHKyT9R6N
+      ncFpCL0sTTOY7brFyCXEOWDHAqlmRrLBGZTMnomvidjeg5pFiTeB74NIxYWCi2Zjc9XMBeGccBCF
+      2YzqcII8bfvvlJqQ8NsFEc7NCgjdYh3zLVE5Fo8BM4kxhTN6kU9WCSzevNM5c8ilbmSil19nSSiv
+      mQkZrIDJJgzrieWBPlcmP+fgtWyoRgqdUWkEVo/IxdsCFqMjiHS3vRKnPrhF1HLjLCofccUipzI8
+      43oJqa9gJhTb2IuzkQXOEQniQYm+qqZVqYvtN8GhZs4pKal6OcdGdYvCXHVdS7u3WgiCn71JaOg5
+      m1pU8yb5rXC241yGaRtiSj4oqx6ysYIITQmhryL14TI4OOOpNAW5NWxV8t22ukt5UplmO3odlbjP
+      2m8ukHwNzeQXVfmVSumX8e8R/adPv21sKuGsMLxqXou2Mp/jpr94HmujguxbbWNyaOliCmbrW6yW
+      FI0mzh0hU97Y1K4oB9BJj9bIptLB6OQZYXAMq5RjtOas5I8ubORy/7OmtpUBFkcT15HTA1wlCdVX
+      p2qAvHqjOqAaRpFeiFpiXZfCJevpEGuhazt73CoYjIOcFZsVVKO3jUxblFzrAbwPrCJ+XL5iKVmq
+      V1eGtUy0du7fdm/ljeJ6Y/3NsbxB7fN+/3g87Nvj8fhctv+rp7JExc3F54W/A+ueTvwuMeLFlllN
+      68n2xb5pu6fm8DQ8NG1zeGiem/1D0/BfOxz3TWOeH39ml988s4cf5PxTe/jf5My0/1sptz9M+bh7
+      ++vtb77Zo1ocCQAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '981'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/telemetry/send?request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : \"Log Received\",\n  \"code\" : null,\n  \"message\"
+        : null,\n  \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/6uuBQBDv6ajAgAAAA==
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/json
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session?delete=true&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: "{\n  \"data\" : null,\n  \"code\" : null,\n  \"message\" : null,\n
+        \ \"success\" : true\n}"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:35 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACcKqWYC/21Sy07DMBD8lZATSMTKqxVwwnLcxjSxje0GcYpC+oQ2hSpQoSr/jp1WJSpcLO/M
+      rHd213t7UtSFfWftbZQQTFUOOc9JpBGbf9eLTYU2VTUt683Wvra6mgwLSRg1wgB4HnANLzOaC5yR
+      I1N9rlYahQixsU6jMMVGv1u/lV/Ld6eu/aDn+SYxYUNCTwIOWcIeYZQS2qmKaUYEo6m+t4a1i4Qg
+      qI4u/rHLpCGiYrtbVoe4a3tdlEw6Xgh6TrFd90NzOv3wZVkbLX9WMaNnbfrA73BCN0UOjtGheodE
+      LOUkwaJlV0U1t7wecIFrXZYmcrye64IA3ILwqrWGJM9TFrWvDSBJcsZx270SEBE61HjgniZl6rKx
+      +p0xxeqJidFfQjI0wuoMb4xPKKVOaVc9n85uPl5n9w/xMNhOFhe72bxdJ5am+ZxDoTej9Ci6P4UL
+      PMAKxbmKBYaR4cKmaX4A1xfkV1MCAAA=
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '365'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/session/v1/login-request?request_id=00000000-0000-0000-0000-000000000000&databaseName=00000000-0000-0000-0000-000000000000&warehouse=00000000-0000-0000-0000-000000000000&roleName=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        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
+        WI9GcFzwd6iYn/8CL9uPRjwQAAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1559'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:36 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      H4sIACgKqWYC/zWOywqDMBREfyVkXQpGW6HLWhdCoYLpossYbyGQh+ZGUMR/722hyzlzBmbjOFkJ
+      S+IXxocYRpZUb4G1z+u9qY7tS9ad5AfGFa5e1wtoEt/KIhBDmGbwGpqBYEaAYly7uXcG0QQvjYNv
+      UwqRnwqRnUVekjWqqBwkiEjltv93VfCJjtzk44f3DzOKGOWbAAAA
+    headers:
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json
+      User-Agent:
+      - PythonConnector/3.11.0 (macOS-14.5-arm64-arm-64bit) CPython/3.12.2
+      accept:
+      - application/snowflake
+    method: POST
+    uri: https://00000000-0000-0000-0000-000000000000.snowflakecomputing.com/queries/v1/query-request?requestId=00000000-0000-0000-0000-000000000000&request_guid=00000000-0000-0000-0000-000000000000
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA4VWW2/iOhB+31+B/AyrhOuKNxNMYzWJs4lpC6uVlYLZ5YgSThK6B1X972ecCzGU
+        dPtQEWc8l2+++TJvX1ottI6yCLXGrTd4gMdDlEQvMpNJqg5/vKE9PKIx4tQlIceuL9ic+3MuZixw
+        MUdt9BrtjspiAX8d1+1Mpy3b7vbHLh2H4dfZrNfiS5svXfTePnuzHEo8LvyAzAi3bMHtgOBpWHvr
+        a8YqdGPUOtQN/wEJ5w4Xlj337kVIl6QOYA6NqxBFdXzZGOpGgJCEIWWeuCfEF9ihD1qETbRLpRbj
+        +5wEC2Exj5MnyAlbNrnKaaBZlwi5hOMp5ljMQ7Auo6mDCQ4/iVXehlYJNhMT7E0FJw4Bb5AC8fDE
+        IdMai+tMCwMBgNxB0B60iT5guE8BRWg75CIIDrkwm12UCZQNaO6zqZVcU8z7pAuNNLvRnjN6AQH0
+        IWOFInTAIxZXbbP4019LsJkHJZf1QF4KgItMaw9ZctQbfm6hywB1h7pUGxdz0BtqtVf+z1PGFz4R
+        LvZ96t3VEbQxdPhSr9hfcMhUhB579HFwX/DluwMMc32HzigJai9XeapqlszT6ITm3NKdn71WOKor
+        ilwUIhIAVB/db8O+oc9WmVkJe04fIjzsMRwE7LExqwYGhQ7jmk50b2DYTPSrwssQihQPpijmE/v0
+        bylNaagGCIq36BRkTEvndoBKhpgzd4F0MLlwNyReSPmnijGhHgbmNAmuTZ70Jlnhg0bMD/J8YVrI
+        bznnDruDfGZMDTwHjVDCjAMMw0MCrbZrlagoe4a7lCcHVOqjxtxGBrK0COgL4zCRgoJKsXviNTYA
+        hK/5S1ALw41SgX0AeCW7HwM1FFdIIBAVLwR0YwrDmH+rQps5moAOB91vOuVLaCq9rr8OwiY44BOC
+        4fuZz5JnLepqe8OLwcFzzizmXsjGbRirQJZzMcbXRdWyBeLRSCsdvVuqYqke+OCLLrFS0Tr/Il7r
+        Z7tYJZL4T3Y6yMs9Is2i7JjCHbV3PEep2hzgKV39li9R8RvOd+Xx/rjbFU+q8DZ6PmXSkftf2W80
+        Noej0ahrDtto9+EkjztGmfwvy51HyqFy1kaHRK626TbeVwerGGJk54N3Pf9UZnn6PxAgAR+QVnpc
+        rWSabsDVqbVO4sNBrr+in+c7WZxFO3XFrECQ2THZy7V+9u9RJieaHyHDfB4a/eGmY5hGv2OMNrJj
+        GEa3Y24GXcNYjfqj0RCVvirI/CR+3a5lonzmRRV4b7b7aDctYfXU2gbvUQgf/wmD75xmFOZoVybX
+        Lh6jRP6Oj6msDBCwEFY+Ih7tCzdBvKttsGWxuQfbikuBEkWw/fHlWSZsM9nu1/k+aZQvoiSJTuo0
+        PB4OcZIV+OT8KS0UT+SL3GccKFRg1R30+v3y9SssqKplGtKp3K8DmR53Gd8WtZujbrc36ANH+mbV
+        jxz7wmwWJy9R3l/0Twq+Ste5hRXvc/KA/2IxhtUYkkm2stiLz6dwvs07WZaWL9EZJAAFvBzy/Oos
+        jKEx0O0OyTZOttlJmRk5ZK0W8C//9Q7/31VKaBWv81ZWfULgPI1+XZ6VxFSe1Kh8ef8fqeqUa90L
+        AAA=
+    headers:
+      Cache-Control:
+      - no-cache, no-store
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1199'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 30 Jul 2024 15:43:36 GMT
+      Expect-CT:
+      - enforce, max-age=3600
+      Strict-Transport-Security:
+      - max-age=31536000
+      Vary:
+      - Accept-Encoding, User-Agent
+      X-Content-Type-Options:
+      - nosniff
+      X-Country:
+      - Italy
+      X-Frame-Options:
+      - deny
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

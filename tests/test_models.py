@@ -234,3 +234,49 @@ def test_copy_with_tags() -> None:
     assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
 
     test_table.drop()
+
+
+@pytest.mark.snowflake_vcr
+def test_copy_custom() -> None:
+    result = test_table.copy_custom(
+        column_definitions={
+            "id": "$1:id",
+            "name": "$1:name",
+            "last_name": "$1:last_name",
+        },
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        full_refresh=True,
+        sync_tags=True,
+    )
+    assert result[0][1] == "LOADED"
+    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    test_table.drop()
+
+
+@pytest.mark.snowflake_vcr
+def test_merge_custom() -> None:
+    column_definitions = {
+        "id": "$1:id",
+        "name": "$1:name",
+        "last_name": "$1:last_name",
+    }
+    test_table.copy_custom(
+        column_definitions=column_definitions,
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        full_refresh=True,
+        sync_tags=True,
+    )
+    test_table.merge_custom(
+        column_definitions=column_definitions,
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        primary_keys=["id"],
+    )
+
+    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    test_table.drop()
