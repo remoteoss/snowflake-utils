@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## v1.8.0 (2024-08-08)
+
+### Feature
+
+* feat: allow transforming while loading in snowflake (#9)
+
+* feat: add copy custom
+
+* feat: add custom merge
+
+* fix: copy custom query, quote, include_metadata not supported in copy transform
+
+* feat: add tests
+
+* fix: missing type annotations
+
+* chore: remove wrong type annotation ([`5f876dc`](https://github.com/remoteoss/snowflake-utils/commit/5f876dc4424693583f2d1d3f2058f62d49d78f9b))
+
 ## v1.7.2 (2024-07-17)
 
 ### Fix
