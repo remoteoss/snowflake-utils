@@ -137,7 +137,7 @@ class Table(BaseModel):
         """
         return file_format_statement
 
-    def get_create_schema_statement(self: str) -> str:
+    def get_create_schema_statement(self) -> str:
         """ """
         logging.debug(f"Creating schema if it not exsists: {self.schema_}")
         return f"CREATE SCHEMA IF NOT EXISTS {self.schema_}"
