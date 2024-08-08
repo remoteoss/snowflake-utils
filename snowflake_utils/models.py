@@ -99,15 +99,25 @@ class Table(BaseModel):
     table_structure: TableStructure | None = None
     role: str | None = None
     database: str | None = None
+    include_metadata: dict[str, str] = Field(default_factory=dict)
+
+    def _include_metadata(self) -> str:
+        if not self.include_metadata:
+            return ""
+        else:
+            metadata = ", ".join(
+                f"{k}=METADATA${v}" for k, v in self.include_metadata.items()
+            )
+            return f"INCLUDE_METADATA = ({metadata})"
 
     @property
-    def fqn(self):
+    def fqn(self) -> str:
         if database := self.database:
             return f"{database}.{self.schema_}.{self.name}"
         return f"{self.schema_}.{self.name}"
 
     @property
-    def temporary_stage(self):
+    def temporary_stage(self) -> str:
         return f"tmp_external_stage_{self.schema_}_{self.name}".upper()
 
     @property
@@ -127,12 +137,14 @@ class Table(BaseModel):
         """
         return file_format_statement
 
-    def get_create_schema_statement(self):
+    def get_create_schema_statement(self) -> str:
         """ """
         logging.debug(f"Creating schema if it not exsists: {self.schema_}")
         return f"CREATE SCHEMA IF NOT EXISTS {self.schema_}"
 
-    def get_create_temporary_external_stage(self, path: str, storage_integration: str):
+    def get_create_temporary_external_stage(
+        self, path: str, storage_integration: str
+    ) -> str:
         logging.debug(f"Creating temporate stage at path: {path}")
         return f"""
         CREATE OR REPLACE TEMPORARY STAGE {self.schema_}.{self.temporary_stage}
@@ -143,7 +155,7 @@ class Table(BaseModel):
     def get_create_table_statement(
         self,
         full_refresh: bool = False,
-    ):
+    ) -> str:
         logging.debug(f"Creating table: {self.fqn}")
         if self.table_structure:
             return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
@@ -183,6 +195,26 @@ class Table(BaseModel):
                 )
         return None
 
+    def _copy(
+        self,
+        query: str,
+        path: str,
+        file_format: InlineFileFormat | FileFormat,
+        storage_integration: str | None = None,
+        full_refresh: bool = False,
+        sync_tags: bool = False,
+    ) -> None:
+        with connect() as connection:
+            cursor = connection.cursor()
+            execute = self.setup_connection(path, storage_integration, cursor)
+            file_format = self.setup_file_format(file_format, execute)
+            self.create_table(full_refresh, execute)
+
+            if sync_tags and self.table_structure:
+                self.sync_tags(cursor)
+            logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
+            return execute(query.format(file_format=file_format))
+
     def copy_into(
         self,
         path: str,
@@ -193,50 +225,37 @@ class Table(BaseModel):
         target_columns: list[str] | None = None,
         sync_tags: bool = False,
     ) -> None:
-        """Copy files into Snowflake"""
-        with connect() as connection:
-            cursor = connection.cursor()
-            _execute_statement = partial(execute_statement, cursor)
-            if self.role is not None:
-                logging.debug(f"Using role: {self.role}")
-                _execute_statement(f"USE ROLE {self.role}")
-            if self.database is not None:
-                logging.debug(f"Using database: {self.database}")
-                _execute_statement(f"USE DATABASE {self.database}")
-
-            _execute_statement(self.get_create_schema_statement())
-            logging.debug(f"Using schema: {self.schema_}")
-            _execute_statement(f"USE SCHEMA {self.schema_}")
-            _execute_statement(
-                self.get_create_temporary_external_stage(
-                    path=path, storage_integration=storage_integration
-                )
-            )
-
-            if isinstance(file_format, InlineFileFormat):
-                _execute_statement(
-                    self.get_create_temporary_file_format_statement(
-                        file_format=file_format.definition
-                    )
-                )
-                file_format = self.temporary_file_format
-
-            _execute_statement(self.get_create_table_statement(full_refresh))
-
-            if sync_tags and self.table_structure:
-                self.sync_tags(cursor)
-
-            logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
-            col_str = f"({', '.join(target_columns)})" if target_columns else ""
-            return _execute_statement(
-                f"""
+        col_str = f"({', '.join(target_columns)})" if target_columns else ""
+        return self._copy(
+            f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {path}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ''}
-                FILE_FORMAT = ( FORMAT_NAME ='{file_format}')
+                FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
-                """
+                {self._include_metadata()}
+                """,
+            path,
+            file_format,
+            storage_integration,
+            full_refresh,
+            sync_tags,
+        )
+
+    def create_table(self, full_refresh: bool, execute_statement: callable) -> None:
+        execute_statement(self.get_create_table_statement(full_refresh))
+
+    def setup_file_format(
+        self, file_format: FileFormat | InlineFileFormat, execute_statement: callable
+    ) -> FileFormat:
+        if isinstance(file_format, InlineFileFormat):
+            execute_statement(
+                self.get_create_temporary_file_format_statement(
+                    file_format=file_format.definition
+                )
             )
+            file_format = self.temporary_file_format
+        return file_format
 
     def get_columns(self, cursor: SnowflakeCursor) -> list[Column]:
         data = cursor.execute(f"desc table {self.fqn}").fetchall()
@@ -256,38 +275,23 @@ class Table(BaseModel):
             ).fetchall()
         )
 
-    def merge(
+    def _merge(
         self,
-        path: str,
-        file_format: InlineFileFormat | FileFormat,
+        copy_callable: callable,
         primary_keys: list[str] = ["id"],
         replication_keys: list[str] | None = None,
-        storage_integration: str | None = None,
-        match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
         qualify: bool = False,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
             if not self.exists(cursor):
-                self.copy_into(
-                    path=path,
-                    storage_integration=storage_integration,
-                    file_format=file_format,
-                    match_by_column_name=match_by_column_name,
-                    sync_tags=True,
-                )
+                copy_callable(self, sync_tags=True)
                 if qualify:
                     self.qualify(cursor, primary_keys, replication_keys)
                 return None
 
         temp_table = self.model_copy(update={"name": f"{self.name}_temp"})
-        temp_table.copy_into(
-            path=path,
-            storage_integration=storage_integration,
-            file_format=file_format,
-            match_by_column_name=match_by_column_name,
-            full_refresh=True,
-        )
+        copy_callable(temp_table, sync_tags=False)
         if qualify:
             with connect() as connection:
                 cursor = connection.cursor()
@@ -311,6 +315,27 @@ class Table(BaseModel):
             if self.table_structure:
                 self.sync_tags(cursor)
             temp_table.drop(cursor)
+
+    def merge(
+        self,
+        path: str,
+        file_format: InlineFileFormat | FileFormat,
+        primary_keys: list[str] = ["id"],
+        replication_keys: list[str] | None = None,
+        storage_integration: str | None = None,
+        match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
+        qualify: bool = False,
+    ) -> None:
+        def copy_callable(table: Table, sync_tags: bool) -> None:
+            return table.copy_into(
+                path=path,
+                storage_integration=storage_integration,
+                file_format=file_format,
+                match_by_column_name=match_by_column_name,
+                sync_tags=sync_tags,
+            )
+
+        return self._merge(copy_callable, primary_keys, replication_keys, qualify)
 
     def qualify(
         self,
@@ -368,7 +393,7 @@ class Table(BaseModel):
 
     def single_column_update(
         self, cursor: SnowflakeCursor, target_column: Column, new_column: Column
-    ):
+    ) -> None:
         """Updates the value of one column with the value of another column in the same table."""
         logging.debug(
             f"Updating the value of {target_column.name} with {new_column.name} in the table {self.name}"
@@ -423,10 +448,77 @@ class Table(BaseModel):
             f"""ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
         )
 
-    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str):
+    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str) -> None:
         cursor.execute(
             f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}'
         )
+
+    def copy_custom(
+        self,
+        column_definitions: dict[str, str],
+        path: str,
+        file_format: InlineFileFormat | FileFormat,
+        storage_integration: str | None = None,
+        full_refresh: bool = False,
+        sync_tags: bool = False,
+    ) -> None:
+        column_names = ", ".join(column_definitions.keys())
+        definitions = ", ".join(column_definitions.values())
+
+        query = f"""
+                COPY INTO {self.fqn} ({column_names})
+                FROM 
+                (select {definitions} from @{self.temporary_stage}/)
+                FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
+                """
+        return self._copy(
+            query, path, file_format, storage_integration, full_refresh, sync_tags
+        )
+
+    def merge_custom(
+        self,
+        column_definitions: dict[str, str],
+        path: str,
+        file_format: InlineFileFormat | FileFormat,
+        primary_keys: list[str] = ["id"],
+        replication_keys: list[str] | None = None,
+        storage_integration: str | None = None,
+        qualify: bool = False,
+    ) -> None:
+        def copy_callable(table: Table, sync_tags: bool) -> None:
+            return table.copy_custom(
+                column_definitions,
+                path=path,
+                storage_integration=storage_integration,
+                file_format=file_format,
+                full_refresh=True,
+                sync_tags=sync_tags,
+            )
+
+        return self._merge(copy_callable, primary_keys, replication_keys, qualify)
+
+    def setup_connection(
+        self, path: str, storage_integration: str, cursor: SnowflakeCursor
+    ) -> callable:
+        """Setup the connection including custom role, database, schema, and temporary stage"""
+        _execute_statement = partial(execute_statement, cursor)
+        if self.role is not None:
+            logging.debug(f"Using role: {self.role}")
+            _execute_statement(f"USE ROLE {self.role}")
+        if self.database is not None:
+            logging.debug(f"Using database: {self.database}")
+            _execute_statement(f"USE DATABASE {self.database}")
+
+        _execute_statement(self.get_create_schema_statement())
+        logging.debug(f"Using schema: {self.schema_}")
+        _execute_statement(f"USE SCHEMA {self.schema_}")
+        _execute_statement(
+            self.get_create_temporary_external_stage(
+                path=path, storage_integration=storage_integration
+            )
+        )
+
+        return _execute_statement
 
 
 def _possibly_cast(s: str, old_column_type: str, new_column_type: str) -> str:
