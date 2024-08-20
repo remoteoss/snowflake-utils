@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v1.8.1 (2024-08-20)
+
+### Fix
+
+* fix: add option to not replace chars ([`adbf254`](https://github.com/remoteoss/snowflake-utils/commit/adbf2547a9815e6672eebd7fc6b5c65546e653ca))
+
+### Unknown
+
+* Merge pull request #10 from remoteoss/fix-column-name-renaming
+
+fix: add option to not replace chars ([`a558c8b`](https://github.com/remoteoss/snowflake-utils/commit/a558c8bf79cef2ebab642eea0ef3703545c43854))
+
+* fix default value ([`a9a9157`](https://github.com/remoteoss/snowflake-utils/commit/a9a91576d7378786c560367d8f17d3b7a6dd622b))
+
 ## v1.8.0 (2024-08-08)
 
 ### Feature
