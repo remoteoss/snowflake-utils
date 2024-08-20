@@ -56,11 +56,17 @@ class TableStructure(BaseModel):
     columns: dict = [str, Column]
 
     @property
-    def parsed_columns(self):
-        return ", ".join(
-            f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
-            for k, v in self.columns.items()
-        )
+    def parsed_columns(self, replace_chars: False) -> str:
+        if replace_chars:
+            return ", ".join(
+                f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
+                for k, v in self.columns.items()
+            )
+        else:
+            return ", ".join(
+                f'"{str.upper(k).strip()}" {v.data_type}'
+                for k, v in self.columns.items()
+            )
 
     def parse_from_json(self):
         raise NotImplementedError("Not implemented yet")
@@ -406,8 +412,10 @@ class Table(BaseModel):
         tags = defaultdict(dict)
         with connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
-                from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))""")
+            cursor.execute(
+                f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
+                from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))"""
+            )
             for column_name, tag_name, tag_value in cursor.fetchall():
                 tags[column_name][tag_name] = tag_value
         return tags
