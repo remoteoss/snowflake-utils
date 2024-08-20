@@ -56,7 +56,7 @@ class TableStructure(BaseModel):
     columns: dict = [str, Column]
 
     @property
-    def parsed_columns(self, replace_chars: False) -> str:
+    def parsed_columns(self, replace_chars: bool = False) -> str:
         if replace_chars:
             return ", ".join(
                 f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
