@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.9.0 (2024-09-03)
+
+### Feature
+
+* feat: add qualify option to copy ([`0afa6b6`](https://github.com/remoteoss/snowflake-utils/commit/0afa6b6fae7210109e31ceee0a1e0f5ad93c4070))
+
 ## v1.8.1 (2024-08-20)
 
 ### Fix
