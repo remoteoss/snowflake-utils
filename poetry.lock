@@ -23,6 +23,21 @@ files = [
 ]
 
 [[package]]
+name = "backports-tarfile"
+version = "1.2.0"
+description = "Backport of CPython tarfile module"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "backports.tarfile-1.2.0-py3-none-any.whl", hash = "sha256:77e284d754527b01fb1e6fa8a1afe577858ebe4e9dad8919e34c862cb399bc34"},
+    {file = "backports_tarfile-1.2.0.tar.gz", hash = "sha256:d75e02c268746e1b8144c278978b6e98e85de6ad16f8e4b0844a154557eca991"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["jaraco.test", "pytest (!=8.0.*)", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)"]
+
+[[package]]
 name = "certifi"
 version = "2024.7.4"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -317,6 +332,25 @@ files = [
 ]
 
 [[package]]
+name = "importlib-metadata"
+version = "8.4.0"
+description = "Read metadata from Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "importlib_metadata-8.4.0-py3-none-any.whl", hash = "sha256:66f342cc6ac9818fc6ff340576acd24d65ba0b3efabb2b4ac08b598965a4a2f1"},
+    {file = "importlib_metadata-8.4.0.tar.gz", hash = "sha256:9a547d3bc3608b025f93d403fdd1aae741c24fbb8314df4b155675742ce303c5"},
+]
+
+[package.dependencies]
+zipp = ">=0.5"
+
+[package.extras]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+perf = ["ipython"]
+test = ["flufl.flake8", "importlib-resources (>=1.3)", "jaraco.test (>=5.4)", "packaging", "pyfakefs", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-perf (>=0.9.2)", "pytest-ruff (>=0.2.1)"]
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -326,6 +360,100 @@ files = [
     {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
     {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
 ]
+
+[[package]]
+name = "jaraco-classes"
+version = "3.4.0"
+description = "Utility functions for Python class constructs"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jaraco.classes-3.4.0-py3-none-any.whl", hash = "sha256:f662826b6bed8cace05e7ff873ce0f9283b5c924470fe664fff1c2f00f581790"},
+    {file = "jaraco.classes-3.4.0.tar.gz", hash = "sha256:47a024b51d0239c0dd8c8540c6c7f484be3b8fcf0b2d85c13825780d3b3f3acd"},
+]
+
+[package.dependencies]
+more-itertools = "*"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
+
+[[package]]
+name = "jaraco-context"
+version = "6.0.1"
+description = "Useful decorators and context managers"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jaraco.context-6.0.1-py3-none-any.whl", hash = "sha256:f797fc481b490edb305122c9181830a3a5b76d84ef6d1aef2fb9b47ab956f9e4"},
+    {file = "jaraco_context-6.0.1.tar.gz", hash = "sha256:9bae4ea555cf0b14938dc0aee7c9f32ed303aa20a3b73e7dc80111628792d1b3"},
+]
+
+[package.dependencies]
+"backports.tarfile" = {version = "*", markers = "python_version < \"3.12\""}
+
+[package.extras]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+test = ["portend", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
+
+[[package]]
+name = "jaraco-functools"
+version = "4.0.2"
+description = "Functools like those found in stdlib"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "jaraco.functools-4.0.2-py3-none-any.whl", hash = "sha256:c9d16a3ed4ccb5a889ad8e0b7a343401ee5b2a71cee6ed192d3f68bc351e94e3"},
+    {file = "jaraco_functools-4.0.2.tar.gz", hash = "sha256:3460c74cd0d32bf82b9576bbb3527c4364d5b27a21f5158a62aed6c4b42e23f5"},
+]
+
+[package.dependencies]
+more-itertools = "*"
+
+[package.extras]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+test = ["jaraco.classes", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
+
+[[package]]
+name = "jeepney"
+version = "0.8.0"
+description = "Low-level, pure Python DBus protocol wrapper."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jeepney-0.8.0-py3-none-any.whl", hash = "sha256:c0a454ad016ca575060802ee4d590dd912e35c122fa04e70306de3d076cce755"},
+    {file = "jeepney-0.8.0.tar.gz", hash = "sha256:5efe48d255973902f6badc3ce55e2aa6c5c3b3bc642059ef3a91247bcfcc5806"},
+]
+
+[package.extras]
+test = ["async-timeout", "pytest", "pytest-asyncio (>=0.17)", "pytest-trio", "testpath", "trio"]
+trio = ["async_generator", "trio"]
+
+[[package]]
+name = "keyring"
+version = "25.3.0"
+description = "Store and access your passwords safely."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "keyring-25.3.0-py3-none-any.whl", hash = "sha256:8d963da00ccdf06e356acd9bf3b743208878751032d8599c6cc89eb51310ffae"},
+    {file = "keyring-25.3.0.tar.gz", hash = "sha256:8d85a1ea5d6db8515b59e1c5d1d1678b03cf7fc8b8dcfb1651e8c4a524eb42ef"},
+]
+
+[package.dependencies]
+importlib-metadata = {version = ">=4.11.4", markers = "python_version < \"3.12\""}
+"jaraco.classes" = "*"
+"jaraco.context" = "*"
+"jaraco.functools" = "*"
+jeepney = {version = ">=0.4.2", markers = "sys_platform == \"linux\""}
+pywin32-ctypes = {version = ">=0.2.0", markers = "sys_platform == \"win32\""}
+SecretStorage = {version = ">=3.2", markers = "sys_platform == \"linux\""}
+
+[package.extras]
+completion = ["shtab (>=1.1.0)"]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+test = ["pyfakefs", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
 
 [[package]]
 name = "markdown-it-py"
@@ -360,6 +488,17 @@ python-versions = ">=3.7"
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
+]
+
+[[package]]
+name = "more-itertools"
+version = "10.4.0"
+description = "More routines for operating on iterables, beyond itertools"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "more-itertools-10.4.0.tar.gz", hash = "sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923"},
+    {file = "more_itertools-10.4.0-py3-none-any.whl", hash = "sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27"},
 ]
 
 [[package]]
@@ -753,6 +892,17 @@ files = [
 ]
 
 [[package]]
+name = "pywin32-ctypes"
+version = "0.2.3"
+description = "A (partial) reimplementation of pywin32 using ctypes/cffi"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pywin32-ctypes-0.2.3.tar.gz", hash = "sha256:d162dc04946d704503b2edc4d55f3dba5c1d539ead017afa00142c38b9885755"},
+    {file = "pywin32_ctypes-0.2.3-py3-none-any.whl", hash = "sha256:8a1513379d709975552d202d942d9837758905c8d01eb82b8bcc30918929e7b8"},
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.1"
 description = "YAML parser and emitter for Python"
@@ -878,6 +1028,21 @@ files = [
 ]
 
 [[package]]
+name = "secretstorage"
+version = "3.3.3"
+description = "Python bindings to FreeDesktop.org Secret Service API"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "SecretStorage-3.3.3-py3-none-any.whl", hash = "sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99"},
+    {file = "SecretStorage-3.3.3.tar.gz", hash = "sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77"},
+]
+
+[package.dependencies]
+cryptography = ">=2.0"
+jeepney = ">=0.6"
+
+[[package]]
 name = "shellingham"
 version = "1.5.4"
 description = "Tool to Detect Surrounding Shell"
@@ -901,37 +1066,37 @@ files = [
 
 [[package]]
 name = "snowflake-connector-python"
-version = "3.11.0"
+version = "3.12.1"
 description = "Snowflake Connector for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "snowflake_connector_python-3.11.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:0be9e2e35c7cf98df4ee454f1a00b7d1ff541ce46582d9b9ec51928e1583683c"},
-    {file = "snowflake_connector_python-3.11.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:e01aa2f65bd7374a11a7d74c30d4a78938bbf60db512fc170bd25fc1b385566b"},
-    {file = "snowflake_connector_python-3.11.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5a284c275929f81c5b53160c0d0ee447ee20b63af0493c87f3dd39faf3178f59"},
-    {file = "snowflake_connector_python-3.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:686a50bf1e7d2cf89db7319a29d08816ea57039fcf05ca3f3bf3f92dc25bed40"},
-    {file = "snowflake_connector_python-3.11.0-cp310-cp310-win_amd64.whl", hash = "sha256:eae346b87906db2095f1c830ba105b529a211ecd0c0b1e43d8775fc49e7e476c"},
-    {file = "snowflake_connector_python-3.11.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:415992f074b51712770c3dbd7a6b5a95b5dd04ffe02fc51ac8446e193771436d"},
-    {file = "snowflake_connector_python-3.11.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:e55eca3ff74fb33ea21455369e171ad61ef31eb916cbbbdab7ccb90cb98ad8d0"},
-    {file = "snowflake_connector_python-3.11.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:aa48b1f2a124098745a33ee93e34d85a3dfb60fa3d2d7ec5efee4aa17bb05053"},
-    {file = "snowflake_connector_python-3.11.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:96b21a062fc7aacb49202c8502239c0728319a96834a9fca1b6666a51e515dcc"},
-    {file = "snowflake_connector_python-3.11.0-cp311-cp311-win_amd64.whl", hash = "sha256:ae890352e9e09e2084fd13647a664a31343bfa58d9aa41770e9ec3b810f9bc2c"},
-    {file = "snowflake_connector_python-3.11.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:e8f5c376b2368082819126f566551e451d51c95cc2febac45377026d44a401b0"},
-    {file = "snowflake_connector_python-3.11.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:56c29839cbdf4778b997a96dacb849c3b374b7818c60eefe87b67debc9672f59"},
-    {file = "snowflake_connector_python-3.11.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c203a035e417a386d7b09e977a198588471a768336f781b0561d09ed0f495edc"},
-    {file = "snowflake_connector_python-3.11.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e906f517d2e79cd19c04dddf3bba13a072755503516f6bcd55ae1122b6df7fdb"},
-    {file = "snowflake_connector_python-3.11.0-cp312-cp312-win_amd64.whl", hash = "sha256:3e5489b814f311425e3966c0434f686131e48886eb7e0a8606631695f3c4bd48"},
-    {file = "snowflake_connector_python-3.11.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:507c70ccd87c37a813c6aab27fe97007fb96c5372a5a33cc4b9137acb0d921e1"},
-    {file = "snowflake_connector_python-3.11.0-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:f238a3cb4522d2943861f38cb0c9650c08c02e45a38d4eefa27f22ad95748fb4"},
-    {file = "snowflake_connector_python-3.11.0-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f797eb2552950cf04fe07304da714f1d473f7a0c1548cfbce5614c4b0a66e441"},
-    {file = "snowflake_connector_python-3.11.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3a525c60fd5922098eab2425bc3f63bb3df0f07dd54e02580505a6208f908d32"},
-    {file = "snowflake_connector_python-3.11.0-cp38-cp38-win_amd64.whl", hash = "sha256:8b61dbd3581c043b338c99caff900a9cce187c83333bafdf1d57c8c126366b4a"},
-    {file = "snowflake_connector_python-3.11.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:13170b419a6c2b98e23c89a459e2576955e0bae4fd267e9f44fffad642aa3ecc"},
-    {file = "snowflake_connector_python-3.11.0-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:18bc6fd9fd544d540b06d9e97e754d0053b5cb7e5d9266586b3df8f243ef97bc"},
-    {file = "snowflake_connector_python-3.11.0-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cd4120451e33a32fb8fa018c9cd3e56c370ab0702ffe93b4e68acdae92524c3c"},
-    {file = "snowflake_connector_python-3.11.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f26ed3b5537864ee9d72f313b18b80b76136b7838774ea5bc2b4f5e1df8e9b90"},
-    {file = "snowflake_connector_python-3.11.0-cp39-cp39-win_amd64.whl", hash = "sha256:fc6afb35826e958949edb2d464e0d35ec46ef41b65546a311a333f4d0a7d07a6"},
-    {file = "snowflake_connector_python-3.11.0.tar.gz", hash = "sha256:3169c014a03e5f5855112605e393897a552e558953c69f25a02e33b1998864d0"},
+    {file = "snowflake_connector_python-3.12.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c0979324bd96019f500f6c987d4720c9e4d7176df54b1b5aa96875be8c8ff57b"},
+    {file = "snowflake_connector_python-3.12.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:c889a85966ec6a3384799e594e97301a4be0705d7763a5177104866b75383d8c"},
+    {file = "snowflake_connector_python-3.12.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4bfb5fe8db051771480059ffddd5127653f4ac1168c76293655da33c2a2904d7"},
+    {file = "snowflake_connector_python-3.12.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d1061af4a3a3e66b0c99ab0f8bae5eda28e6324618143b3f5b2d81d1649b8557"},
+    {file = "snowflake_connector_python-3.12.1-cp310-cp310-win_amd64.whl", hash = "sha256:3edcf3591b6071ddb02413a0000dea42ee6fe811693d176915edb8687b03ce89"},
+    {file = "snowflake_connector_python-3.12.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:226a714eb68bbae328fe49b705ecb304fbd44ea6a7afbb329ba3c389ac9111bc"},
+    {file = "snowflake_connector_python-3.12.1-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:7319f63c09efed853d7652cbb38ecc23068e86dbce8340444056787993a854d9"},
+    {file = "snowflake_connector_python-3.12.1-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:f86b42a076e14900dc6af2f096343ccf4314d324e7e1153b667d6ee53c60334b"},
+    {file = "snowflake_connector_python-3.12.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d231f0d5fb8d7a96b9ab5e9500035bd9f259c80d4b3c482163d156928fb0e546"},
+    {file = "snowflake_connector_python-3.12.1-cp311-cp311-win_amd64.whl", hash = "sha256:d9f1bc6b35344b170e2fb30314aa64709b28539084be88e95aacf094e13259eb"},
+    {file = "snowflake_connector_python-3.12.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:0114370c274ed64fe4aee2333b01e9ff88272837bdaa65fb3a3ee4820dca61b4"},
+    {file = "snowflake_connector_python-3.12.1-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:dadd262196cce0132ca7e766f055e00c00497a88fdf83fd48143eb4a469a4527"},
+    {file = "snowflake_connector_python-3.12.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:473642c0e628b8b9f264cbf31c7f4de44974373db43052b6542a66e751159caf"},
+    {file = "snowflake_connector_python-3.12.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bddc4cdcd991f9538726a7c293d2637bb5aed43db68246e06c92c49a6df2b692"},
+    {file = "snowflake_connector_python-3.12.1-cp312-cp312-win_amd64.whl", hash = "sha256:b06c63ec0381df1f4da6c4326330a1a40c8fc21fd3dcc2f58df4de395d676893"},
+    {file = "snowflake_connector_python-3.12.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:3c24119ad64c20a8a691760c81e7d846feea4a6103ba84470116c60f7f31a1b8"},
+    {file = "snowflake_connector_python-3.12.1-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:a8ba32c91ebf4de6d3f981cfd6324fb4b833696b639c350f5e5984371957e6f9"},
+    {file = "snowflake_connector_python-3.12.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cde5643d8237fc109fed68c6a806297ebe3adeb56ac6865430a78fcaba27f2ef"},
+    {file = "snowflake_connector_python-3.12.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4a4bc4212db73feab5a79ad28b1d03743cbe48df1e346d219747afde5425c35d"},
+    {file = "snowflake_connector_python-3.12.1-cp38-cp38-win_amd64.whl", hash = "sha256:7e5d7a0f1b827304b3ba250fa98c25385a7158ea5333e7857cda2ea91433a354"},
+    {file = "snowflake_connector_python-3.12.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:a56f9df9db2b03caf9bc7a45f51d7cdfe307b5e2cde7edaa93b67c2d81789db6"},
+    {file = "snowflake_connector_python-3.12.1-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:a1ead374d96cf21cb249bf91fe814ab1e1baaa3c3f2391116ccefab8bfa36374"},
+    {file = "snowflake_connector_python-3.12.1-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:38698260175321ddef5504170ac1f9e5e92b897844d55ac2fc77bf0783435299"},
+    {file = "snowflake_connector_python-3.12.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d7f8699ff60924105253e465a54ad150469ddf65082ce029387d65ca404a46cc"},
+    {file = "snowflake_connector_python-3.12.1-cp39-cp39-win_amd64.whl", hash = "sha256:93e79497ae0f0be1a10cf2649900db0011e391ede47cbef2803814c32e1d63d6"},
+    {file = "snowflake_connector_python-3.12.1.tar.gz", hash = "sha256:e43b7d4b4488ecd97b5bf62539cc502d7e84d8215c547eaeb4dd928c0b7212b9"},
 ]
 
 [package.dependencies]
@@ -939,9 +1104,10 @@ asn1crypto = ">0.24.0,<2.0.0"
 certifi = ">=2017.4.17"
 cffi = ">=1.9,<2.0.0"
 charset-normalizer = ">=2,<4"
-cryptography = ">=3.1.0,<43.0.0"
+cryptography = ">=3.1.0"
 filelock = ">=3.5,<4"
 idna = ">=2.5,<4"
+keyring = {version = ">=23.1.0,<26.0.0", optional = true, markers = "extra == \"secure-local-storage\""}
 packaging = "*"
 platformdirs = ">=2.6.0,<5.0.0"
 pyjwt = "<3.0.0"
@@ -955,7 +1121,7 @@ typing-extensions = ">=4.3,<5"
 [package.extras]
 development = ["Cython", "coverage", "more-itertools", "numpy (<1.27.0)", "pendulum (!=2.1.1)", "pexpect", "pytest (<7.5.0)", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytest-xdist", "pytzdata"]
 pandas = ["pandas (>=1.0.0,<3.0.0)", "pyarrow"]
-secure-local-storage = ["keyring (>=23.1.0,<25.0.0)"]
+secure-local-storage = ["keyring (>=23.1.0,<26.0.0)"]
 
 [[package]]
 name = "snowflake-vcrpy"
@@ -1241,7 +1407,26 @@ files = [
 idna = ">=2.0"
 multidict = ">=4.0"
 
+[[package]]
+name = "zipp"
+version = "3.20.1"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "zipp-3.20.1-py3-none-any.whl", hash = "sha256:9960cd8967c8f85a56f920d5d507274e74f9ff813a0ab8889a5b5be2daf44064"},
+    {file = "zipp-3.20.1.tar.gz", hash = "sha256:c22b14cc4763c5a5b04134207736c107db42e9d3ef2d9779d465f5f1bcba572b"},
+]
+
+[package.extras]
+check = ["pytest-checkdocs (>=2.4)", "pytest-ruff (>=0.2.1)"]
+cover = ["pytest-cov"]
+doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+enabler = ["pytest-enabler (>=2.2)"]
+test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", "jaraco.test", "more-itertools", "pytest (>=6,!=8.1.*)", "pytest-ignore-flaky"]
+type = ["pytest-mypy"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "9b384ec7098a896029066f0888df0d6014ba45498f1a79a76efbb367670a75c6"
+content-hash = "c8aa4c023b0563d414b02ab084c5e8a399e87de1ed45febdf3ad0ba7b5f60d94"
