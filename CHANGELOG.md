@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## v1.10.0 (2024-09-05)
+
+### Feature
+
+* feat: add tags at table level (#12)
+
+* feat: add tags at column level
+
+* chore: remove set
+
+* feat; add enum, refactor models file
+
+* fix: use retrocompatible typing_extensions
+
+* feat: add settings.yml ([`1f1be19`](https://github.com/remoteoss/snowflake-utils/commit/1f1be19d4316617d8e90601f471ea8d3203c2441))
+
 ## v1.9.0 (2024-09-03)
 
 ### Feature
