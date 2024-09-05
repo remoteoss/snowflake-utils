@@ -1,6 +1,5 @@
-from typing import Self
-
 from pydantic import BaseModel
+from typing_extensions import Self
 
 
 class InlineFileFormat(BaseModel):
