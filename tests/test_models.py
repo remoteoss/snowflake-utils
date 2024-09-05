@@ -12,14 +12,15 @@ from snowflake_utils.models import (
     Table,
     TableStructure,
 )
-from snowflake_utils.queries import connect
+from snowflake_utils.settings import connect
 
 test_table_schema = TableStructure(
     columns={
         "id": Column(name="id", data_type="integer", tags={"pii": "personal"}),
         "name": Column(name="name", data_type="text"),
         "last_name": Column(name="last_name", data_type="text"),
-    }
+    },
+    tags={"pii": "foo"},
 )
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
 test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
@@ -171,7 +172,7 @@ def test_merge() -> None:
         primary_keys=["id"],
     )
 
-    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_column_tags()) == {"id": {"pii": "personal"}}
 
 
 @pytest.mark.snowflake_vcr
@@ -231,7 +232,8 @@ def test_copy_with_tags() -> None:
 
     assert result[0][1] == "LOADED"
 
-    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_column_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_table_tags()) == {"pii": "foo"}
 
     test_table.drop()
 
@@ -251,7 +253,8 @@ def test_copy_custom() -> None:
         sync_tags=True,
     )
     assert result[0][1] == "LOADED"
-    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_column_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_table_tags()) == {"pii": "foo"}
     test_table.drop()
 
 
@@ -278,5 +281,6 @@ def test_merge_custom() -> None:
         primary_keys=["id"],
     )
 
-    assert dict(test_table.current_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_column_tags()) == {"id": {"pii": "personal"}}
+    assert dict(test_table.current_table_tags()) == {"pii": "foo"}
     test_table.drop()

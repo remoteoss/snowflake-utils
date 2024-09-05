@@ -1,102 +1,16 @@
 import logging
 from collections import defaultdict
-from datetime import date, datetime
-from enum import Enum
 from functools import partial
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
-from typing_extensions import Self
 
-from .queries import connect, execute_statement
-from .settings import governance_settings
-
-
-class MatchByColumnName(Enum):
-    CASE_SENSITIVE = "CASE_SENSITIVE"
-    CASE_INSENSITIVE = "CASE_INSENSITIVE"
-    NONE = "NONE"
-
-
-class InlineFileFormat(BaseModel):
-    definition: str
-
-
-class FileFormat(BaseModel):
-    database: str | None = None
-    schema_: str | None = None
-    name: str
-
-    def __str__(self) -> str:
-        return ".".join(
-            s for s in [self.database, self.schema_, self.name] if s is not None
-        )
-
-    @classmethod
-    def from_string(cls, s: str) -> Self:
-        s = s.split(".")
-        match s:
-            case [database, schema, name]:
-                return cls(database=database, schema_=schema, name=name)
-            case [schema, name]:
-                return cls(schema_=schema, name=name)
-            case [name]:
-                return cls(name=name)
-            case _:
-                raise ValueError("Cannot parse file format")
-
-
-class Column(BaseModel):
-    name: str
-    data_type: str
-    tags: dict[str, str] = Field(default_factory=dict)
-
-
-class TableStructure(BaseModel):
-    columns: dict = [str, Column]
-
-    @property
-    def parsed_columns(self, replace_chars: bool = False) -> str:
-        if replace_chars:
-            return ", ".join(
-                f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
-                for k, v in self.columns.items()
-            )
-        else:
-            return ", ".join(
-                f'"{str.upper(k).strip()}" {v.data_type}'
-                for k, v in self.columns.items()
-            )
-
-    def parse_from_json(self):
-        raise NotImplementedError("Not implemented yet")
-
-    @field_validator("columns")
-    @classmethod
-    def force_columns_to_casefold(cls, value) -> dict:
-        return {k.casefold(): v for k, v in value.items()}
-
-
-class Schema(BaseModel):
-    name: str
-    database: str | None = None
-
-    @property
-    def fully_qualified_name(self):
-        if self.database:
-            return f"{self.database}.{self.name}"
-        else:
-            return self.name
-
-    def get_tables(self, cursor: SnowflakeCursor):
-        cursor.execute(f"show tables in schema {self.fully_qualified_name};")
-        data = cursor.execute(
-            'select "name", "database_name", "schema_name" FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));'
-        ).fetchall()
-        return [
-            Table(name=name, schema_=schema, database=database)
-            for (name, database, schema, *_) in data
-        ]
+from ..queries import execute_statement
+from ..settings import connect, governance_settings
+from .column import Column, _inserts, _matched, _type_cast
+from .enums import MatchByColumnName, TagLevel
+from .file_format import FileFormat, InlineFileFormat
+from .table_structure import TableStructure
 
 
 class Table(BaseModel):
@@ -259,6 +173,7 @@ class Table(BaseModel):
                     primary_keys=primary_keys,
                     replication_keys=replication_keys,
                 )
+                self.sync_tags(cursor)
         else:
             return self._copy(
                 copy_query,
@@ -429,20 +344,56 @@ class Table(BaseModel):
             f"UPDATE {self.fqn} SET {target_column.name} = {new_column.name};"
         )
 
-    def current_tags(self) -> dict[str, dict[str, str]]:
-        tags = defaultdict(dict)
+    def _current_tags(self, level: TagLevel) -> list[tuple[str, str, str]]:
         with connect() as connection:
             cursor = connection.cursor()
             cursor.execute(
                 f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
-                from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))"""
+                from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))
+                where lower(level) = '{level.value}'
+                """
             )
-            for column_name, tag_name, tag_value in cursor.fetchall():
-                tags[column_name][tag_name] = tag_value
+            return cursor.fetchall()
+
+    def current_column_tags(self) -> dict[str, dict[str, str]]:
+        tags = defaultdict(dict)
+
+        for column_name, tag_name, tag_value in self._current_tags(TagLevel.COLUMN):
+            tags[column_name][tag_name] = tag_value
         return tags
 
+    def current_table_tags(self) -> dict[str, str]:
+        return {
+            tag_name.casefold(): tag_value
+            for _, tag_name, tag_value in self._current_tags(TagLevel.TABLE)
+        }
+
+    def sync_tags_table(self, cursor: SnowflakeCursor) -> None:
+        tags = self.current_table_tags()
+        desired_tags = {k.casefold(): v for k, v in self.table_structure.tags.items()}
+        for tag_name in desired_tags:
+            if tag_name not in tags:
+                self._set_table_tag(cursor, desired_tags, tag_name)
+        for tag_name in tags:
+            if tag_name not in desired_tags:
+                self._unset_table_tag(cursor, tag_name)
+
+    def _unset_table_tag(self, cursor, tag_name):
+        cursor.execute(
+            f"ALTER TABLE {self.fqn} UNSET TAG {governance_settings.fqn(tag_name)}"
+        )
+
+    def _set_table_tag(self, cursor, desired_tags, tag_name):
+        cursor.execute(
+            f"ALTER TABLE {self.fqn} SET TAG {governance_settings.fqn(tag_name)} = '{desired_tags[tag_name]}'"
+        )
+
     def sync_tags(self, cursor: SnowflakeCursor) -> None:
-        tags = self.current_tags()
+        self.sync_tags_table(cursor)
+        self.sync_tags_columns(cursor)
+
+    def sync_tags_columns(self, cursor: SnowflakeCursor) -> None:
+        tags = self.current_column_tags()
         existing_tags = {
             f"{column}.{tag_name}.{tags[column][tag_name]}".casefold(): (
                 column,
@@ -464,20 +415,20 @@ class Table(BaseModel):
         for tag in existing_tags:
             if tag not in desired_tags:
                 column, tag_name, _value = existing_tags[tag]
-                self._unset_tag(cursor, column, tag_name)
+                self._unset_column_tag(cursor, column, tag_name)
 
         for tag in desired_tags:
             if tag not in existing_tags:
-                self._set_tag(cursor, *desired_tags[tag])
+                self._set_column_tag(cursor, *desired_tags[tag])
 
-    def _set_tag(
+    def _set_column_tag(
         self, cursor: SnowflakeCursor, column: str, tag_name: str, tag_value: str
     ) -> None:
         cursor.execute(
             f"""ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
         )
 
-    def _unset_tag(self, cursor: SnowflakeCursor, column: str, tag: str) -> None:
+    def _unset_column_tag(self, cursor: SnowflakeCursor, column: str, tag: str) -> None:
         cursor.execute(
             f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}'
         )
@@ -548,37 +499,3 @@ class Table(BaseModel):
         )
 
         return _execute_statement
-
-
-def _possibly_cast(s: str, old_column_type: str, new_column_type: str) -> str:
-    if old_column_type == "VARIANT" and new_column_type != "VARIANT":
-        return f"PARSE_JSON({s})"
-    return s
-
-
-def _matched(columns: list[Column], old_columns: dict[str, str]):
-    def tmp(x: str) -> str:
-        return f'tmp."{x}"'
-
-    return ",".join(
-        f'dest."{c.name}" = {_possibly_cast(tmp(c.name), old_columns.get(c.name), c.data_type)}'
-        for c in columns
-    )
-
-
-def _inserts(columns: list[Column], old_columns: dict[str, str]) -> str:
-    return ",".join(
-        _possibly_cast(f'tmp."{c.name}"', old_columns.get(c.name), c.data_type)
-        for c in columns
-    )
-
-
-def _type_cast(s: any) -> any:
-    if isinstance(s, (int, float)):
-        return str(s)
-    elif isinstance(s, str):
-        return f"'{s}'"
-    elif isinstance(s, (datetime, date)):
-        return f"'{s.isoformat()}'"
-    else:
-        return f"'{s}'"
