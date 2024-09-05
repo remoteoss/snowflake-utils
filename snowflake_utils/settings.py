@@ -1,4 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from snowflake.connector import SnowflakeConnection
+from snowflake.connector import connect as _connect
 
 
 class SnowflakeSettings(BaseSettings):
@@ -22,6 +24,13 @@ class SnowflakeSettings(BaseSettings):
             "role": self.role,
             "warehouse": self.warehouse,
         }
+
+    def connect(self) -> SnowflakeConnection:
+        return _connect(**self.creds())
+
+
+def connect() -> SnowflakeConnection:
+    return SnowflakeSettings().connect()
 
 
 class GovernanceSettings(BaseSettings):

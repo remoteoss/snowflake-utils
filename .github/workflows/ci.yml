@@ -5,7 +5,7 @@ on:
     tags-ignore:
       - "*.*.*"
 
-name: tests
+name: ci
 
 concurrency:
   group: tests
