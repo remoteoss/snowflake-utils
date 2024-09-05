@@ -452,7 +452,7 @@ class Table(BaseModel):
     def current_table_tags(self) -> dict[str, str]:
         return {
             tag_name.casefold(): tag_value
-            for _, tag_name, tag_value in set(self._current_tags("table"))
+            for _, tag_name, tag_value in self._current_tags("table")
         }
 
     def sync_tags_table(self, cursor: SnowflakeCursor) -> None:
