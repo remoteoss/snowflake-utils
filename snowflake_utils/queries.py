@@ -1,14 +1,7 @@
+import logging
 from typing import no_type_check
 
 from snowflake import connector
-
-from .settings import SnowflakeSettings
-import logging
-
-
-def connect() -> connector.SnowflakeConnection:
-    settings = SnowflakeSettings()
-    return connector.connect(**settings.creds())
 
 
 @no_type_check

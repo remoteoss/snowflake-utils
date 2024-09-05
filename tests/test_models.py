@@ -12,7 +12,7 @@ from snowflake_utils.models import (
     Table,
     TableStructure,
 )
-from snowflake_utils.queries import connect
+from snowflake_utils.settings import connect
 
 test_table_schema = TableStructure(
     columns={
