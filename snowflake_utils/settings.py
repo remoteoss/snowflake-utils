@@ -26,11 +26,11 @@ class SnowflakeSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="SNOWFLAKE_")
 
     account: str = "snowflake-test"
-    user: str = "snowflake"
-    password: str = "snowflake"
-    db: str = "snowflake"
-    role: str = "snowflake"
-    warehouse: str = "snowflake"
+    user: str = "snowlfake"
+    password: str = "snowlfake"
+    db: str = "snowlfake"
+    role: str = "snowlfake"
+    warehouse: str = "snowlfake"
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
     _schema: str | None = None
 

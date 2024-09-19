@@ -10,7 +10,7 @@ from snowflake_utils.settings import SnowflakeSettings
         "snowflake",
         "externalbrowser",
         "username_password_mfa",
-        "valid.okta.com",
+        "https://valid.okta.com",
     ],
 )
 def test_authenticator(authenticator: str) -> None:

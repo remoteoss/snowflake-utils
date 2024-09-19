@@ -52,3 +52,13 @@ test_table.copy(
 ## Table structure
 
 When initialising the table object you can pass a table structure that contains a dictionary of name: column, where Column is an object that contains the column data type and eventual tags to be applied to the column.
+
+## Authentication methods
+
+You can use multiple authentication methods by either passing `authenticator` to the SnowflakeSettings object or by setting the env variable `SNOWFLAKE_AUTHENTICATOR`.
+Available authenticators include:
+
+- `snowflake`: default, username + password
+- `username_password_mfa` which also caches the MFA token
+- `externalbrowser` to login through the browser
+- suppling an Okta domain -> currently untested
