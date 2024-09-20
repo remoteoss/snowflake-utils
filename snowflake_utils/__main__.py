@@ -4,8 +4,8 @@ import os
 import typer
 from typing_extensions import Annotated
 
-from ..snowflake_utils.settings import SnowflakeSettings
 from .models import Column, FileFormat, InlineFileFormat, Schema, Table
+from .settings import SnowflakeSettings
 
 app = typer.Typer()
 
@@ -43,7 +43,7 @@ def mass_single_column_update(
     new_column = Column(name=new_column, data_type=data_type)
     log_level = os.getenv("LOG_LEVEL", "INFO")
     logging.getLogger("snowflake-utils").setLevel(log_level)
-    with SnowflakeSettings.connect() as conn, conn.cursor() as cursor:
+    with SnowflakeSettings().connect() as conn, conn.cursor() as cursor:
         tables = db_schema.get_tables(cursor=cursor)
         for table in tables:
             columns = table.get_columns(cursor=cursor)
