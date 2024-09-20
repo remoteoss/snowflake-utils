@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v1.11.0 (2024-09-20)
+
+### Feature
+
+* feat: support oauth in snowflake utils (#14)
+
+* feat: allow multiple authentication methods
+
+* fix: tests, bump packages ([`6a6bcce`](https://github.com/remoteoss/snowflake-utils/commit/6a6bcce2b59ff775e5aae10109e88862af7b0858))
+
 ## v1.10.0 (2024-09-05)
 
 ### Feature
