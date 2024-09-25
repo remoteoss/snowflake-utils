@@ -394,7 +394,6 @@ class Table(BaseModel):
 
     def sync_tags_columns(self, cursor: SnowflakeCursor) -> None:
         tags = self.current_column_tags()
-        columns = [c.name.upper() for c in self.get_columns(cursor)]
         existing_tags = {
             f"{column}.{tag_name}.{tags[column][tag_name]}".casefold(): (
                 column,
@@ -411,7 +410,6 @@ class Table(BaseModel):
             for tag_name, tag_value in self.table_structure.columns[
                 column.casefold()
             ].tags.items()
-            if column.upper() in columns
         }
 
         for tag in existing_tags:
