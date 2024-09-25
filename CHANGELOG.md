@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v1.11.1 (2024-09-25)
+
+### Fix
+
+* fix: only set tags on columns that exist ([`d12836e`](https://github.com/remoteoss/snowflake-utils/commit/d12836e8908c33d7d5680aee23ae6689ce4e5245))
+
+### Unknown
+
+* Revert &#34;fix: only set tags on columns that exist&#34;
+
+This reverts commit d12836e8908c33d7d5680aee23ae6689ce4e5245. ([`b2e7817`](https://github.com/remoteoss/snowflake-utils/commit/b2e78179b38a4a1de3d38c1520a4a8fdee023edc))
+
 ## v1.11.0 (2024-09-20)
 
 ### Feature
