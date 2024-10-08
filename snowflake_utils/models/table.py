@@ -285,9 +285,9 @@ class Table(BaseModel):
         primary_keys: list[str],
         replication_keys: list[str] | None,
     ) -> None:
-        qualify_partition = ",".join(primary_keys)
+        qualify_partition = ",".join(f'"{c.upper()}"' for c in primary_keys)
         qualify_order = ",".join(
-            f"{c} desc" for c in (replication_keys or primary_keys)
+            f'"{c.upper()}" desc' for c in (replication_keys or primary_keys)
         )
         logging.debug(
             f"Adding QUALIFY to table {self.fqn} on PARTITION {qualify_partition} ORDERED BY {qualify_order}"
