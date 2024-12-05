@@ -344,32 +344,34 @@ class Table(BaseModel):
             f"UPDATE {self.fqn} SET {target_column.name} = {new_column.name};"
         )
 
-    def _current_tags(self, level: TagLevel) -> list[tuple[str, str, str]]:
-        with connect() as connection:
-            cursor = connection.cursor()
-            cursor.execute(
-                f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
+    def _current_tags(
+        self, level: TagLevel, cursor: SnowflakeCursor
+    ) -> list[tuple[str, str, str]]:
+        cursor.execute(
+            f"""select lower(column_name) as column_name, lower(tag_name) as tag_name, tag_value
                 from table(information_schema.tag_references_all_columns('{self.fqn}', 'table'))
                 where lower(level) = '{level.value}'
                 """
-            )
-            return cursor.fetchall()
+        )
+        return cursor.fetchall()
 
-    def current_column_tags(self) -> dict[str, dict[str, str]]:
+    def current_column_tags(self, cursor: SnowflakeCursor) -> dict[str, dict[str, str]]:
         tags = defaultdict(dict)
 
-        for column_name, tag_name, tag_value in self._current_tags(TagLevel.COLUMN):
+        for column_name, tag_name, tag_value in self._current_tags(
+            TagLevel.COLUMN, cursor
+        ):
             tags[column_name][tag_name] = tag_value
         return tags
 
-    def current_table_tags(self) -> dict[str, str]:
+    def current_table_tags(self, cursor: SnowflakeCursor) -> dict[str, str]:
         return {
             tag_name.casefold(): tag_value
-            for _, tag_name, tag_value in self._current_tags(TagLevel.TABLE)
+            for _, tag_name, tag_value in self._current_tags(TagLevel.TABLE, cursor)
         }
 
     def sync_tags_table(self, cursor: SnowflakeCursor) -> None:
-        tags = self.current_table_tags()
+        tags = self.current_table_tags(cursor=cursor)
         desired_tags = {k.casefold(): v for k, v in self.table_structure.tags.items()}
         for tag_name in desired_tags:
             if tag_name not in tags:
@@ -393,7 +395,7 @@ class Table(BaseModel):
         self.sync_tags_columns(cursor)
 
     def sync_tags_columns(self, cursor: SnowflakeCursor) -> None:
-        tags = self.current_column_tags()
+        tags = self.current_column_tags(cursor)
         existing_tags = {
             f"{column}.{tag_name}.{tags[column][tag_name]}".casefold(): (
                 column,
