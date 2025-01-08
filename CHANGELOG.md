@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.13.0 (2025-01-08)
+
+### Features
+
+- Qualify only on sync tags true ([#16](https://github.com/remoteoss/snowflake-utils/pull/16),
+  [`8179f5b`](https://github.com/remoteoss/snowflake-utils/commit/8179f5b2735bd9c4b15dc46c91a1ac6eee1af59d))
+
+
 ## v1.12.0 (2024-12-05)
 
 ### Features
