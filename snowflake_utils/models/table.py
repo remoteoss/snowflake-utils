@@ -173,7 +173,8 @@ class Table(BaseModel):
                     primary_keys=primary_keys,
                     replication_keys=replication_keys,
                 )
-                self.sync_tags(cursor)
+                if sync_tags and self.table_structure:
+                    self.sync_tags(cursor)
         else:
             return self._copy(
                 copy_query,
