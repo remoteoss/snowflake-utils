@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.14.0 (2025-01-10)
+
+### Features
+
+- Update typer
+  ([`b087cf0`](https://github.com/remoteoss/snowflake-utils/commit/b087cf09324e876de458bdb571c6f19a4088c2f6))
+
+
 ## v1.13.0 (2025-01-08)
 
 ### Features
