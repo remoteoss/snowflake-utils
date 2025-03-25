@@ -61,6 +61,8 @@ class GovernanceSettings(BaseSettings):
     governance_schema: str = "public"
 
     def fqn(self, object_name: str) -> str:
+        if len(object_name.split(".")) == 3:
+            return object_name
         return f"{self.governance_database}.{self.governance_schema}.{object_name}"
 
 

@@ -9,7 +9,7 @@ readme = "README.md"
 python = ">=3.10,<4.0"
 snowflake-connector-python = {extras = ["secure-local-storage"], version = "^3.12.1"}
 pydantic-settings = "^2.2.1"
-typer = "^0.15.0"
+typer = "^0.15.2"
 
 
 
