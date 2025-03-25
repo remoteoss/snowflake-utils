@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v1.15.0 (2025-03-25)
+
+### Features
+
+- Handle already full qualified tags ([#17](https://github.com/remoteoss/snowflake-utils/pull/17),
+  [`3aa58a9`](https://github.com/remoteoss/snowflake-utils/commit/3aa58a9e493804fc2874284107868e87a6e78ce7))
+
+
 ## v1.14.0 (2025-01-10)
 
 ### Features
