@@ -11,7 +11,7 @@ class TableStructure(BaseModel):
     def parsed_columns(self, replace_chars: bool = False) -> str:
         if replace_chars:
             return ", ".join(
-                f'"{str.upper(k).strip().replace("-","_")}" {v.data_type}'
+                f'"{str.upper(k).strip().replace("-", "_")}" {v.data_type}'
                 for k, v in self.columns.items()
             )
         else:

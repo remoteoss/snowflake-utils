@@ -81,7 +81,7 @@ class Table(BaseModel):
             return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
         else:
             return f"""
-            {'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn}
+            {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}
             USING TEMPLATE (
                 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
                 FROM TABLE(
@@ -152,7 +152,7 @@ class Table(BaseModel):
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {path}
-                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ''}
+                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
                 {self._include_metadata()}
