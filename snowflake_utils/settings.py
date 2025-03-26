@@ -52,7 +52,7 @@ class SnowflakeSettings(BaseSettings):
         if self.private_key_file is not None and os.path.exists(self.private_key_file):
             return base_creds | {
                 "private_key_file": self.private_key_file,
-                "private_key_password": self.private_key_password,
+                "private_key_file_pwd": self.private_key_password,
             }
         return base_creds | {"password": self.password}
 
