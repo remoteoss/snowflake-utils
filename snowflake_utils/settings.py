@@ -35,7 +35,7 @@ class SnowflakeSettings(BaseSettings):
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
     _schema: str | None = None
     private_key_file: str | None = None
-    private_key_file_pwd: str | None = None
+    private_key_password: str | None = None
 
     def creds(self) -> dict[str, str | None]:
         base_creds = {
@@ -52,7 +52,7 @@ class SnowflakeSettings(BaseSettings):
         if self.private_key_file is not None and os.path.exists(self.private_key_file):
             return base_creds | {
                 "private_key_file": self.private_key_file,
-                "private_key_password": self.private_key_file_pwd,
+                "private_key_password": self.private_key_password,
             }
         return base_creds | {"password": self.password}
 
