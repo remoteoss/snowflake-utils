@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v1.16.0 (2025-03-26)
+
+### Features
+
+- Add option for keypair auth ([#18](https://github.com/remoteoss/snowflake-utils/pull/18),
+  [`8982173`](https://github.com/remoteoss/snowflake-utils/commit/89821737ff447306301b84e39cc347e4cbb40c62))
+
+* feat: add option for keypair auth
+
+* fix: private key password
+
+* fix: pwd not password
+
+* fix: format
+
+
 ## v1.15.0 (2025-03-25)
 
 ### Features
