@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 from typing import Annotated
 
@@ -33,6 +34,8 @@ class SnowflakeSettings(BaseSettings):
     warehouse: str = "snowlfake"
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
     _schema: str | None = None
+    private_key_file: str | None = None
+    private_key_password: str | None = None
 
     def creds(self) -> dict[str, str | None]:
         base_creds = {
@@ -46,6 +49,11 @@ class SnowflakeSettings(BaseSettings):
         }
         if self.authenticator in (Authenticator.externalbrowser):
             return base_creds
+        if self.private_key_file is not None and os.path.exists(self.private_key_file):
+            return base_creds | {
+                "private_key_file": self.private_key_file,
+                "private_key_file_pwd": self.private_key_password,
+            }
         return base_creds | {"password": self.password}
 
     def connect(self) -> SnowflakeConnection:

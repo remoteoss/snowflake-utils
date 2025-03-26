@@ -15,7 +15,7 @@ typer = "^0.15.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
-ruff = "^0.3.4"
+ruff = "^0.11.2"
 snowflake-vcrpy = {git = "https://github.com/Snowflake-Labs/snowflake-vcrpy.git", rev = "50c7de2378177c39318f10eaba67e82f6fd8af39"}
 urllib3 = "<2.0"
 
