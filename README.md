@@ -20,7 +20,7 @@ In order to use this package, you can use environment variables to pass the conf
 These environment variables will be automatically be picked up by the SnowflakeSettings class.
 
 | Variable | Description |
------------ | --------------
+| -------- | ----------- |
 | SNOWFLAKE_ACCOUNT | The account identifier |
 | SNOWFLAKE_USER | The user that should log in |
 | SNOWFLAKE_PASSWORD | The password, if using password authentication method. Will be ignored if authenticator is set to `externalbrowser` |
@@ -40,14 +40,15 @@ The environment variables `GOVERNANCE_{DATABASE|SCHEMA}` will be used to determi
 
 ### The Table object
 
-The Table object has the following attributes: 
+The Table object has the following attributes:
 
 - name: the name of the object
 - schema_: the schema in which the table is located
 - database: the database in which the schema is located. Can be used to override the database specified in the settings
 - role: the role to be used to perform operations on the table. If set, it takes precedence over the one set in the connection
 - include_metadata: whether any [metadata](https://docs.snowflake.com/en/user-guide/querying-metadata#metadata-columns) should be included when COPYing files to the table. The corresponding columns need to exist.
-- table_structure: optional specification of the table structure, that will otherwise will be auto-inferred from the files 
+- table_structure: optional specification of the table structure, that will otherwise will be auto-inferred from the fields
+
 Available (public) methods:
 
 - *fqn*: returns the `database.schema.name`
@@ -55,10 +56,10 @@ Available (public) methods:
 - *temporary_file_format*: returns the name for a temporary file format based on table name and schema
 - *get_create_temporary_file_format_statement*: given the string definition of a file format, creates the corresponding temporary file format
 - *get_create_schema_statement*: generate the query to create the schema for the table (if not existing)
-- *get_create_table_statement*: generate the query to create the table, using the structure provided or auto-inferring (which can yield some incorret data types). Currently the auto-infer does not support metadata columns. This will use both 
+- *get_create_table_statement*: generate the query to create the table, using the structure provided or auto-inferring (which can yield some incorret data types). Currently the auto-infer does not support metadata columns.
 - *get_create_temporary_external_stage*: generate the query for a temporary stage for the table, based on the storage integration provided
 - *bulk_insert*: given a get of records, will insert them in a table, optionally fully refreshing it. This is a plain insert and not a COPY, don't use it for large data.
-- *copy_into*: takes, as input: 
+- *copy_into*: takes, as input:
   - a path (on S3)
   - a file format (either inline or already existing)
   - a match by column name parameter, defaulting to insensitive match between the file and the table
@@ -66,7 +67,7 @@ Available (public) methods:
   - a list of target columns, if not all the columns are present in the file to be loaded (or not all need to be writte)
   - whether to sync tags (provided in the table structure) to the table/columns
   - whether to perform a qualify on the table after loading the data. If this is used, a list of primary keys (and optionally of replication keys) should also be provided. If only the primary keys are supplied, those will also be used to determine which records are kept (non deterministic).
-- *create_table*: runs the create table statement, with optional full refresh to recreate an existing table. 
+- *create_table*: runs the create table statement, with optional full refresh to recreate an existing table.
 - *setup_file_format*: given a file format object, creates the corresponding resource in Snowflake
 - *get_columns*: returns the Columns of the table
 - *add_column*: adds a new column to the table
@@ -76,10 +77,10 @@ Available (public) methods:
 - *single_column_update*: shortand for running an UPDATE statement to update the values of one column with those of another
 - *current_column_tags*: extracts the tags currently applied to the columns
 - *current_table_tags*: extracts the tags currentlya applied on the table
-- *sync_tags*: syncs the tags specified in table structure to the table. There are also a `_columns` and a `_table` version of this method to only sync one of the two kinds of tags, but the more generic should be preferred.
+- *sync_tags*: syncs the tags specified in table structure to the table. There are also a `_columns` and a `_table` version of this method to only sync one of the two kinds of tags, but the more generic should be preferred. This method is automatically invoked by merge, and can be optionally invoked by `copy_into`.
 - *copy_custom*: same as `copy_into`, but allows custom transformation of the data that is being loaded. Useful if you need to extract nested json fields for optimizing queries, or if you need shallow transformations such as casting timestamps
 - *merge_custom*: same as `copy_custom` but for `merge`.
-- *setup_connection*: returns a cursor object with the context based on the table options 
+- *setup_connection*: returns a cursor object with the context based on the table options.
   
 You can pass a role, database and schema as an attribute of the Table class to override the corresponding env variables.
 
@@ -90,7 +91,7 @@ Additionally, you can either use an existing file format or pass the options for
 You don't need to know the schema of the file, Snowflake can infer the schema, but you have the option to input the schema as an attribute of the Table class.
 You can also use the merge method to include changes and optionally qualify the results to prevent duplicates.
 
-Example:
+Basic example:
 
 ```python
 #Given a table TEST in the schema PUBLIC
@@ -102,15 +103,36 @@ storage_integration = "DATA_STAGING"
 #S3 Path with the JSON file(s)
 path = "s3://example-bucket/example/path"
 #Run the copy cmd with full refresh
-test_table.copy(
+test_table.copy_into(
         path=path,
         file_format=json_file_format,
         storage_integration=storage_integration,
         full_refresh=True,
     )
+# Merge into an existing table 
+test_table.merge(
+    path=path, 
+    file_format=json_file_format, 
+    storage_integration=storage_integration,
+    primary_keys=['id'],
+    replication_keys=['updated_at'],
+)
 ```
 
-## Table structure
+### Table structure and Column
 
-When initialising the table object you can pass a table structure that contains a dictionary of name: column, where Column is an object that contains the column data type and eventual tags to be applied to the column.
+When initialising the table object you can pass a table structure that contains a dictionary of name: column, where `Column` is an object that contains the column data type and eventual tags to be applied to the column.
+`TableStructure` can also be used to specify the tags to be applied at the table level.
 
+`TableStructure` can also be used to sanitise column names, if `parsed_columns` is called with `replace_chars=True`, which will remove hypens from column names and replace them with underscores.
+
+```python
+
+```
+
+## File formats
+
+There are two available types of file formats:
+
+- `InlineFileFormat`: the `definition` is exactly the string that you would use to specify a file format on creation in Snowflake.
+- `FileFormat`: `database`, `schema_` and `name` of an exisitng Snowflake file format.
