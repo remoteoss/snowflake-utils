@@ -119,6 +119,31 @@ test_table.merge(
 )
 ```
 
+Example with copy/merge custom to unpack nested fields directly.
+
+```python
+column_definitions = {
+    "id": "$1:id",
+    "name": "$1:name",
+    "last_name": "$1:last_name",
+}
+test_table.copy_custom(
+    column_definitions=column_definitions,
+    path=path,
+    file_format=parquet_file_format,
+    storage_integration=storage_integration,
+    full_refresh=True,
+    sync_tags=True,
+)
+test_table.merge_custom(
+    column_definitions=column_definitions,
+    path=path,
+    file_format=parquet_file_format,
+    storage_integration=storage_integration,
+    primary_keys=["id"],
+)
+```
+
 ### Table structure and Column
 
 When initialising the table object you can pass a table structure that contains a dictionary of name: column, where `Column` is an object that contains the column data type and eventual tags to be applied to the column.
@@ -127,7 +152,14 @@ When initialising the table object you can pass a table structure that contains 
 `TableStructure` can also be used to sanitise column names, if `parsed_columns` is called with `replace_chars=True`, which will remove hypens from column names and replace them with underscores.
 
 ```python
-
+TableStructure(
+    columns={
+        "id": Column(name="id", data_type="integer", tags={"pii": "personal"}),
+        "name": Column(name="name", data_type="text"),
+        "last_name": Column(name="last_name", data_type="text"),
+    },
+    tags={"pii": "foo"},
+)
 ```
 
 ## File formats
