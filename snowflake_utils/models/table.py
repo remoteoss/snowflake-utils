@@ -286,6 +286,8 @@ class Table(BaseModel):
         primary_keys: list[str],
         replication_keys: list[str] | None,
     ) -> None:
+        if not primary_keys:
+            raise ValueError("Primary keys are required for qualifying")
         qualify_partition = ",".join(f'"{c.upper()}"' for c in primary_keys)
         qualify_order = ",".join(
             f'"{c.upper()}" desc' for c in (replication_keys or primary_keys)
