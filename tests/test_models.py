@@ -12,6 +12,7 @@ from snowflake_utils.models import (
     Table,
     TableStructure,
 )
+from snowflake_utils.models.column import MetadataColumn
 from snowflake_utils.settings import connect
 
 test_table_schema = TableStructure(
@@ -33,7 +34,7 @@ test_table_json_blob = Table(
 )
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 parquet_file_format = InlineFileFormat(definition="TYPE = PARQUET")
-storage_integration = "DATA_STAGING"
+storage_integration = "DATA_PRODUCTION"
 test_schema = Schema(name="PUBLIC", database="SANDBOX")
 logger = logging.getLogger(__name__)
 
@@ -120,6 +121,138 @@ def test_infer_schema_full_refresh() -> None:
         result = cursor.execute(statement).fetchall()[0][0]
         logger.info(result)
         assert result == f"Table {test_table.name} successfully created."
+
+
+@pytest.mark.snowflake_vcr
+def test_infer_schema_with_parquet() -> None:
+    """Test schema inference with Parquet file format."""
+    with connect() as conn, conn.cursor() as cursor:
+        cursor.execute(f"USE SCHEMA {test_table.schema_};")
+        # Create a table without table_structure to enable schema inference
+        infer_table = Table(name="PYTEST_INFER_PARQUET", schema_="PUBLIC")
+
+        # Create temporary stage
+        temporary_external_stage = cursor.execute(
+            infer_table.get_create_temporary_external_stage(
+                path=path, storage_integration=storage_integration
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_external_stage)
+
+        # Create temporary file format for Parquet
+        temporary_file_format = cursor.execute(
+            infer_table.get_create_temporary_file_format_statement(
+                file_format=parquet_file_format.definition
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_file_format)
+
+        # Create table with inferred schema
+        statement = infer_table.get_create_table_statement(full_refresh=True)
+        result = cursor.execute(statement).fetchall()[0][0]
+        logger.info(result)
+        assert result == f"Table {infer_table.name} successfully created."
+
+        # Clean up
+        infer_table.drop(cursor)
+
+
+@pytest.mark.snowflake_vcr
+def test_infer_schema_with_metadata() -> None:
+    """Test schema inference with metadata columns."""
+
+    with connect() as conn, conn.cursor() as cursor:
+        cursor.execute(f"USE SCHEMA {test_table.schema_};")
+        # Create a table with metadata columns
+        infer_table = Table(
+            name="PYTEST_INFER_METADATA",
+            schema_="PUBLIC",
+            include_metadata=[
+                MetadataColumn(
+                    name="file_name", data_type="string", metadata="FILE_NAME"
+                ),
+                MetadataColumn(
+                    name="file_row_number",
+                    data_type="number",
+                    metadata="FILE_ROW_NUMBER",
+                ),
+            ],
+        )
+
+        # Create temporary stage
+        temporary_external_stage = cursor.execute(
+            infer_table.get_create_temporary_external_stage(
+                path=path, storage_integration=storage_integration
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_external_stage)
+
+        # Create temporary file format
+        temporary_file_format = cursor.execute(
+            infer_table.get_create_temporary_file_format_statement(
+                file_format=parquet_file_format.definition
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_file_format)
+
+        # Create table with inferred schema and metadata
+        statement = infer_table.get_create_table_statement(full_refresh=True)
+        result = cursor.execute(statement).fetchall()[0][0]
+        logger.info(result)
+        assert result == f"Table {infer_table.name} successfully created."
+
+        # Verify metadata columns were added
+        columns = infer_table.get_columns(cursor)
+        column_names = [col.name for col in columns]
+        assert "file_name" in column_names
+        assert "file_row_number" in column_names
+
+        # Clean up
+        infer_table.drop(cursor)
+
+
+@pytest.mark.snowflake_vcr
+def test_infer_schema_with_evolution() -> None:
+    """Test schema inference with schema evolution enabled."""
+    with connect() as conn, conn.cursor() as cursor:
+        cursor.execute(f"USE SCHEMA {test_table.schema_};")
+        # Create a table with schema evolution enabled
+        infer_table = Table(
+            name="PYTEST_INFER_EVOLUTION",
+            schema_="PUBLIC",
+            enable_schema_evolution=True,
+        )
+
+        # Create temporary stage
+        temporary_external_stage = cursor.execute(
+            infer_table.get_create_temporary_external_stage(
+                path=path, storage_integration=storage_integration
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_external_stage)
+
+        # Create temporary file format
+        temporary_file_format = cursor.execute(
+            infer_table.get_create_temporary_file_format_statement(
+                file_format=parquet_file_format.definition
+            )
+        ).fetchall()[0][0]
+        logger.info(temporary_file_format)
+
+        # Create table with inferred schema and evolution enabled
+        statement = infer_table.get_create_table_statement(full_refresh=True)
+        result = cursor.execute(statement).fetchall()[0][0]
+        logger.info(result)
+        assert result == f"Table {infer_table.name} successfully created."
+
+        # Verify schema evolution is enabled
+        table_info = cursor.execute(f"SHOW TABLES LIKE '{infer_table.name}'").fetchall()
+        for i, column in enumerate(cursor.description):
+            if column.name == "enable_schema_evolution":
+                assert table_info[0][i] == "Y"
+
+        # Clean up
+        infer_table.drop(cursor)
 
 
 @pytest.mark.snowflake_vcr

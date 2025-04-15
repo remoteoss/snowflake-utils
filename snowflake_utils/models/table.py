@@ -7,7 +7,7 @@ from snowflake.connector.cursor import SnowflakeCursor
 
 from ..queries import execute_statement
 from ..settings import connect, governance_settings
-from .column import Column, _inserts, _matched, _type_cast
+from .column import Column, MetadataColumn, _inserts, _matched, _type_cast
 from .enums import MatchByColumnName, TagLevel
 from .file_format import FileFormat, InlineFileFormat
 from .table_structure import TableStructure
@@ -19,14 +19,15 @@ class Table(BaseModel):
     table_structure: TableStructure | None = None
     role: str | None = None
     database: str | None = None
-    include_metadata: dict[str, str] = Field(default_factory=dict)
+    include_metadata: list[MetadataColumn] = Field(default_factory=list)
+    enable_schema_evolution: bool = False
 
     def _include_metadata(self) -> str:
         if not self.include_metadata:
             return ""
         else:
             metadata = ", ".join(
-                f"{k}=METADATA${v}" for k, v in self.include_metadata.items()
+                f"{m.name}=METADATA${m.metadata}" for m in self.include_metadata
             )
             return f"INCLUDE_METADATA = ({metadata})"
 
@@ -80,18 +81,40 @@ class Table(BaseModel):
         if self.table_structure:
             return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
         else:
+            template = """ARRAY_AGG(
+                OBJECT_CONSTRUCT(
+                    'COLUMN_NAME',
+                    COLUMN_NAME,
+                    'TYPE',
+                    IFF(STARTSWITH(TYPE, 'NUMBER'), 'NUMBER(38,6)', TYPE),
+                    'NULLABLE',
+                    NULLABLE,
+                    'EXPRESSION',
+                    EXPRESSION, 
+                    'FILENAMES',
+                    FILENAMES, 
+                    'ORDER_ID',
+                    ORDER_ID
+                )
+            )"""
+            if self.include_metadata:
+                metadata_columns_query = ", ".join(
+                    f"OBJECT_CONSTRUCT('COLUMN_NAME', '{m.name}', 'TYPE', '{m.data_type}', 'NULLABLE', 'FALSE')"
+                    for m in self.include_metadata
+                )
+                template = f"ARRAY_CAT({template} WITHIN GROUP (ORDER BY order_id), ARRAY_CONSTRUCT({metadata_columns_query}))"
             return f"""
             {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}
             USING TEMPLATE (
-                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                SELECT {template}
                 FROM TABLE(
                     INFER_SCHEMA(
                     LOCATION=>'@{self.temporary_stage}',
                     FILE_FORMAT=>'{self.temporary_file_format}',
                     IGNORE_CASE => TRUE
-                    )
-                ));
-            
+                )
+                )
+            ) ENABLE_SCHEMA_EVOLUTION = {self.enable_schema_evolution};
             """
 
     def bulk_insert(

@@ -41,3 +41,11 @@ def _type_cast(s: any) -> any:
         return f"'{s.isoformat()}'"
     else:
         return f"'{s}'"
+
+
+class MetadataColumn(BaseModel):
+    name: str
+    data_type: str
+    metadata: str = Field(
+        description="The metadata to be added to the column, for example FILE_ROW_NUMBER"
+    )
