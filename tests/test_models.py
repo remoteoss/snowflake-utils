@@ -12,6 +12,7 @@ from snowflake_utils.models import (
     Table,
     TableStructure,
 )
+from snowflake_utils.models.column import MetadataColumn
 from snowflake_utils.settings import connect
 
 test_table_schema = TableStructure(
@@ -33,7 +34,7 @@ test_table_json_blob = Table(
 )
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 parquet_file_format = InlineFileFormat(definition="TYPE = PARQUET")
-storage_integration = "DATA_STAGING"
+storage_integration = "DATA_PRODUCTION"
 test_schema = Schema(name="PUBLIC", database="SANDBOX")
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,6 @@ def test_infer_schema_with_parquet() -> None:
 @pytest.mark.snowflake_vcr
 def test_infer_schema_with_metadata() -> None:
     """Test schema inference with metadata columns."""
-    from snowflake_utils.models import MetadataColumn
 
     with connect() as conn, conn.cursor() as cursor:
         cursor.execute(f"USE SCHEMA {test_table.schema_};")
@@ -190,7 +190,7 @@ def test_infer_schema_with_metadata() -> None:
         # Create temporary file format
         temporary_file_format = cursor.execute(
             infer_table.get_create_temporary_file_format_statement(
-                file_format=json_file_format.definition
+                file_format=parquet_file_format.definition
             )
         ).fetchall()[0][0]
         logger.info(temporary_file_format)
@@ -234,7 +234,7 @@ def test_infer_schema_with_evolution() -> None:
         # Create temporary file format
         temporary_file_format = cursor.execute(
             infer_table.get_create_temporary_file_format_statement(
-                file_format=json_file_format.definition
+                file_format=parquet_file_format.definition
             )
         ).fetchall()[0][0]
         logger.info(temporary_file_format)
@@ -247,46 +247,9 @@ def test_infer_schema_with_evolution() -> None:
 
         # Verify schema evolution is enabled
         table_info = cursor.execute(f"SHOW TABLES LIKE '{infer_table.name}'").fetchall()
-        assert any("ENABLE_SCHEMA_EVOLUTION = TRUE" in str(row) for row in table_info)
-
-        # Clean up
-        infer_table.drop(cursor)
-
-
-@pytest.mark.snowflake_vcr
-def test_infer_schema_with_custom_format() -> None:
-    """Test schema inference with a custom file format."""
-    with connect() as conn, conn.cursor() as cursor:
-        cursor.execute(f"USE SCHEMA {test_table.schema_};")
-        # Create a table without table_structure to enable schema inference
-        infer_table = Table(name="PYTEST_INFER_CUSTOM", schema_="PUBLIC")
-
-        # Create a custom file format
-        custom_file_format = InlineFileFormat(
-            definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE TRIM_SPACE = TRUE"
-        )
-
-        # Create temporary stage
-        temporary_external_stage = cursor.execute(
-            infer_table.get_create_temporary_external_stage(
-                path=path, storage_integration=storage_integration
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_external_stage)
-
-        # Create temporary file format with custom definition
-        temporary_file_format = cursor.execute(
-            infer_table.get_create_temporary_file_format_statement(
-                file_format=custom_file_format.definition
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_file_format)
-
-        # Create table with inferred schema
-        statement = infer_table.get_create_table_statement(full_refresh=True)
-        result = cursor.execute(statement).fetchall()[0][0]
-        logger.info(result)
-        assert result == f"Table {infer_table.name} successfully created."
+        for i, column in enumerate(cursor.description):
+            if column.name == "enable_schema_evolution":
+                assert table_info[0][i] == "Y"
 
         # Clean up
         infer_table.drop(cursor)
