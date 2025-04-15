@@ -1,6 +1,32 @@
 # CHANGELOG
 
 
+## v1.17.0 (2025-04-15)
+
+### Chores
+
+- Write snowflake utils documentation ([#19](https://github.com/remoteoss/snowflake-utils/pull/19),
+  [`4065b70`](https://github.com/remoteoss/snowflake-utils/commit/4065b70b1b10fa9fd0baff118899b029675bd7d7))
+
+* feat: start writing docs
+
+* fix: add remaining objects
+
+* feat: examples
+
+* fix: grammar review
+
+### Features
+
+- Improve s3 generic loader to snowflake to handle metadata
+  ([#20](https://github.com/remoteoss/snowflake-utils/pull/20),
+  [`b284798`](https://github.com/remoteoss/snowflake-utils/commit/b284798f63a0f800610eb2ffcbeb715696a11c3d))
+
+* feat: add code
+
+* fix: tests
+
+
 ## v1.16.0 (2025-03-26)
 
 ### Features
