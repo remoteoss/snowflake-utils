@@ -132,20 +132,10 @@ def test_infer_schema_with_parquet() -> None:
         infer_table = Table(name="PYTEST_INFER_PARQUET", schema_="PUBLIC")
 
         # Create temporary stage
-        temporary_external_stage = cursor.execute(
-            infer_table.get_create_temporary_external_stage(
-                path=path, storage_integration=storage_integration
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_external_stage)
+        infer_table.setup_stage(cursor.execute, storage_integration, path)
 
         # Create temporary file format for Parquet
-        temporary_file_format = cursor.execute(
-            infer_table.get_create_temporary_file_format_statement(
-                file_format=parquet_file_format.definition
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_file_format)
+        infer_table.setup_file_format(cursor.execute, parquet_file_format)
 
         # Create table with inferred schema
         statement = infer_table.get_create_table_statement(full_refresh=True)
@@ -180,20 +170,10 @@ def test_infer_schema_with_metadata() -> None:
         )
 
         # Create temporary stage
-        temporary_external_stage = cursor.execute(
-            infer_table.get_create_temporary_external_stage(
-                path=path, storage_integration=storage_integration
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_external_stage)
+        infer_table.setup_stage(cursor.execute, storage_integration, path)
 
-        # Create temporary file format
-        temporary_file_format = cursor.execute(
-            infer_table.get_create_temporary_file_format_statement(
-                file_format=parquet_file_format.definition
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_file_format)
+        # Create temporary file format for Parquet
+        infer_table.setup_file_format(cursor.execute, parquet_file_format)
 
         # Create table with inferred schema and metadata
         statement = infer_table.get_create_table_statement(full_refresh=True)
@@ -224,20 +204,8 @@ def test_infer_schema_with_evolution() -> None:
         )
 
         # Create temporary stage
-        temporary_external_stage = cursor.execute(
-            infer_table.get_create_temporary_external_stage(
-                path=path, storage_integration=storage_integration
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_external_stage)
-
-        # Create temporary file format
-        temporary_file_format = cursor.execute(
-            infer_table.get_create_temporary_file_format_statement(
-                file_format=parquet_file_format.definition
-            )
-        ).fetchall()[0][0]
-        logger.info(temporary_file_format)
+        infer_table.setup_stage(cursor.execute, storage_integration, path)
+        infer_table.setup_file_format(cursor.execute, parquet_file_format)
 
         # Create table with inferred schema and evolution enabled
         statement = infer_table.get_create_table_statement(full_refresh=True)
@@ -259,7 +227,7 @@ def test_infer_schema_with_evolution() -> None:
 def test_copy_full_refresh() -> None:
     result = test_table.copy_into(
         path=path,
-        file_format=json_file_format,
+        file_format=parquet_file_format,
         storage_integration=storage_integration,
         full_refresh=True,
     )
@@ -270,7 +238,7 @@ def test_copy_full_refresh() -> None:
 def test_copy_full_existing_table() -> None:
     result = test_table.copy_into(
         path=path,
-        file_format=json_file_format,
+        file_format=parquet_file_format,
         storage_integration=storage_integration,
         full_refresh=False,
     )
@@ -375,6 +343,50 @@ def test_copy_with_tags() -> None:
         assert dict(test_table.current_table_tags(cursor)) == {"pii": "foo"}
 
     test_table.drop()
+
+
+@pytest.mark.snowflake_vcr
+def test_use_existing_stage() -> None:
+    """Test using an existing stage instead of a temporary stage."""
+    # Create a table that uses an existing stage
+    stage_table = Table(
+        name="PYTEST_STAGE",
+        schema_="PUBLIC",
+        database="SANDBOX",
+        use_temporary_stage=False,
+        table_structure=test_table_schema,
+    )
+    stage_name = f"{stage_table.schema_}.MY_STAGE"
+
+    # Create the stage first
+    with connect() as conn, conn.cursor() as cursor:
+        cursor.execute(
+            f"""
+            CREATE OR REPLACE STAGE {stage_name}
+            URL='{path}'
+            STORAGE_INTEGRATION = {storage_integration}
+            """
+        )
+
+        stage_table.setup_file_format(cursor.execute, parquet_file_format)
+        stage_table.setup_stage(cursor.execute, stage=stage_name)
+
+        statement = stage_table.get_create_table_statement(full_refresh=True)
+        result = cursor.execute(statement).fetchall()[0][0]
+        assert result == f"Table {stage_table.name} successfully created."
+
+    # Test copying data using the stage
+    result = stage_table.copy_into(
+        file_format=parquet_file_format,
+        path=f"@{stage_table.schema_}.MY_STAGE",
+        full_refresh=True,
+    )
+    assert result[0][1] == "LOADED"
+
+    # Clean up
+    with connect() as conn, conn.cursor() as cursor:
+        stage_table.drop(cursor)
+        cursor.execute(f"DROP STAGE {stage_table.schema_}.MY_STAGE")
 
 
 @pytest.mark.snowflake_vcr

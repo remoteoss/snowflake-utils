@@ -21,6 +21,20 @@ class Table(BaseModel):
     database: str | None = None
     include_metadata: list[MetadataColumn] = Field(default_factory=list)
     enable_schema_evolution: bool = False
+    _file_format: FileFormat | None = None
+    _stage: str | None = None
+
+    @property
+    def file_format(self) -> str:
+        if self._file_format:
+            return self._file_format
+        raise ValueError("Call setup_file_format to set the file format")
+
+    @property
+    def stage(self) -> str:
+        if self._stage:
+            return self._stage
+        raise ValueError("Call setup_stage to set the stage")
 
     def _include_metadata(self) -> str:
         if not self.include_metadata:
@@ -103,14 +117,16 @@ class Table(BaseModel):
                     for m in self.include_metadata
                 )
                 template = f"ARRAY_CAT({template} WITHIN GROUP (ORDER BY order_id), ARRAY_CONSTRUCT({metadata_columns_query}))"
+
+            stage_query = f"LOCATION => '@{self.stage}'"
             return f"""
             {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}
             USING TEMPLATE (
                 SELECT {template}
                 FROM TABLE(
                     INFER_SCHEMA(
-                    LOCATION=>'@{self.temporary_stage}',
-                    FILE_FORMAT=>'{self.temporary_file_format}',
+                    {stage_query},
+                    FILE_FORMAT=>'{self.file_format}',
                     IGNORE_CASE => TRUE
                 )
                 )
@@ -146,17 +162,19 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         full_refresh: bool = False,
         sync_tags: bool = False,
+        stage: str | None = None,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
-            execute = self.setup_connection(path, storage_integration, cursor)
-            file_format = self.setup_file_format(file_format, execute)
+            execute = self.setup_connection(
+                path, storage_integration, cursor, file_format, stage
+            )
             self.create_table(full_refresh, execute)
 
             if sync_tags and self.table_structure:
                 self.sync_tags(cursor)
             logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
-            return execute(query.format(file_format=file_format))
+            return execute(query.format(file_format=self.file_format))
 
     def copy_into(
         self,
@@ -170,7 +188,10 @@ class Table(BaseModel):
         primary_keys: list[str] = ["id"],
         replication_keys: list[str] | None = None,
         qualify: bool = False,
+        stage: str | None = None,
     ) -> None:
+        if stage:
+            path = f"@{stage}/{path}"
         col_str = f"({', '.join(target_columns)})" if target_columns else ""
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
@@ -212,7 +233,9 @@ class Table(BaseModel):
         execute_statement(self.get_create_table_statement(full_refresh))
 
     def setup_file_format(
-        self, file_format: FileFormat | InlineFileFormat, execute_statement: callable
+        self,
+        execute_statement: callable,
+        file_format: FileFormat | InlineFileFormat,
     ) -> FileFormat:
         if isinstance(file_format, InlineFileFormat):
             execute_statement(
@@ -221,6 +244,7 @@ class Table(BaseModel):
                 )
             )
             file_format = self.temporary_file_format
+        self._file_format = file_format
         return file_format
 
     def get_columns(self, cursor: SnowflakeCursor) -> list[Column]:
@@ -469,6 +493,7 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         full_refresh: bool = False,
         sync_tags: bool = False,
+        stage: str | None = None,
     ) -> None:
         column_names = ", ".join(column_definitions.keys())
         definitions = ", ".join(column_definitions.values())
@@ -476,7 +501,7 @@ class Table(BaseModel):
         query = f"""
                 COPY INTO {self.fqn} ({column_names})
                 FROM 
-                (select {definitions} from @{self.temporary_stage}/)
+                (select {definitions} from @{self.stage}/)
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 """
         return self._copy(
@@ -506,7 +531,12 @@ class Table(BaseModel):
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
 
     def setup_connection(
-        self, path: str, storage_integration: str, cursor: SnowflakeCursor
+        self,
+        path: str,
+        storage_integration: str,
+        cursor: SnowflakeCursor,
+        file_format: FileFormat | InlineFileFormat,
+        stage: str | None = None,
     ) -> callable:
         """Setup the connection including custom role, database, schema, and temporary stage"""
         _execute_statement = partial(execute_statement, cursor)
@@ -517,13 +547,27 @@ class Table(BaseModel):
             logging.debug(f"Using database: {self.database}")
             _execute_statement(f"USE DATABASE {self.database}")
 
+        self.setup_file_format(_execute_statement, file_format)
+        self.setup_stage(_execute_statement, storage_integration, path, stage)
+
         _execute_statement(self.get_create_schema_statement())
         logging.debug(f"Using schema: {self.schema_}")
         _execute_statement(f"USE SCHEMA {self.schema_}")
-        _execute_statement(
-            self.get_create_temporary_external_stage(
-                path=path, storage_integration=storage_integration
-            )
-        )
 
         return _execute_statement
+
+    def setup_stage(
+        self,
+        execute_statement: callable,
+        storage_integration: str | None = None,
+        path: str | None = None,
+        stage: str | None = None,
+    ) -> None:
+        if stage:
+            self._stage = f"{stage}/{path}"
+
+        if storage_integration and path:
+            execute_statement(
+                self.get_create_temporary_external_stage(path, storage_integration)
+            )
+            self._stage = self.temporary_stage
