@@ -67,6 +67,7 @@ Available (public) methods:
   - a list of target columns, if not all the columns are present in the file to be loaded (or not all need to be written)
   - whether to sync tags (provided in the table structure) to the table/columns
   - whether to perform a qualify on the table after loading the data. If this is used, a list of primary keys (and optionally of replication keys) should also be provided. If only the primary keys are supplied, those will also be used to determine which records are kept (non deterministic).
+  - a stage parameter to use an existing stage instead of creating a temporary one
 - *create_table*: runs the create table statement, with optional full refresh to recreate an existing table.
 - *setup_file_format*: given a file format object, creates the corresponding resource in Snowflake
 - *get_columns*: returns the Columns of the table
@@ -84,7 +85,7 @@ Available (public) methods:
   
 You can pass a role, database and schema as an attribute of the Table class to override the corresponding env variables.
 
-In order to use the copy method of the Table class, you need an S3 bucket with the desired files to load into Snowflake, a [Storage Integration](https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration) with access to that bucket and a role that has access to this Storage Integration. Using existing stages is currently not supported directly, you need to compose your queries accordingly.
+In order to use the copy method of the Table class, you need an S3 bucket with the desired files to load into Snowflake, a [Storage Integration](https://docs.snowflake.com/en/user-guide/data-load-s3-config-storage-integration) with access to that bucket and a role that has access to this Storage Integration. You can either use an existing stage or let the library create a temporary one for you.
 
 Additionally, you can either use an existing file format or pass the options for a temporary file format to be created. See [this](https://docs.snowflake.com/en/sql-reference/sql/create-file-format#format-type-options-formattypeoptions) for all the available options.
 
@@ -119,7 +120,7 @@ test_table.merge(
 )
 ```
 
-Example with copy/merge custom to unpack nested fields directly.
+Example with copy/merge custom to unpack nested fields directly:
 
 ```python
 column_definitions = {
@@ -142,6 +143,64 @@ test_table.merge_custom(
     storage_integration=storage_integration,
     primary_keys=["id"],
 )
+```
+
+Example using an existing stage:
+
+```python
+# Create a table that uses an existing stage
+stage_table = Table(
+    name="CUSTOMERS",
+    schema_="DATA",
+    database="PROD",
+)
+stage_name = f"{stage_table.schema_}.CUSTOMER_STAGE"
+
+# Create the stage first
+with connect() as conn, conn.cursor() as cursor:
+    cursor.execute(
+        f"""
+        CREATE OR REPLACE STAGE {stage_name}
+        URL='{path}'
+        STORAGE_INTEGRATION = {storage_integration}
+        """
+    )
+
+# Use the existing stage for copying data
+stage_table.copy_into(
+    file_format=parquet_file_format,
+    path=f"@{stage_table.schema_}.CUSTOMER_STAGE",
+    full_refresh=True,
+)
+```
+
+Example using different file formats:
+
+```python
+# Using an inline JSON file format
+json_file_format = InlineFileFormat(
+    definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE"
+)
+
+# Using an inline CSV file format
+csv_file_format = InlineFileFormat(
+    definition="TYPE = CSV FIELD_DELIMITER = ',' FIELD_OPTIONALLY_ENCLOSED_BY = '\"' NULL_IF = ('NULL', 'null') EMPTY_FIELD_AS_NULL = TRUE"
+)
+
+# Using an inline Parquet file format
+parquet_file_format = InlineFileFormat(
+    definition="TYPE = PARQUET"
+)
+
+# Using an existing file format
+existing_file_format = FileFormat(
+    database="PROD",
+    schema_="DATA",
+    name="STANDARD_CSV_FORMAT"
+)
+
+# Using a file format from a string
+file_format_from_string = FileFormat.from_string("PROD.DATA.STANDARD_CSV_FORMAT")
 ```
 
 ### Table structure and Column
