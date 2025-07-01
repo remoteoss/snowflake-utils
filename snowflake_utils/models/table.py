@@ -189,16 +189,24 @@ class Table(BaseModel):
         replication_keys: list[str] | None = None,
         qualify: bool = False,
         stage: str | None = None,
+        files: list[str] | None = None,
     ) -> None:
         if stage:
             path = f"@{stage}/{path}"
         col_str = f"({', '.join(target_columns)})" if target_columns else ""
+        files_clause = ""
+        if files:
+            # Format files list properly for Snowflake FILES clause
+            files_str = "', '".join(files)
+            files_clause = f"FILES = ('{files_str}')"
+
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {path}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
+                {files_clause}
                 {self._include_metadata()}
                 """
         if qualify:
@@ -315,6 +323,7 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
         qualify: bool = False,
+        files: list[str] | None = None,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_into(
@@ -323,6 +332,7 @@ class Table(BaseModel):
                 file_format=file_format,
                 match_by_column_name=match_by_column_name,
                 sync_tags=sync_tags,
+                files=files,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
