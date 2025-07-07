@@ -1,8 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from unittest.mock import patch, MagicMock
-
+from unittest.mock import MagicMock, patch
 
 from snowflake_utils.models import (
     Column,
@@ -23,10 +22,12 @@ test_table_schema = TableStructure(
     tags={"pii": "foo"},
 )
 path = os.getenv("S3_TEST_PATH", "s3://example-bucket/example/path")
-test_table = Table(name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema)
+test_table = Table(
+    name="PYTEST", schema_name="PUBLIC", table_structure=test_table_schema
+)
 test_table_json_blob = Table(
     name="PYTEST_JSON_BLOB",
-    schema_="PUBLIC",
+    schema_name="PUBLIC",
     table_structure=TableStructure(
         columns={"payload": Column(name="payload", data_type="variant")}
     ),
@@ -74,8 +75,8 @@ def test_create_schema(mock_connect):
     mock_connect.return_value = mock_conn
     statement = test_table.get_create_schema_statement()
     result = mock_cursor.execute(statement).fetchall()[0][0]
-    assert ("statement succeeded" in result and test_table.schema_ in result) or (
-        result == f"Schema {test_table.schema_} successfully created."
+    assert ("statement succeeded" in result and test_table.schema_name in result) or (
+        result == f"Schema {test_table.schema_name} successfully created."
     )
 
 
@@ -146,7 +147,7 @@ def test_infer_schema_full_refresh(mock_connect):
     )
     mock_conn = make_mock_conn(cursor=mock_cursor)
     mock_connect.return_value = mock_conn
-    mock_cursor.execute(f"USE SCHEMA {test_table.schema_};")
+    mock_cursor.execute(f"USE SCHEMA {test_table.schema_name};")
     mock_cursor.execute(
         test_table.get_create_temporary_external_stage(
             path=path, storage_integration=storage_integration
@@ -170,9 +171,9 @@ def test_infer_schema_with_parquet(mock_connect):
     )
     mock_conn = make_mock_conn(cursor=mock_cursor)
     mock_connect.return_value = mock_conn
-    mock_cursor.execute(f"USE SCHEMA {test_table.schema_};")
+    mock_cursor.execute(f"USE SCHEMA {test_table.schema_name};")
     # Create a table without table_structure to enable schema inference
-    infer_table = Table(name="PYTEST_INFER_PARQUET", schema_="PUBLIC")
+    infer_table = Table(name="PYTEST_INFER_PARQUET", schema_name="PUBLIC")
 
     # Create temporary stage
     infer_table.setup_stage(mock_cursor.execute, storage_integration, path)
@@ -210,11 +211,11 @@ def test_infer_schema_with_metadata(mock_connect):
     )
     mock_conn = make_mock_conn(cursor=mock_cursor)
     mock_connect.return_value = mock_conn
-    mock_cursor.execute(f"USE SCHEMA {test_table.schema_};")
+    mock_cursor.execute(f"USE SCHEMA {test_table.schema_name};")
     # Create a table with metadata columns
     infer_table = Table(
         name="PYTEST_INFER_METADATA",
-        schema_="PUBLIC",
+        schema_name="PUBLIC",
         include_metadata=[
             MetadataColumn(name="file_name", data_type="string", metadata="FILE_NAME"),
             MetadataColumn(
@@ -254,11 +255,11 @@ def test_infer_schema_with_evolution(mock_connect):
     )
     mock_conn = make_mock_conn(cursor=mock_cursor)
     mock_connect.return_value = mock_conn
-    mock_cursor.execute(f"USE SCHEMA {test_table.schema_};")
+    mock_cursor.execute(f"USE SCHEMA {test_table.schema_name};")
     # Create a table with schema evolution enabled
     infer_table = Table(
         name="PYTEST_INFER_EVOLUTION",
-        schema_="PUBLIC",
+        schema_name="PUBLIC",
         enable_schema_evolution=True,
     )
 
@@ -400,7 +401,7 @@ def test_bulk_insert(mock_connect, mock_bulk_insert):
         }
     )
     test_table = Table(
-        name="PYTEST", schema_="PUBLIC", table_structure=test_table_schema
+        name="PYTEST", schema_name="PUBLIC", table_structure=test_table_schema
     )
     records = {
         "1": {"id": 1, "name": "test", "loaded_at": datetime(2024, 7, 4)},
@@ -471,12 +472,12 @@ def test_use_existing_stage(mock_connect):
     # Create a table that uses an existing stage
     stage_table = Table(
         name="PYTEST_STAGE",
-        schema_="PUBLIC",
+        schema_name="PUBLIC",
         database="SANDBOX",
         use_temporary_stage=False,
         table_structure=test_table_schema,
     )
-    stage_name = f"{stage_table.schema_}.MY_STAGE"
+    stage_name = f"{stage_table.schema_name}.MY_STAGE"
 
     # Create the stage first
     with mock_conn as conn, conn.cursor() as cursor:
@@ -500,7 +501,7 @@ def test_use_existing_stage(mock_connect):
         mock_copy.return_value = [("test_file.parquet", "LOADED")]
         result = stage_table.copy_into(
             file_format=parquet_file_format,
-            path=f"@{stage_table.schema_}.MY_STAGE",
+            path=f"@{stage_table.schema_name}.MY_STAGE",
             full_refresh=True,
         )
         assert result[0][1] == "LOADED"
@@ -508,7 +509,7 @@ def test_use_existing_stage(mock_connect):
     # Clean up
     with mock_conn as conn, conn.cursor() as cursor:
         stage_table.drop(cursor)
-        cursor.execute(f"DROP STAGE {stage_table.schema_}.MY_STAGE")
+        cursor.execute(f"DROP STAGE {stage_table.schema_name}.MY_STAGE")
 
 
 @patch.object(Table, "drop")
@@ -606,7 +607,7 @@ def test_copy_with_files(mock_copy) -> None:
     mock_copy.return_value = [("test_file.parquet", "LOADED")]
 
     # Create a table instance
-    table = Table(name="TEST_TABLE", schema_="TEST_SCHEMA")
+    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
 
     # Test with files parameter
     result = table.copy_into(
@@ -629,7 +630,7 @@ def test_copy_with_files(mock_copy) -> None:
 def test_merge_with_files(mock_merge) -> None:
     """Test merge method with specific files parameter."""
     # Create a table instance
-    table = Table(name="TEST_TABLE", schema_="TEST_SCHEMA")
+    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
 
     # Test merge with files parameter
     table.merge(
@@ -651,7 +652,7 @@ def test_merge_with_files(mock_merge) -> None:
         mock_copy.return_value = [("test_file.parquet", "LOADED")]
 
         # Create a temporary table to test the copy_callable
-        temp_table = Table(name="TEMP_TABLE", schema_="TEST_SCHEMA")
+        temp_table = Table(name="TEMP_TABLE", schema_name="TEST_SCHEMA")
 
         # Call the copy_callable (this simulates what happens inside _merge)
         copy_callable(temp_table, sync_tags=False)
@@ -670,7 +671,7 @@ def test_copy_into_files_parameter_formatting(mock_copy) -> None:
     mock_copy.return_value = [("test_file.parquet", "LOADED")]
 
     # Create a table instance
-    table = Table(name="TEST_TABLE", schema_="TEST_SCHEMA")
+    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
 
     # Test with files parameter
     table.copy_into(
