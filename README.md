@@ -30,8 +30,10 @@ These environment variables will be automatically picked up by the SnowflakeSett
 | SNOWFLAKE_AUTHENTICATOR | The authenticator to be used, can be `snowflake`, `externalbrowser` or `username_password_mfa`. Will be ignored if private key file is specified and exists. |
 | SNOWFLAKE_PRIVATE_KEY_FILE | The file that contains the private key to be used for authentication. This is *the path* to the file, not the content. |
 | SNOWFLAKE_PRIVATE_KEY_PASSWORD | The optional password for the above file. |
+| SNOWFLAKE_SCHEMA | The schema to be set as context for the connection |
+| SNOWFLAKE_APPLICATION | The application name to be used for the connection |
 
-When manually initializing the SnowflakeSettings class you can override any of these attributes (and the `_schema` attribute to set a schema in your context), depending on your needs.
+When manually initializing the SnowflakeSettings class you can override any of these attributes (and the `schema_name` attribute to set a schema in your context), depending on your needs.
 
 ### Governance settings
 
@@ -43,7 +45,7 @@ The environment variables `GOVERNANCE_{DATABASE|SCHEMA}` will be used to determi
 The Table object has the following attributes:
 
 - name: the name of the object
-- schema_: the schema in which the table is located
+- schema_name: the schema in which the table is located
 - database: the database in which the schema is located. Can be used to override the database specified in the settings
 - role: the role to be used to perform operations on the table. If set, it takes precedence over the one set in the connection
 - include_metadata: whether any [metadata](https://docs.snowflake.com/en/user-guide/querying-metadata#metadata-columns) should be included when COPYing files to the table. The corresponding columns need to exist.
@@ -96,7 +98,7 @@ Basic example:
 
 ```python
 #Given a table TEST in the schema PUBLIC
-test_table = Table(name="TEST", schema_="PUBLIC")
+test_table = Table(name="TEST", schema_name="PUBLIC")
 #JSON temporary file format with outer array
 json_file_format = InlineFileFormat(definition="TYPE = JSON STRIP_OUTER_ARRAY = TRUE")
 #Existing storage integration
@@ -151,10 +153,10 @@ Example using an existing stage:
 # Create a table that uses an existing stage
 stage_table = Table(
     name="CUSTOMERS",
-    schema_="DATA",
+    schema_name="DATA",
     database="PROD",
 )
-stage_name = f"{stage_table.schema_}.CUSTOMER_STAGE"
+stage_name = f"{stage_table.schema_name}.CUSTOMER_STAGE"
 
 # Create the stage first
 with connect() as conn, conn.cursor() as cursor:
@@ -169,7 +171,7 @@ with connect() as conn, conn.cursor() as cursor:
 # Use the existing stage for copying data
 stage_table.copy_into(
     file_format=parquet_file_format,
-    path=f"@{stage_table.schema_}.CUSTOMER_STAGE",
+    path=f"@{stage_table.schema_name}.CUSTOMER_STAGE",
     full_refresh=True,
 )
 ```
