@@ -23,7 +23,7 @@ def copy(
         if "=" in file_format
         else FileFormat.from_string(file_format)
     )
-    table = Table(name=name, schema_=schema, infer_schema=True)
+    table = Table(name=name, schema_name=schema, infer_schema=True)
     table.copy_into(
         file_format=ff,
         path=path,
