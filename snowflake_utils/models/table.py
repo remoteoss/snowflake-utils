@@ -511,11 +511,17 @@ class Table(BaseModel):
         query = f"""
                 COPY INTO {self.fqn} ({column_names})
                 FROM 
-                (select {definitions} from @{self.stage}/)
+                (select {definitions} from @{stage}/{path})
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 """
         return self._copy(
-            query, path, file_format, storage_integration, full_refresh, sync_tags
+            query,
+            path,
+            file_format,
+            storage_integration,
+            full_refresh,
+            sync_tags,
+            stage,
         )
 
     def merge_custom(
