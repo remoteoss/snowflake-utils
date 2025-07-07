@@ -2,7 +2,7 @@ import os
 from enum import Enum
 from typing import Annotated
 
-from pydantic import StringConstraints
+from pydantic import Field, StringConstraints
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector import connect as _connect
@@ -33,19 +33,21 @@ class SnowflakeSettings(BaseSettings):
     role: str = "snowlfake"
     warehouse: str = "snowlfake"
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
-    _schema: str | None = None
+    schema_name: str | None = Field(default=None, validation_alias="SNOWFLAKE_SCHEMA")
     private_key_file: str | None = None
     private_key_password: str | None = None
+    application: str | None = None
 
     def creds(self) -> dict[str, str | None]:
         base_creds = {
             "account": self.account,
             "user": self.user,
             "database": self.db,
-            "schema": self._schema,
+            "schema": self.schema_name,
             "role": self.role,
             "warehouse": self.warehouse,
             "authenticator": str(self.authenticator),
+            "application": self.application,
         }
         if self.authenticator in (Authenticator.externalbrowser):
             return base_creds
