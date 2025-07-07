@@ -581,6 +581,7 @@ class Table(BaseModel):
     ) -> None:
         if stage:
             self._stage = f"{stage}/{path}"
+            return None
 
         if storage_integration and path:
             execute_statement(
