@@ -21,6 +21,6 @@ class Schema(BaseModel):
             'select "name", "database_name", "schema_name" FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));'
         ).fetchall()
         return [
-            Table(name=name, schema_=schema, database=database)
+            Table(name=name, schema_name=schema, database=database)
             for (name, database, schema, *_) in data
         ]

@@ -8,12 +8,12 @@ class InlineFileFormat(BaseModel):
 
 class FileFormat(BaseModel):
     database: str | None = None
-    schema_: str | None = None
+    schema_name: str | None = None
     name: str
 
     def __str__(self) -> str:
         return ".".join(
-            s for s in [self.database, self.schema_, self.name] if s is not None
+            s for s in [self.database, self.schema_name, self.name] if s is not None
         )
 
     @classmethod
@@ -21,9 +21,9 @@ class FileFormat(BaseModel):
         s = s.split(".")
         match s:
             case [database, schema, name]:
-                return cls(database=database, schema_=schema, name=name)
+                return cls(database=database, schema_name=schema, name=name)
             case [schema, name]:
-                return cls(schema_=schema, name=name)
+                return cls(schema_name=schema, name=name)
             case [name]:
                 return cls(name=name)
             case _:

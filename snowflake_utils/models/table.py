@@ -15,7 +15,7 @@ from .table_structure import TableStructure
 
 class Table(BaseModel):
     name: str
-    schema_: str
+    schema_name: str
     table_structure: TableStructure | None = None
     role: str | None = None
     database: str | None = None
@@ -48,18 +48,18 @@ class Table(BaseModel):
     @property
     def fqn(self) -> str:
         if database := self.database:
-            return f"{database}.{self.schema_}.{self.name}"
-        return f"{self.schema_}.{self.name}"
+            return f"{database}.{self.schema_name}.{self.name}"
+        return f"{self.schema_name}.{self.name}"
 
     @property
     def temporary_stage(self) -> str:
-        return f"tmp_external_stage_{self.schema_}_{self.name}".upper()
+        return f"tmp_external_stage_{self.schema_name}_{self.name}".upper()
 
     @property
     def temporary_file_format(self) -> FileFormat:
         return FileFormat(
-            schema=self.schema_,
-            name=f"tmp_file_format_{self.schema_}_{self.name}".upper(),
+            schema=self.schema_name,
+            name=f"tmp_file_format_{self.schema_name}_{self.name}".upper(),
         )
 
     def get_create_temporary_file_format_statement(self, file_format: str) -> str:
@@ -67,22 +67,22 @@ class Table(BaseModel):
         Creates a temporary file format with the inline arguments
         """
         file_format_statement = f"""
-        CREATE OR REPLACE TEMPORARY FILE FORMAT {self.schema_}.{self.temporary_file_format}
+        CREATE OR REPLACE TEMPORARY FILE FORMAT {self.schema_name}.{self.temporary_file_format}
         {file_format}
         """
         return file_format_statement
 
     def get_create_schema_statement(self) -> str:
         """ """
-        logging.debug(f"Creating schema if it not exsists: {self.schema_}")
-        return f"CREATE SCHEMA IF NOT EXISTS {self.schema_}"
+        logging.debug(f"Creating schema if it not exsists: {self.schema_name}")
+        return f"CREATE SCHEMA IF NOT EXISTS {self.schema_name}"
 
     def get_create_temporary_external_stage(
         self, path: str, storage_integration: str
     ) -> str:
         logging.debug(f"Creating temporate stage at path: {path}")
         return f"""
-        CREATE OR REPLACE TEMPORARY STAGE {self.schema_}.{self.temporary_stage}
+        CREATE OR REPLACE TEMPORARY STAGE {self.schema_name}.{self.temporary_stage}
         URL='{path}'
         STORAGE_INTEGRATION = {storage_integration}    
         """
@@ -269,7 +269,7 @@ class Table(BaseModel):
     def exists(self, cursor: SnowflakeCursor) -> bool:
         return bool(
             cursor.execute(
-                f"select table_name from information_schema.tables where table_name ilike '{self.name}' and table_schema = '{self.schema_}'"
+                f"select table_name from information_schema.tables where table_name ilike '{self.name}' and table_schema = '{self.schema_name}'"
             ).fetchall()
         )
 
@@ -376,12 +376,12 @@ class Table(BaseModel):
         inserts = _inserts(columns, old_columns)
 
         logging.info(
-            f"Running merge statement on table: {self.fqn} using {temp_table.schema_}.{temp_table.name}"
+            f"Running merge statement on table: {self.fqn} using {temp_table.schema_name}.{temp_table.name}"
         )
         logging.debug(f"Primary keys: {pkes}")
         return f"""
             merge into {self.fqn} as dest 
-            using {temp_table.schema_}.{temp_table.name} tmp
+            using {temp_table.schema_name}.{temp_table.name} tmp
             ON {pkes}
             when matched then update set {matched}
             when not matched then insert ({column_names}) VALUES ({inserts})
@@ -561,8 +561,8 @@ class Table(BaseModel):
         self.setup_stage(_execute_statement, storage_integration, path, stage)
 
         _execute_statement(self.get_create_schema_statement())
-        logging.debug(f"Using schema: {self.schema_}")
-        _execute_statement(f"USE SCHEMA {self.schema_}")
+        logging.debug(f"Using schema: {self.schema_name}")
+        _execute_statement(f"USE SCHEMA {self.schema_name}")
 
         return _execute_statement
 
