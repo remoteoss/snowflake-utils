@@ -24,7 +24,7 @@ OktaDomain = Annotated[
 
 
 class SnowflakeSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="SNOWFLAKE_")
+    model_config = SettingsConfigDict(env_prefix="SNOWFLAKE_", populate_by_name=True)
 
     account: str = "snowflake-test"
     user: str = "snowlfake"
@@ -34,7 +34,7 @@ class SnowflakeSettings(BaseSettings):
     warehouse: str = "snowlfake"
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
     schema_name: str | None = Field(
-        default=None, validation_alias=AliasChoices("SNOWFLAKE_SCHEMA", "schema_name")
+        default=None, validation_alias=AliasChoices("SNOWFLAKE_SCHEMA")
     )
     private_key_file: str | None = None
     private_key_password: str | None = None
