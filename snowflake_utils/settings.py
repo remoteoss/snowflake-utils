@@ -1,11 +1,14 @@
 import os
 from enum import Enum
+from logging import getLogger
 from typing import Annotated
 
-from pydantic import Field, StringConstraints
+from pydantic import AliasChoices, Field, StringConstraints
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector import connect as _connect
+
+logger = getLogger(__name__)
 
 
 class Authenticator(str, Enum):
@@ -24,7 +27,7 @@ OktaDomain = Annotated[
 
 
 class SnowflakeSettings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="SNOWFLAKE_")
+    model_config = SettingsConfigDict(env_prefix="SNOWFLAKE_", populate_by_name=True)
 
     account: str = "snowflake-test"
     user: str = "snowlfake"
@@ -33,7 +36,9 @@ class SnowflakeSettings(BaseSettings):
     role: str = "snowlfake"
     warehouse: str = "snowlfake"
     authenticator: Authenticator | OktaDomain = Authenticator.snowflake
-    schema_name: str | None = Field(default=None, validation_alias="SNOWFLAKE_SCHEMA")
+    schema_name: str | None = Field(
+        default=None, validation_alias=AliasChoices("SNOWFLAKE_SCHEMA")
+    )
     private_key_file: str | None = None
     private_key_password: str | None = None
     application: str | None = None
@@ -47,8 +52,13 @@ class SnowflakeSettings(BaseSettings):
             "role": self.role,
             "warehouse": self.warehouse,
             "authenticator": str(self.authenticator),
-            "application": self.application,
         }
+
+        if self.application is not None:
+            base_creds["application"] = self.application
+        else:
+            logger.warning("No Snowflake application name provided!")
+
         if self.authenticator in (Authenticator.externalbrowser):
             return base_creds
         if self.private_key_file is not None and os.path.exists(self.private_key_file):
