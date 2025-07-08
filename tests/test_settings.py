@@ -1,3 +1,6 @@
+import os
+from unittest.mock import patch
+
 import pytest
 from pydantic import ValidationError
 
@@ -21,6 +24,17 @@ def test_authenticator(authenticator: str) -> None:
 def test_authenticator_invalid() -> None:
     with pytest.raises(ValidationError):
         SnowflakeSettings(authenticator="invalid")
+
+
+def test_schema_name() -> None:
+    settings = SnowflakeSettings(schema_name="foo")
+    assert settings.schema_name == "foo"
+
+
+def test_schema_name_from_env() -> None:
+    with patch.dict(os.environ, {"SNOWFLAKE_SCHEMA": "bar"}):
+        settings = SnowflakeSettings()
+        assert settings.schema_name == "bar"
 
 
 @pytest.mark.parametrize(
