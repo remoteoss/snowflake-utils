@@ -1,11 +1,14 @@
 import os
 from enum import Enum
+from logging import getLogger
 from typing import Annotated
 
 from pydantic import AliasChoices, Field, StringConstraints
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from snowflake.connector import SnowflakeConnection
 from snowflake.connector import connect as _connect
+
+logger = getLogger(__name__)
 
 
 class Authenticator(str, Enum):
@@ -53,6 +56,8 @@ class SnowflakeSettings(BaseSettings):
 
         if self.application is not None:
             base_creds["application"] = self.application
+        else:
+            logger.warning("No Snowflake application name provided!")
 
         if self.authenticator in (Authenticator.externalbrowser):
             return base_creds
