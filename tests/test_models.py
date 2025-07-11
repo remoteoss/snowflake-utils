@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, call
 
 import pytest
 
@@ -53,9 +53,11 @@ def make_mock_cursor(
     if fetchall_side_effect:
         mock_cursor.fetchall.side_effect = fetchall_side_effect
     else:
-        mock_cursor.fetchall.return_value = fetchall_return or [
-            ("statement succeeded: PUBLIC",)
-        ]
+        mock_cursor.fetchall.return_value = (
+            [("statement succeeded: PUBLIC",)]
+            if fetchall_return is None
+            else fetchall_return
+        )
     mock_cursor.__enter__.return_value = mock_cursor
     mock_cursor.__exit__.return_value = None
     if description:
@@ -846,17 +848,268 @@ def test_file_format_property_returns_value_when_set(mock_connect):
 
 @patch("snowflake_utils.settings.connect")
 def test_stage_property_returns_value_when_set(mock_connect):
-    """Test that stage property returns value when properly set."""
+    """Test that stage property returns the correct value when set."""
     mock_cursor = make_mock_cursor()
     mock_conn = make_mock_conn(cursor=mock_cursor)
     mock_connect.return_value = mock_conn
 
-    test_table = Table(name="PYTEST_PROPERTY", schema_name="PUBLIC")
+    # Set up the stage
+    test_table.setup_stage(mock_cursor.execute, storage_integration, path)
 
-    # Set up stage
-    test_table.setup_stage(
-        mock_cursor.execute, storage_integration=storage_integration, path=path
-    )
+    # Test that the stage property returns the expected value
+    assert test_table.stage == test_table.temporary_stage
 
-    # Verify property returns the stage
-    assert test_table.stage == test_table._stage
+
+# Tests for the methods I changed
+@patch("snowflake_utils.settings.connect")
+def test_setup_connection_with_database(mock_connect):
+    """Test setup_connection when database is set (3-part FQN)."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table with database set
+    table_with_db = Table(name="TEST", schema_name="PUBLIC", database="MY_DB")
+
+    # Mock the setup methods using patch on the class
+    with patch.object(
+        Table, "setup_file_format"
+    ) as mock_setup_file_format, patch.object(Table, "setup_stage") as mock_setup_stage:
+
+        execute_func = table_with_db.setup_connection(
+            path="s3://test/path",
+            storage_integration="TEST_INTEGRATION",
+            cursor=mock_cursor,
+            file_format=json_file_format,
+        )
+
+        # Should NOT set database context when database is in FQN
+        # The only call should be for role if set, but we didn't set role here
+        # So no database context should be set
+        mock_cursor.execute.assert_not_called()
+
+        # Should call setup methods
+        mock_setup_file_format.assert_called_once()
+        mock_setup_stage.assert_called_once()
+
+        # Should return execute function
+        assert callable(execute_func)
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_connection_without_database(mock_connect):
+    """Test setup_connection when database is not set (2-part FQN)."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table without database set
+    table_without_db = Table(name="TEST", schema_name="PUBLIC", database=None)
+
+    # Mock SnowflakeSettings to return a default database
+    with patch(
+        "snowflake_utils.models.table.SnowflakeSettings"
+    ) as mock_settings, patch.object(
+        Table, "setup_file_format"
+    ) as mock_setup_file_format, patch.object(
+        Table, "setup_stage"
+    ) as mock_setup_stage:
+
+        mock_settings_instance = mock_settings.return_value
+        mock_settings_instance.db = "DEFAULT_DB"
+
+        execute_func = table_without_db.setup_connection(
+            path="s3://test/path",
+            storage_integration="TEST_INTEGRATION",
+            cursor=mock_cursor,
+            file_format=json_file_format,
+        )
+
+        # Should set database context when database is not in FQN
+        mock_cursor.execute.assert_called_with("USE DATABASE DEFAULT_DB")
+
+        # Should call setup methods
+        mock_setup_file_format.assert_called_once()
+        mock_setup_stage.assert_called_once()
+
+        # Should return execute function
+        assert callable(execute_func)
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_connection_with_role(mock_connect):
+    """Test setup_connection when role is set."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table with role set and no database (so default db will be used)
+    table_with_role = Table(name="TEST", schema_name="PUBLIC", role="MY_ROLE")
+
+    with patch(
+        "snowflake_utils.models.table.SnowflakeSettings"
+    ) as mock_settings, patch.object(
+        Table, "setup_file_format"
+    ) as mock_setup_file_format, patch.object(
+        Table, "setup_stage"
+    ) as mock_setup_stage:
+        mock_settings_instance = mock_settings.return_value
+        mock_settings_instance.db = "SANDBOX"
+
+        execute_func = table_with_role.setup_connection(
+            path="s3://test/path",
+            storage_integration="TEST_INTEGRATION",
+            cursor=mock_cursor,
+            file_format=json_file_format,
+        )
+
+        # Should set both role and database context
+        calls = [call("USE ROLE MY_ROLE"), call("USE DATABASE SANDBOX")]
+        actual_calls = [c for c in mock_cursor.execute.call_args_list]
+        assert any("USE ROLE MY_ROLE" in str(c) for c in actual_calls)
+        assert any("USE DATABASE SANDBOX" in str(c) for c in actual_calls)
+
+        # Should call setup methods
+        mock_setup_file_format.assert_called_once()
+        mock_setup_stage.assert_called_once()
+
+        # Should return execute function
+        assert callable(execute_func)
+
+
+@patch("snowflake_utils.settings.connect")
+def test_exists_with_database(mock_connect):
+    """Test exists method when database is set."""
+    mock_cursor = make_mock_cursor(fetchall_return=[("TEST",)])
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table with database set
+    table_with_db = Table(name="TEST", schema_name="PUBLIC", database="MY_DB")
+
+    with patch("snowflake_utils.models.table.SnowflakeSettings") as mock_settings:
+        mock_settings_instance = mock_settings.return_value
+        mock_settings_instance.db = "DEFAULT_DB"
+
+        result = table_with_db.exists(mock_cursor)
+
+        # Should include table_catalog in the query
+        expected_query = "select table_name from information_schema.tables where table_name ilike 'TEST' and table_schema = 'PUBLIC' and table_catalog = 'MY_DB'"
+        mock_cursor.execute.assert_called_with(expected_query)
+        assert result is True
+
+
+@patch("snowflake_utils.settings.connect")
+def test_exists_without_database(mock_connect):
+    """Test exists method when database is not set."""
+    mock_cursor = make_mock_cursor(fetchall_return=[("TEST",)])
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table without database set
+    table_without_db = Table(name="TEST", schema_name="PUBLIC", database=None)
+
+    with patch("snowflake_utils.models.table.SnowflakeSettings") as mock_settings:
+        mock_settings_instance = mock_settings.return_value
+        mock_settings_instance.db = "DEFAULT_DB"
+
+        result = table_without_db.exists(mock_cursor)
+
+        # Should use default database in the query
+        expected_query = "select table_name from information_schema.tables where table_name ilike 'TEST' and table_schema = 'PUBLIC' and table_catalog = 'DEFAULT_DB'"
+        mock_cursor.execute.assert_called_with(expected_query)
+        assert result is True
+
+
+@patch("snowflake_utils.settings.connect")
+def test_exists_table_not_found(mock_connect):
+    """Test exists method when table doesn't exist."""
+    # Ensure fetchall returns an empty list
+    mock_cursor = make_mock_cursor(fetchall_return=[])
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create table with database set
+    table_with_db = Table(name="TEST", schema_name="PUBLIC", database="MY_DB")
+
+    with patch("snowflake_utils.models.table.SnowflakeSettings") as mock_settings:
+        mock_settings_instance = mock_settings.return_value
+        mock_settings_instance.db = "DEFAULT_DB"
+
+        result = table_with_db.exists(mock_cursor)
+        print("DEBUG: result =", result)
+        print("DEBUG: fetchall =", mock_cursor.fetchall())
+
+        # Should include table_catalog in the query
+        expected_query = "select table_name from information_schema.tables where table_name ilike 'TEST' and table_schema = 'PUBLIC' and table_catalog = 'MY_DB'"
+        mock_cursor.execute.assert_called_with(expected_query)
+        # Should return False when table doesn't exist
+        assert result is False
+
+
+def test_merge_statement_uses_fqn():
+    """Test that _merge_statement uses FQN for temp table."""
+    # Create main table
+    main_table = Table(name="MAIN", schema_name="PUBLIC", database="MY_DB")
+
+    # Create temp table
+    temp_table = Table(name="TEMP", schema_name="PUBLIC", database="MY_DB")
+
+    # Mock columns
+    columns = [
+        Column(name="id", data_type="integer"),
+        Column(name="name", data_type="text"),
+    ]
+    old_columns = {"id": "integer"}
+    primary_keys = ["id"]
+
+    # Mock the helper functions
+    with patch("snowflake_utils.models.table._matched") as mock_matched, patch(
+        "snowflake_utils.models.table._inserts"
+    ) as mock_inserts:
+
+        mock_matched.return_value = "id = tmp.id"
+        mock_inserts.return_value = "tmp.id, tmp.name"
+
+        result = main_table._merge_statement(
+            temp_table, columns, old_columns, primary_keys
+        )
+
+        # Should use FQN for both main table and temp table
+        assert "merge into MY_DB.PUBLIC.MAIN as dest" in result
+        assert "using MY_DB.PUBLIC.TEMP tmp" in result
+        assert 'ON dest."ID" = tmp."ID"' in result
+
+
+def test_merge_statement_without_database():
+    """Test that _merge_statement works without database in FQN."""
+    # Create main table without database
+    main_table = Table(name="MAIN", schema_name="PUBLIC", database=None)
+
+    # Create temp table without database
+    temp_table = Table(name="TEMP", schema_name="PUBLIC", database=None)
+
+    # Mock columns
+    columns = [
+        Column(name="id", data_type="integer"),
+        Column(name="name", data_type="text"),
+    ]
+    old_columns = {"id": "integer"}
+    primary_keys = ["id"]
+
+    # Mock the helper functions
+    with patch("snowflake_utils.models.table._matched") as mock_matched, patch(
+        "snowflake_utils.models.table._inserts"
+    ) as mock_inserts:
+
+        mock_matched.return_value = "id = tmp.id"
+        mock_inserts.return_value = "tmp.id, tmp.name"
+
+        result = main_table._merge_statement(
+            temp_table, columns, old_columns, primary_keys
+        )
+
+        # Should use 2-part FQN for both main table and temp table
+        assert "merge into PUBLIC.MAIN as dest" in result
+        assert "using PUBLIC.TEMP tmp" in result
+        assert 'ON dest."ID" = tmp."ID"' in result
