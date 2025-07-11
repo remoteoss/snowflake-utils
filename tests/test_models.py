@@ -1,7 +1,7 @@
 import logging
 import os
 from datetime import datetime
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -964,7 +964,6 @@ def test_setup_connection_with_role(mock_connect):
         )
 
         # Should set both role and database context
-        calls = [call("USE ROLE MY_ROLE"), call("USE DATABASE SANDBOX")]
         actual_calls = [c for c in mock_cursor.execute.call_args_list]
         assert any("USE ROLE MY_ROLE" in str(c) for c in actual_calls)
         assert any("USE DATABASE SANDBOX" in str(c) for c in actual_calls)
