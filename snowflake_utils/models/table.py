@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
 
 from ..queries import execute_statement
-from ..settings import connect, governance_settings
+from ..settings import connect, governance_settings, SnowflakeSettings
 from .column import Column, MetadataColumn, _inserts, _matched, _type_cast
 from .enums import MatchByColumnName, TagLevel
 from .file_format import FileFormat, InlineFileFormat
@@ -271,7 +271,7 @@ class Table(BaseModel):
     def exists(self, cursor: SnowflakeCursor) -> bool:
         return bool(
             cursor.execute(
-                f"select table_name from information_schema.tables where table_name ilike '{self.name}' and table_schema = '{self.schema_name}'"
+                f"select table_name from information_schema.tables where table_name ilike '{self.name}' and table_schema = '{self.schema_name}' and table_catalog = '{self.database or SnowflakeSettings().db}'"
             ).fetchall()
         )
 
@@ -339,6 +339,48 @@ class Table(BaseModel):
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
 
+    def setup_connection(
+        self,
+        path: str,
+        storage_integration: str,
+        cursor: SnowflakeCursor,
+        file_format: FileFormat | InlineFileFormat,
+        stage: str | None = None,
+    ) -> callable:
+        """Setup the connection including custom role, database, schema, and temporary stage"""
+        _execute_statement = partial(execute_statement, cursor)
+        if self.role is not None:
+            logging.debug(f"Using role: {self.role}")
+            _execute_statement(f"USE ROLE {self.role}")
+
+        # If we don't have database in FQN, we need to set the database context
+        if self.database is None:
+            default_db = SnowflakeSettings().db
+            logging.debug(f"Using default database: {default_db}")
+            _execute_statement(f"USE DATABASE {default_db}")
+
+        self.setup_file_format(_execute_statement, file_format)
+        self.setup_stage(_execute_statement, storage_integration, path, stage)
+
+        return _execute_statement
+
+    def setup_stage(
+        self,
+        execute_statement: callable,
+        storage_integration: str | None = None,
+        path: str | None = None,
+        stage: str | None = None,
+    ) -> None:
+        if stage:
+            self._stage = f"{stage}/{path}"
+            return None
+
+        if storage_integration and path:
+            execute_statement(
+                self.get_create_temporary_external_stage(path, storage_integration)
+            )
+            self._stage = self.temporary_stage
+
     def qualify(
         self,
         cursor: SnowflakeCursor,
@@ -378,12 +420,12 @@ class Table(BaseModel):
         inserts = _inserts(columns, old_columns)
 
         logging.info(
-            f"Running merge statement on table: {self.fqn} using {temp_table.schema_name}.{temp_table.name}"
+            f"Running merge statement on table: {self.fqn} using {temp_table.fqn}"
         )
         logging.debug(f"Primary keys: {pkes}")
         return f"""
             merge into {self.fqn} as dest 
-            using {temp_table.schema_name}.{temp_table.name} tmp
+            using {temp_table.fqn} tmp
             ON {pkes}
             when matched then update set {matched}
             when not matched then insert ({column_names}) VALUES ({inserts})
@@ -552,46 +594,3 @@ class Table(BaseModel):
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
-
-    def setup_connection(
-        self,
-        path: str,
-        storage_integration: str,
-        cursor: SnowflakeCursor,
-        file_format: FileFormat | InlineFileFormat,
-        stage: str | None = None,
-    ) -> callable:
-        """Setup the connection including custom role, database, schema, and temporary stage"""
-        _execute_statement = partial(execute_statement, cursor)
-        if self.role is not None:
-            logging.debug(f"Using role: {self.role}")
-            _execute_statement(f"USE ROLE {self.role}")
-        if self.database is not None:
-            logging.debug(f"Using database: {self.database}")
-            _execute_statement(f"USE DATABASE {self.database}")
-
-        self.setup_file_format(_execute_statement, file_format)
-        self.setup_stage(_execute_statement, storage_integration, path, stage)
-
-        _execute_statement(self.get_create_schema_statement())
-        logging.debug(f"Using schema: {self.schema_name}")
-        _execute_statement(f"USE SCHEMA {self.schema_name}")
-
-        return _execute_statement
-
-    def setup_stage(
-        self,
-        execute_statement: callable,
-        storage_integration: str | None = None,
-        path: str | None = None,
-        stage: str | None = None,
-    ) -> None:
-        if stage:
-            self._stage = f"{stage}/{path}"
-            return None
-
-        if storage_integration and path:
-            execute_statement(
-                self.get_create_temporary_external_stage(path, storage_integration)
-            )
-            self._stage = self.temporary_stage
