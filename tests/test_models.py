@@ -872,10 +872,10 @@ def test_setup_connection_with_database(mock_connect):
     table_with_db = Table(name="TEST", schema_name="PUBLIC", database="MY_DB")
 
     # Mock the setup methods using patch on the class
-    with patch.object(
-        Table, "setup_file_format"
-    ) as mock_setup_file_format, patch.object(Table, "setup_stage") as mock_setup_stage:
-
+    with (
+        patch.object(Table, "setup_file_format") as mock_setup_file_format,
+        patch.object(Table, "setup_stage") as mock_setup_stage,
+    ):
         execute_func = table_with_db.setup_connection(
             path="s3://test/path",
             storage_integration="TEST_INTEGRATION",
@@ -907,14 +907,11 @@ def test_setup_connection_without_database(mock_connect):
     table_without_db = Table(name="TEST", schema_name="PUBLIC", database=None)
 
     # Mock SnowflakeSettings to return a default database
-    with patch(
-        "snowflake_utils.models.table.SnowflakeSettings"
-    ) as mock_settings, patch.object(
-        Table, "setup_file_format"
-    ) as mock_setup_file_format, patch.object(
-        Table, "setup_stage"
-    ) as mock_setup_stage:
-
+    with (
+        patch("snowflake_utils.models.table.SnowflakeSettings") as mock_settings,
+        patch.object(Table, "setup_file_format") as mock_setup_file_format,
+        patch.object(Table, "setup_stage") as mock_setup_stage,
+    ):
         mock_settings_instance = mock_settings.return_value
         mock_settings_instance.db = "DEFAULT_DB"
 
@@ -946,13 +943,11 @@ def test_setup_connection_with_role(mock_connect):
     # Create table with role set and no database (so default db will be used)
     table_with_role = Table(name="TEST", schema_name="PUBLIC", role="MY_ROLE")
 
-    with patch(
-        "snowflake_utils.models.table.SnowflakeSettings"
-    ) as mock_settings, patch.object(
-        Table, "setup_file_format"
-    ) as mock_setup_file_format, patch.object(
-        Table, "setup_stage"
-    ) as mock_setup_stage:
+    with (
+        patch("snowflake_utils.models.table.SnowflakeSettings") as mock_settings,
+        patch.object(Table, "setup_file_format") as mock_setup_file_format,
+        patch.object(Table, "setup_stage") as mock_setup_stage,
+    ):
         mock_settings_instance = mock_settings.return_value
         mock_settings_instance.db = "SANDBOX"
 
@@ -1063,10 +1058,10 @@ def test_merge_statement_uses_fqn():
     primary_keys = ["id"]
 
     # Mock the helper functions
-    with patch("snowflake_utils.models.table._matched") as mock_matched, patch(
-        "snowflake_utils.models.table._inserts"
-    ) as mock_inserts:
-
+    with (
+        patch("snowflake_utils.models.table._matched") as mock_matched,
+        patch("snowflake_utils.models.table._inserts") as mock_inserts,
+    ):
         mock_matched.return_value = "id = tmp.id"
         mock_inserts.return_value = "tmp.id, tmp.name"
 
@@ -1097,10 +1092,10 @@ def test_merge_statement_without_database():
     primary_keys = ["id"]
 
     # Mock the helper functions
-    with patch("snowflake_utils.models.table._matched") as mock_matched, patch(
-        "snowflake_utils.models.table._inserts"
-    ) as mock_inserts:
-
+    with (
+        patch("snowflake_utils.models.table._matched") as mock_matched,
+        patch("snowflake_utils.models.table._inserts") as mock_inserts,
+    ):
         mock_matched.return_value = "id = tmp.id"
         mock_inserts.return_value = "tmp.id, tmp.name"
 
