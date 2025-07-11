@@ -21,6 +21,8 @@ class Table(BaseModel):
     database: str | None = None
     include_metadata: list[MetadataColumn] = Field(default_factory=list)
     enable_schema_evolution: bool = False
+    existing_column_tags: dict[str, dict[str, str]] | None = None
+    existing_table_tags: dict[str, str] | None = None
     _file_format: FileFormat | None = None
     _stage: str | None = None
 
@@ -416,6 +418,9 @@ class Table(BaseModel):
         return cursor.fetchall()
 
     def current_column_tags(self, cursor: SnowflakeCursor) -> dict[str, dict[str, str]]:
+        if self.existing_column_tags is not None:
+            return self.existing_column_tags
+
         tags = defaultdict(dict)
 
         for column_name, tag_name, tag_value in self._current_tags(
@@ -425,6 +430,8 @@ class Table(BaseModel):
         return tags
 
     def current_table_tags(self, cursor: SnowflakeCursor) -> dict[str, str]:
+        if self.existing_table_tags is not None:
+            return self.existing_table_tags
         return {
             tag_name.casefold(): tag_value
             for _, tag_name, tag_value in self._current_tags(TagLevel.TABLE, cursor)
