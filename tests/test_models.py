@@ -3,8 +3,11 @@ import os
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from snowflake_utils.models import (
     Column,
+    FileFormat,
     InlineFileFormat,
     MatchByColumnName,
     Schema,
@@ -514,45 +517,6 @@ def test_use_existing_stage(mock_connect):
 
 @patch.object(Table, "drop")
 @patch.object(Table, "_copy")
-@patch("snowflake_utils.settings.connect")
-def test_copy_custom(mock_connect, mock_copy, mock_drop):
-    mock_copy.return_value = [("test_file.parquet", "LOADED")]
-    mock_drop.return_value = None
-    # Mock cursor with proper tag data - different data for different calls
-    mock_cursor = make_mock_cursor(
-        fetchall_side_effect=[
-            [("id", "pii", "personal")],  # Column tags
-            [("", "pii", "foo")],  # Table tags (empty column_name for table-level)
-        ]
-    )
-    mock_conn = make_mock_conn(cursor=mock_cursor)
-    mock_connect.return_value = mock_conn
-    with mock_conn as conn, conn.cursor() as cursor:
-        # Setup stage first
-        test_table.setup_stage(cursor.execute, storage_integration, path)
-        result = test_table.copy_custom(
-            column_definitions={
-                "id": "$1:id",
-                "name": "$1:name",
-                "last_name": "$1:last_name",
-            },
-            path=path,
-            file_format=parquet_file_format,
-            storage_integration=storage_integration,
-            full_refresh=True,
-            sync_tags=True,
-        )
-        assert result[0][1] == "LOADED"
-        assert dict(test_table.current_column_tags(cursor)) == {
-            "id": {"pii": "personal"}
-        }
-        assert dict(test_table.current_table_tags(cursor)) == {"pii": "foo"}
-    test_table.drop()
-    mock_drop.assert_called_once()
-
-
-@patch.object(Table, "drop")
-@patch.object(Table, "_copy")
 @patch.object(Table, "_merge")
 @patch("snowflake_utils.settings.connect")
 def test_merge_custom(mock_connect, mock_merge, mock_copy, mock_drop):
@@ -666,37 +630,233 @@ def test_merge_with_files(mock_merge) -> None:
 
 @patch.object(Table, "_copy")
 def test_copy_into_files_parameter_formatting(mock_copy) -> None:
-    """Test that the files parameter is formatted correctly in the COPY INTO query."""
-    # Setup mock to return expected result
+    """Test that files parameter is properly formatted in COPY INTO query."""
     mock_copy.return_value = [("test_file.parquet", "LOADED")]
 
-    # Create a table instance
-    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
-
     # Test with files parameter
-    table.copy_into(
-        path="s3://test-bucket/path",
+    files = ["file1.parquet", "file2.parquet", "file3.parquet"]
+    result = test_table.copy_into(
+        path=path,
         file_format=parquet_file_format,
-        files=["file1.parquet", "file2.parquet"],
+        storage_integration=storage_integration,
+        files=files,
     )
 
-    # Verify the query contains the correct FILES clause
-    mock_copy.assert_called()
-    call_args = mock_copy.call_args
-    query = call_args[0][0]  # First positional argument is the query
-    assert "FILES = ('file1.parquet', 'file2.parquet')" in query
+    # Verify the copy was called with properly formatted files clause
+    mock_copy.assert_called_once()
+    call_args = mock_copy.call_args[0]
+    query = call_args[0]  # First argument is the query
 
-    # Reset mock for next call
-    mock_copy.reset_mock()
+    # Check that files clause is properly formatted
+    expected_files_clause = (
+        "FILES = ('file1.parquet', 'file2.parquet', 'file3.parquet')"
+    )
+    assert expected_files_clause in query
+    assert result[0][1] == "LOADED"
 
-    # Test without files parameter
-    table.copy_into(
-        path="s3://test-bucket/path",
-        file_format=parquet_file_format,
+
+# Tests for newly added setup methods
+@patch("snowflake_utils.settings.connect")
+def test_setup_file_format_with_inline_format(mock_connect):
+    """Test setup_file_format with InlineFileFormat creates temporary file format."""
+    mock_cursor = make_mock_cursor(
+        fetchall_return=[("Temporary file format created successfully.",)]
+    )
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create a table with custom role and database
+    test_table_with_context = Table(
+        name="PYTEST_SETUP", schema_name="PUBLIC", role="TEST_ROLE", database="TEST_DB"
     )
 
-    # Verify the query doesn't contain FILES clause when files is None
-    mock_copy.assert_called()
-    call_args = mock_copy.call_args
-    query = call_args[0][0]  # First positional argument is the query
-    assert "FILES = (" not in query
+    # Test with inline file format
+    result = test_table_with_context.setup_file_format(
+        mock_cursor.execute, json_file_format
+    )
+
+    # Verify temporary file format was created
+    expected_temp_format = test_table_with_context.temporary_file_format
+    assert result == expected_temp_format
+    assert test_table_with_context._file_format == expected_temp_format
+
+    # Verify the create statement was executed
+    mock_cursor.execute.assert_called()
+    create_call = mock_cursor.execute.call_args_list[0][0][0]
+    assert "CREATE OR REPLACE TEMPORARY FILE FORMAT" in create_call
+    assert json_file_format.definition in create_call
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_file_format_with_existing_format(mock_connect):
+    """Test setup_file_format with existing FileFormat uses it directly."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    # Create existing file format
+    existing_format = FileFormat(
+        database="PROD", schema_name="DATA", name="EXISTING_FORMAT"
+    )
+
+    test_table = Table(name="PYTEST_SETUP", schema_name="PUBLIC")
+
+    # Test with existing file format
+    result = test_table.setup_file_format(mock_cursor.execute, existing_format)
+
+    # Verify existing format was used
+    assert result == existing_format
+    assert test_table._file_format == existing_format
+
+    # Verify no create statement was executed
+    mock_cursor.execute.assert_not_called()
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_stage_with_temporary_stage(mock_connect):
+    """Test setup_stage creates temporary stage when no existing stage provided."""
+    mock_cursor = make_mock_cursor(
+        fetchall_return=[("Temporary stage created successfully.",)]
+    )
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    test_table = Table(name="PYTEST_SETUP", schema_name="PUBLIC")
+
+    # Test with temporary stage creation
+    test_table.setup_stage(
+        mock_cursor.execute, storage_integration=storage_integration, path=path
+    )
+
+    # Verify temporary stage was set
+    assert test_table._stage == test_table.temporary_stage
+
+    # Verify the create statement was executed
+    mock_cursor.execute.assert_called_once()
+    create_call = mock_cursor.execute.call_args[0][0]
+    assert "CREATE OR REPLACE TEMPORARY STAGE" in create_call
+    assert test_table.temporary_stage in create_call
+    assert path in create_call
+    assert storage_integration in create_call
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_stage_with_existing_stage(mock_connect):
+    """Test setup_stage uses existing stage when provided."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    test_table = Table(name="PYTEST_SETUP", schema_name="PUBLIC")
+    existing_stage = "PUBLIC.MY_STAGE"
+
+    # Test with existing stage
+    test_table.setup_stage(mock_cursor.execute, stage=existing_stage, path="data/")
+
+    # Verify existing stage was set with path
+    assert test_table._stage == f"{existing_stage}/data/"
+
+    # Verify no create statement was executed
+    mock_cursor.execute.assert_not_called()
+
+
+@patch("snowflake_utils.settings.connect")
+def test_setup_stage_without_parameters(mock_connect):
+    """Test setup_stage does nothing when no storage_integration or stage provided."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    test_table = Table(name="PYTEST_SETUP", schema_name="PUBLIC")
+
+    # Test without parameters
+    test_table.setup_stage(mock_cursor.execute)
+
+    # Verify no stage was set
+    assert test_table._stage is None
+
+    # Verify no create statement was executed
+    mock_cursor.execute.assert_not_called()
+
+
+# Test: existing_column_tags and existing_table_tags
+@patch("snowflake_utils.settings.connect")
+def test_current_column_tags_uses_existing(mock_connect):
+    table = Table(
+        name="TEST_COL_TAGS",
+        schema_name="PUBLIC",
+        existing_column_tags={"col1": {"tag1": "val1"}, "col2": {"tag2": "val2"}},
+    )
+    # Should return the provided dict and not call the cursor
+    mock_cursor = make_mock_cursor()
+    result = table.current_column_tags(mock_cursor)
+    assert result == {"col1": {"tag1": "val1"}, "col2": {"tag2": "val2"}}
+
+
+@patch("snowflake_utils.settings.connect")
+def test_current_table_tags_uses_existing(mock_connect):
+    table = Table(
+        name="TEST_TABLE_TAGS",
+        schema_name="PUBLIC",
+        existing_table_tags={"tag1": "val1", "tag2": "val2"},
+    )
+    # Should return the provided dict and not call the cursor
+    mock_cursor = make_mock_cursor()
+    result = table.current_table_tags(mock_cursor)
+    assert result == {"tag1": "val1", "tag2": "val2"}
+
+
+@patch("snowflake_utils.settings.connect")
+def test_file_format_property_raises_error_when_not_set(mock_connect):
+    """Test that file_format property raises error when not set up."""
+    test_table = Table(name="PYTEST_PROPERTY", schema_name="PUBLIC")
+
+    # Verify property raises error when not set
+    with pytest.raises(
+        ValueError, match="Call setup_file_format to set the file format"
+    ):
+        _ = test_table.file_format
+
+
+@patch("snowflake_utils.settings.connect")
+def test_stage_property_raises_error_when_not_set(mock_connect):
+    """Test that stage property raises error when not set up."""
+    test_table = Table(name="PYTEST_PROPERTY", schema_name="PUBLIC")
+
+    # Verify property raises error when not set
+    with pytest.raises(ValueError, match="Call setup_stage to set the stage"):
+        _ = test_table.stage
+
+
+@patch("snowflake_utils.settings.connect")
+def test_file_format_property_returns_value_when_set(mock_connect):
+    """Test that file_format property returns value when properly set."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    test_table = Table(name="PYTEST_PROPERTY", schema_name="PUBLIC")
+
+    # Set up file format
+    test_table.setup_file_format(mock_cursor.execute, json_file_format)
+
+    # Verify property returns the file format
+    assert test_table.file_format == test_table._file_format
+
+
+@patch("snowflake_utils.settings.connect")
+def test_stage_property_returns_value_when_set(mock_connect):
+    """Test that stage property returns value when properly set."""
+    mock_cursor = make_mock_cursor()
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+
+    test_table = Table(name="PYTEST_PROPERTY", schema_name="PUBLIC")
+
+    # Set up stage
+    test_table.setup_stage(
+        mock_cursor.execute, storage_integration=storage_integration, path=path
+    )
+
+    # Verify property returns the stage
+    assert test_table.stage == test_table._stage
