@@ -60,7 +60,8 @@ class Table(BaseModel):
     @property
     def temporary_file_format(self) -> FileFormat:
         return FileFormat(
-            schema=self.schema_name,
+            database=self.database,
+            schema_name=self.schema_name,
             name=f"tmp_file_format_{self.schema_name}_{self.name}".upper(),
         )
 
@@ -69,7 +70,7 @@ class Table(BaseModel):
         Creates a temporary file format with the inline arguments
         """
         file_format_statement = f"""
-        CREATE OR REPLACE TEMPORARY FILE FORMAT {self.schema_name}.{self.temporary_file_format}
+        CREATE OR REPLACE TEMPORARY FILE FORMAT {self.temporary_file_format}
         {file_format}
         """
         return file_format_statement
@@ -83,8 +84,14 @@ class Table(BaseModel):
         self, path: str, storage_integration: str
     ) -> str:
         logging.debug(f"Creating temporate stage at path: {path}")
+        # Create a temporary stage with proper FQN
+        stage_fqn = (
+            f"{self.database}.{self.schema_name}.{self.temporary_stage}"
+            if self.database
+            else f"{self.schema_name}.{self.temporary_stage}"
+        )
         return f"""
-        CREATE OR REPLACE TEMPORARY STAGE {self.schema_name}.{self.temporary_stage}
+        CREATE OR REPLACE TEMPORARY STAGE {stage_fqn}
         URL='{path}'
         STORAGE_INTEGRATION = {storage_integration}    
         """
