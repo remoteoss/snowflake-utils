@@ -560,15 +560,23 @@ class Table(BaseModel):
         full_refresh: bool = False,
         sync_tags: bool = False,
         stage: str | None = None,
+        files: list[str] | None = None,
     ) -> None:
         column_names = ", ".join(column_definitions.keys())
         definitions = ", ".join(column_definitions.values())
+
+        files_clause = ""
+        if files:
+            # Format files list properly for Snowflake FILES clause
+            files_str = "', '".join(files)
+            files_clause = f"FILES = ('{files_str}')"
 
         query = f"""
                 COPY INTO {self.fqn} ({column_names})
                 FROM 
                 (select {definitions} from @{stage}/{path})
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
+                {files_clause}
                 """
         return self._copy(
             query,
@@ -589,6 +597,7 @@ class Table(BaseModel):
         replication_keys: list[str] | None = None,
         storage_integration: str | None = None,
         qualify: bool = False,
+        files: list[str] | None = None,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_custom(
@@ -598,6 +607,7 @@ class Table(BaseModel):
                 file_format=file_format,
                 full_refresh=True,
                 sync_tags=sync_tags,
+                files=files,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)

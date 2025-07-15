@@ -567,6 +567,86 @@ def test_merge_custom(mock_connect, mock_merge, mock_copy, mock_drop):
 
 
 @patch.object(Table, "_copy")
+def test_copy_custom_with_files(mock_copy) -> None:
+    """Test copy_custom method with specific files parameter."""
+    # Setup mock to return expected result
+    mock_copy.return_value = [("test_file.parquet", "LOADED")]
+
+    # Create a table instance
+    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
+
+    # Define column definitions
+    column_definitions = {
+        "id": "$1:id",
+        "name": "$1:name",
+        "last_name": "$1:last_name",
+    }
+
+    # Test with files parameter
+    result = table.copy_custom(
+        column_definitions=column_definitions,
+        path="s3://test-bucket/path",
+        file_format=parquet_file_format,
+        files=["test_file.parquet", "another_file.parquet"],
+    )
+
+    # Verify the result
+    assert result[0][1] == "LOADED"
+
+    # Verify the _copy method was called with the correct query containing FILES clause
+    mock_copy.assert_called()
+    call_args = mock_copy.call_args
+    query = call_args[0][0]  # First positional argument is the query
+    assert "FILES = ('test_file.parquet', 'another_file.parquet')" in query
+
+
+@patch.object(Table, "_merge")
+def test_merge_custom_with_files(mock_merge) -> None:
+    """Test merge_custom method with specific files parameter."""
+    # Create a table instance
+    table = Table(name="TEST_TABLE", schema_name="TEST_SCHEMA")
+
+    # Define column definitions
+    column_definitions = {
+        "id": "$1:id",
+        "name": "$1:name",
+        "last_name": "$1:last_name",
+    }
+
+    # Test merge_custom with files parameter
+    table.merge_custom(
+        column_definitions=column_definitions,
+        path="s3://test-bucket/path",
+        file_format=parquet_file_format,
+        primary_keys=["id"],
+        files=["test_file.parquet"],
+    )
+
+    # Verify the _merge method was called
+    mock_merge.assert_called_once()
+
+    # Get the copy_callable that was passed to _merge
+    call_args = mock_merge.call_args
+    copy_callable = call_args[0][0]  # First positional argument is the copy_callable
+
+    # Now test the copy_callable to verify it passes the files parameter correctly
+    with patch.object(Table, "_copy") as mock_copy:
+        mock_copy.return_value = [("test_file.parquet", "LOADED")]
+
+        # Create a temporary table to test the copy_callable
+        temp_table = Table(name="TEMP_TABLE", schema_name="TEST_SCHEMA")
+
+        # Call the copy_callable (this simulates what happens inside _merge)
+        copy_callable(temp_table, sync_tags=False)
+
+        # Verify the _copy method was called with the correct query containing FILES clause
+        mock_copy.assert_called()
+        call_args = mock_copy.call_args
+        query = call_args[0][0]  # First positional argument is the query
+        assert "FILES = ('test_file.parquet')" in query
+
+
+@patch.object(Table, "_copy")
 def test_copy_with_files(mock_copy) -> None:
     """Test copy_into method with specific files parameter."""
     # Setup mock to return expected result
