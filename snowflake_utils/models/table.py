@@ -210,7 +210,7 @@ class Table(BaseModel):
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {path}
-                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration else ""}
+                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not stage else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
                 {files_clause}
