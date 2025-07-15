@@ -200,8 +200,6 @@ class Table(BaseModel):
         stage: str | None = None,
         files: list[str] | None = None,
     ) -> None:
-        if stage:
-            path = f"@{stage}/{path}"
         col_str = f"({', '.join(target_columns)})" if target_columns else ""
         files_clause = ""
         if files:
@@ -226,6 +224,7 @@ class Table(BaseModel):
                 storage_integration,
                 full_refresh,
                 sync_tags,
+                stage,
             )
             with connect() as connection:
                 cursor = connection.cursor()
@@ -244,6 +243,7 @@ class Table(BaseModel):
                 storage_integration,
                 full_refresh,
                 sync_tags,
+                stage,
             )
 
     def create_table(self, full_refresh: bool, execute_statement: callable) -> None:
