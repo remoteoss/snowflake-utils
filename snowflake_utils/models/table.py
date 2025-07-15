@@ -172,13 +172,15 @@ class Table(BaseModel):
         full_refresh: bool = False,
         sync_tags: bool = False,
         stage: str | None = None,
+        create_table: bool = True,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
             execute = self.setup_connection(
                 path, storage_integration, cursor, file_format, stage
             )
-            self.create_table(full_refresh, execute)
+            if create_table:
+                self.create_table(full_refresh, execute)
 
             if sync_tags and self.table_structure:
                 self.sync_tags(cursor)
@@ -199,6 +201,7 @@ class Table(BaseModel):
         qualify: bool = False,
         stage: str | None = None,
         files: list[str] | None = None,
+        create_table: bool = True,
     ) -> None:
         col_str = f"({', '.join(target_columns)})" if target_columns else ""
         files_clause = ""
@@ -225,6 +228,7 @@ class Table(BaseModel):
                 full_refresh,
                 sync_tags,
                 stage,
+                create_table,
             )
             with connect() as connection:
                 cursor = connection.cursor()
@@ -244,6 +248,7 @@ class Table(BaseModel):
                 full_refresh,
                 sync_tags,
                 stage,
+                create_table,
             )
 
     def create_table(self, full_refresh: bool, execute_statement: callable) -> None:
@@ -561,6 +566,7 @@ class Table(BaseModel):
         sync_tags: bool = False,
         stage: str | None = None,
         files: list[str] | None = None,
+        create_table: bool = True,
     ) -> None:
         column_names = ", ".join(column_definitions.keys())
         definitions = ", ".join(column_definitions.values())
@@ -586,6 +592,7 @@ class Table(BaseModel):
             full_refresh,
             sync_tags,
             stage,
+            create_table,
         )
 
     def merge_custom(
@@ -598,6 +605,7 @@ class Table(BaseModel):
         storage_integration: str | None = None,
         qualify: bool = False,
         files: list[str] | None = None,
+        create_table: bool = True,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_custom(
@@ -608,6 +616,7 @@ class Table(BaseModel):
                 full_refresh=True,
                 sync_tags=sync_tags,
                 files=files,
+                create_table=create_table,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
