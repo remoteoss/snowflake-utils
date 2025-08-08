@@ -98,6 +98,40 @@ def test_create_or_replace_table(mock_connect):
 
 
 @patch("snowflake_utils.settings.connect")
+def test_create_or_replace_table_with_copy_grants(mock_connect):
+    """Test that COPY GRANTS clause is included when copy_grants=True and full_refresh=True."""
+    mock_cursor = make_mock_cursor(
+        fetchall_return=[(f"Table {test_table.name} successfully created.",)]
+    )
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+    statement = test_table.get_create_table_statement(
+        full_refresh=True, copy_grants=True
+    )
+    result = mock_cursor.execute(statement).fetchall()[0][0]
+    assert result == f"Table {test_table.name} successfully created."
+    # Verify that COPY GRANTS is included in the statement
+    assert "COPY GRANTS" in statement
+
+
+@patch("snowflake_utils.settings.connect")
+def test_create_or_replace_table_without_copy_grants(mock_connect):
+    """Test that COPY GRANTS clause is not included when copy_grants=False and full_refresh=True."""
+    mock_cursor = make_mock_cursor(
+        fetchall_return=[(f"Table {test_table.name} successfully created.",)]
+    )
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+    statement = test_table.get_create_table_statement(
+        full_refresh=True, copy_grants=False
+    )
+    result = mock_cursor.execute(statement).fetchall()[0][0]
+    assert result == f"Table {test_table.name} successfully created."
+    # Verify that COPY GRANTS is not included in the statement
+    assert "COPY GRANTS" not in statement
+
+
+@patch("snowflake_utils.settings.connect")
 def test_create_table_if_not_exists(mock_connect):
     mock_cursor = make_mock_cursor(fetchall_return=[("statement succeeded: PYTEST",)])
     mock_conn = make_mock_conn(cursor=mock_cursor)
@@ -107,6 +141,23 @@ def test_create_table_if_not_exists(mock_connect):
     assert ("statement succeeded" in result and test_table.name in result) or (
         f"Table {test_table.name} successfully created."
     )
+
+
+@patch("snowflake_utils.settings.connect")
+def test_create_table_if_not_exists_copy_grants_ignored(mock_connect):
+    """Test that COPY GRANTS clause is not included when full_refresh=False, even if copy_grants=True."""
+    mock_cursor = make_mock_cursor(fetchall_return=[("statement succeeded: PYTEST",)])
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    mock_connect.return_value = mock_conn
+    statement = test_table.get_create_table_statement(
+        full_refresh=False, copy_grants=True
+    )
+    result = mock_cursor.execute(statement).fetchall()[0][0]
+    assert ("statement succeeded" in result and test_table.name in result) or (
+        f"Table {test_table.name} successfully created."
+    )
+    # Verify that COPY GRANTS is not included in the statement (only applies to CREATE OR REPLACE)
+    assert "COPY GRANTS" not in statement
 
 
 @patch("snowflake_utils.settings.connect")
