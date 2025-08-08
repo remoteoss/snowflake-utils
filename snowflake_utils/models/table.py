@@ -99,10 +99,12 @@ class Table(BaseModel):
     def get_create_table_statement(
         self,
         full_refresh: bool = False,
+        copy_grants: bool = True,
     ) -> str:
         logging.debug(f"Creating table: {self.fqn}")
+        copy_grants_clause = " COPY GRANTS" if copy_grants and full_refresh else ""
         if self.table_structure:
-            return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn} ({self.table_structure.parsed_columns})"
+            return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn}{copy_grants_clause} ({self.table_structure.parsed_columns})"
         else:
             template = """ARRAY_AGG(
                 OBJECT_CONSTRUCT(
@@ -129,7 +131,7 @@ class Table(BaseModel):
 
             stage_query = f"LOCATION => '@{self.stage}'"
             return f"""
-            {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}
+            {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}{copy_grants_clause}
             USING TEMPLATE (
                 SELECT {template}
                 FROM TABLE(
@@ -151,7 +153,9 @@ class Table(BaseModel):
             cursor = connection.cursor()
             _execute_statement = partial(execute_statement, cursor)
             _execute_statement(self.get_create_schema_statement())
-            _execute_statement(self.get_create_table_statement(full_refresh))
+            _execute_statement(
+                self.get_create_table_statement(full_refresh, copy_grants=True)
+            )
             for k in records:
                 cols = ", ".join([k for k in records[k].keys()])
                 vals = ", ".join([_type_cast(v) for v in records[k].values()])
@@ -173,6 +177,7 @@ class Table(BaseModel):
         sync_tags: bool = False,
         stage: str | None = None,
         create_table: bool = True,
+        copy_grants: bool = True,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
@@ -180,7 +185,7 @@ class Table(BaseModel):
                 path, storage_integration, cursor, file_format, stage
             )
             if create_table:
-                self.create_table(full_refresh, execute)
+                self.create_table(full_refresh, execute, copy_grants)
 
             if sync_tags and self.table_structure:
                 self.sync_tags(cursor)
@@ -202,6 +207,7 @@ class Table(BaseModel):
         stage: str | None = None,
         files: list[str] | None = None,
         create_table: bool = True,
+        copy_grants: bool = True,
     ) -> None:
         col_str = f"({', '.join(target_columns)})" if target_columns else ""
         files_clause = ""
@@ -229,6 +235,7 @@ class Table(BaseModel):
                 sync_tags,
                 stage,
                 create_table,
+                copy_grants,
             )
             with connect() as connection:
                 cursor = connection.cursor()
@@ -249,10 +256,13 @@ class Table(BaseModel):
                 sync_tags,
                 stage,
                 create_table,
+                copy_grants,
             )
 
-    def create_table(self, full_refresh: bool, execute_statement: callable) -> None:
-        execute_statement(self.get_create_table_statement(full_refresh))
+    def create_table(
+        self, full_refresh: bool, execute_statement: callable, copy_grants: bool = True
+    ) -> None:
+        execute_statement(self.get_create_table_statement(full_refresh, copy_grants))
 
     def setup_file_format(
         self,
@@ -311,7 +321,9 @@ class Table(BaseModel):
 
         with connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(self.get_create_table_statement(full_refresh=False))
+            cursor.execute(
+                self.get_create_table_statement(full_refresh=False, copy_grants=True)
+            )
             old_columns = {x.name: x.data_type for x in self.get_columns(cursor)}
             new_columns = temp_table.get_columns(cursor)
 
@@ -338,6 +350,7 @@ class Table(BaseModel):
         match_by_column_name: MatchByColumnName = MatchByColumnName.CASE_INSENSITIVE,
         qualify: bool = False,
         files: list[str] | None = None,
+        copy_grants: bool = True,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_into(
@@ -347,6 +360,7 @@ class Table(BaseModel):
                 match_by_column_name=match_by_column_name,
                 sync_tags=sync_tags,
                 files=files,
+                copy_grants=copy_grants,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
@@ -567,6 +581,7 @@ class Table(BaseModel):
         stage: str | None = None,
         files: list[str] | None = None,
         create_table: bool = True,
+        copy_grants: bool = True,
     ) -> None:
         column_names = ", ".join(column_definitions.keys())
         definitions = ", ".join(column_definitions.values())
@@ -593,6 +608,7 @@ class Table(BaseModel):
             sync_tags,
             stage,
             create_table,
+            copy_grants,
         )
 
     def merge_custom(
@@ -606,6 +622,7 @@ class Table(BaseModel):
         qualify: bool = False,
         files: list[str] | None = None,
         create_table: bool = True,
+        copy_grants: bool = True,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_custom(
@@ -617,6 +634,7 @@ class Table(BaseModel):
                 sync_tags=sync_tags,
                 files=files,
                 create_table=create_table,
+                copy_grants=copy_grants,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
