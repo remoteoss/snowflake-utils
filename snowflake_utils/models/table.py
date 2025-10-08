@@ -189,8 +189,19 @@ class Table(BaseModel):
 
             if sync_tags and self.table_structure:
                 self.sync_tags(cursor)
+
+            # Determine the FROM clause based on whether we're using a stage or direct path
+            if stage:
+                from_clause = f"@{stage}/{path}"
+            elif storage_integration:
+                from_clause = f"@{self.stage}"
+            else:
+                from_clause = f"'{path}'"
+
             logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
-            return execute(query.format(file_format=self.file_format))
+            return execute(
+                query.format(file_format=self.file_format, from_clause=from_clause)
+            )
 
     def copy_into(
         self,
@@ -216,17 +227,9 @@ class Table(BaseModel):
             files_str = "', '".join(files)
             files_clause = f"FILES = ('{files_str}')"
 
-        # Determine the FROM clause based on whether we're using a stage or direct path
-        if stage:
-            from_clause = f"@{stage}/{path}"
-        elif storage_integration:
-            from_clause = f"@{self.stage}"
-        else:
-            from_clause = f"'{path}'"
-
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
-                FROM {from_clause}
+                FROM {{from_clause}}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not stage else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
