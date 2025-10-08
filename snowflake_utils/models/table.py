@@ -216,9 +216,17 @@ class Table(BaseModel):
             files_str = "', '".join(files)
             files_clause = f"FILES = ('{files_str}')"
 
+        # Determine the FROM clause based on whether we're using a stage or direct path
+        if stage:
+            from_clause = f"@{stage}/{path}"
+        elif storage_integration:
+            from_clause = f"@{self.stage}"
+        else:
+            from_clause = f"'{path}'"
+
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
-                FROM '{path}'
+                FROM {from_clause}
                 {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not stage else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
