@@ -200,7 +200,13 @@ class Table(BaseModel):
 
             logging.info(f"Starting copy into `{self.fqn}` from path '{path}'")
             return execute(
-                query.format(file_format=self.file_format, from_clause=from_clause)
+                query.format(
+                    file_format=self.file_format,
+                    from_clause=from_clause,
+                    storage_integration_clause=f"STORAGE_INTEGRATION = {storage_integration}"
+                    if storage_integration and not (stage or self._stage)
+                    else "",
+                )
             )
 
     def copy_into(
@@ -230,7 +236,7 @@ class Table(BaseModel):
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {{from_clause}}
-                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not (stage or self._stage) else ""}
+                {{storage_integration_clause}}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
                 {files_clause}
