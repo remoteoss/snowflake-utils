@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
 
 from ..queries import execute_statement
-from ..settings import connect, governance_settings, SnowflakeSettings
+from ..settings import SnowflakeSettings, connect, governance_settings
 from .column import Column, MetadataColumn, _inserts, _matched, _type_cast
 from .enums import MatchByColumnName, TagLevel
 from .file_format import FileFormat, InlineFileFormat
@@ -230,7 +230,7 @@ class Table(BaseModel):
         copy_query = f"""
                 COPY INTO {self.fqn} {col_str}
                 FROM {{from_clause}}
-                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not stage else ""}
+                {f"STORAGE_INTEGRATION = {storage_integration}" if storage_integration and not (stage or self._stage) else ""}
                 FILE_FORMAT = ( FORMAT_NAME ='{{file_format}}')
                 MATCH_BY_COLUMN_NAME={match_by_column_name.value}
                 {files_clause}
