@@ -368,6 +368,7 @@ class Table(BaseModel):
         qualify: bool = False,
         files: list[str] | None = None,
         copy_grants: bool = True,
+        stage: str | None = None,
     ) -> None:
         def copy_callable(table: Table, sync_tags: bool) -> None:
             return table.copy_into(
@@ -378,6 +379,7 @@ class Table(BaseModel):
                 sync_tags=sync_tags,
                 files=files,
                 copy_grants=copy_grants,
+                stage=stage,
             )
 
         return self._merge(copy_callable, primary_keys, replication_keys, qualify)
