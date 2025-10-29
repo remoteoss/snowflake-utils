@@ -55,7 +55,7 @@ class Table(BaseModel):
 
     @property
     def temporary_stage(self) -> str:
-        return f"tmp_external_stage_{self.schema_name}_{self.name}".upper()
+        return self._stage_fqn()
 
     @property
     def temporary_file_format(self) -> FileFormat:
@@ -85,16 +85,19 @@ class Table(BaseModel):
     ) -> str:
         logging.debug(f"Creating temporate stage at path: {path}")
         # Create a temporary stage with proper FQN
-        stage_fqn = (
-            f"{self.database}.{self.schema_name}.{self.temporary_stage}"
-            if self.database
-            else f"{self.schema_name}.{self.temporary_stage}"
-        )
+        stage_fqn = self._stage_fqn()
         return f"""
         CREATE OR REPLACE TEMPORARY STAGE {stage_fqn}
         URL='{path}'
         STORAGE_INTEGRATION = {storage_integration}    
         """
+
+    def _stage_fqn(self):
+        return (
+            f"{self.database}.{self.schema_name}.{self.temporary_stage}"
+            if self.database
+            else f"{self.schema_name}.{self.temporary_stage}"
+        ).upper()
 
     def get_create_table_statement(
         self,
