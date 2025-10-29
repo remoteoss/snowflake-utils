@@ -93,11 +93,12 @@ class Table(BaseModel):
         """
 
     def _stage_fqn(self):
+        temporary_stage = f"tmp_external_stage_{self.schema_name}_{self.name}".upper()
         return (
-            f"{self.database}.{self.schema_name}.{self.temporary_stage}"
+            f"{self.database}.{self.schema_name}.{temporary_stage}"
             if self.database
-            else f"{self.schema_name}.{self.temporary_stage}"
-        ).upper()
+            else f"{self.schema_name}.{temporary_stage}"
+        )
 
     def get_create_table_statement(
         self,
