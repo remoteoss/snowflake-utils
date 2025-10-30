@@ -38,7 +38,7 @@ jobs:
           key: uv-${{ runner.os }}-py-${{ matrix.python-version }}-lock-${{ hashFiles('uv.lock') }}
 
       - name: Install dependencies (uv)
-        run: uv sync -g dev --frozen
+        run: uv sync
 
       - name: Run ruff
         run: uv run ruff check .
