@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10.9", "3.11.5", "3.12.2"]
-        poetry-version: ["1.8.2"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,33 +25,29 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: abatilo/actions-poetry@v3
-        name: Install Poetry
-        with:
-          poetry-version: ${{ matrix.poetry-version }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v4
 
-      - name: Update Poetry cache location
-        run: poetry config virtualenvs.in-project true
-
-      - id: venv_cache
+      - id: uv_cache
         uses: actions/cache@v3
-        name: Cache or Restore venv
+        name: Cache uv and venv
         with:
-          path: .venv
-          key: venv-${{ matrix.python-version }}-${{ matrix.poetry-version }}-lock-${{ hashFiles('poetry.lock') }}
+          path: |
+            ~/.cache/uv
+            .venv
+          key: uv-${{ runner.os }}-py-${{ matrix.python-version }}-lock-${{ hashFiles('uv.lock') }}
 
-      - name: Install Poetry Dependencies
-        run: poetry install
-        if: steps.venv_cache.outputs.cache-hit != 'true'
+      - name: Install dependencies (uv)
+        run: uv sync -g dev --frozen
 
       - name: Run ruff
-        run: poetry run ruff check .
+        run: uv run ruff check .
 
       - name: Run ruff format
-        run: poetry run ruff format --check .
+        run: uv run ruff format --check .
 
       - name: Run tests
-        run: poetry run pytest
+        run: uv run pytest
 
   release:
     if: github.ref == 'refs/heads/main'
