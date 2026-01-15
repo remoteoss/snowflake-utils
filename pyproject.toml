@@ -11,7 +11,6 @@ readme = "README.md"
 dependencies = [
     "snowflake-connector-python[secure-local-storage]>=3.12.1,<4",
     "pydantic-settings>=2.2.1,<3",
-    "typer>=0.16.0,<0.17",
 ]
 
 [dependency-groups]
@@ -20,12 +19,13 @@ dev = [
     "ruff>=0.11.2,<0.12",
     "snowflake-vcrpy",
     "urllib3<2.0",
+    "typer>=0.16.0,<0.17",
 ]
 
 [tool.uv]
 
 [tool.uv.sources]
-snowflake-vcrpy = { git = "https://github.com/Snowflake-Labs/snowflake-vcrpy.git", rev = "50c7de2378177c39318f10eaba67e82f6fd8af39" }
+snowflake-vcrpy = { git = "https://github.com/Snowflake-Labs/snowflake-vcrpy.git", rev = "eb04664d233f53958deb316eb4968ff842424337" }
 
 [build-system]
 requires = ["hatchling"]
