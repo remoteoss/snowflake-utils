@@ -1,6 +1,7 @@
 import logging
 from collections import defaultdict
 from functools import partial
+from typing import ClassVar
 
 from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
@@ -25,6 +26,12 @@ class Table(BaseModel):
     existing_table_tags: dict[str, str] | None = None
     _file_format: FileFormat | None = None
     _stage: str | None = None
+
+    # Max column tag actions per batched ALTER TABLE statement. Chunking keeps
+    # each statement well under Snowflake's ~1 MB statement-size limit even for
+    # very wide tables, while collapsing dozens of per-column statements into a
+    # handful of multi-action ones.
+    _MAX_TAG_ACTIONS_PER_STATEMENT: ClassVar[int] = 100
 
     @property
     def file_format(self) -> str:
@@ -531,12 +538,25 @@ class Table(BaseModel):
     def sync_tags_table(self, cursor: SnowflakeCursor) -> None:
         tags = self.current_table_tags(cursor=cursor)
         desired_tags = {k.casefold(): v for k, v in self.table_structure.tags.items()}
-        for tag_name in desired_tags:
-            if tag_name not in tags:
-                self._set_table_tag(cursor, desired_tags, tag_name)
-        for tag_name in tags:
-            if tag_name not in desired_tags:
-                self._unset_table_tag(cursor, tag_name)
+
+        to_set = {
+            tag_name: desired_tags[tag_name]
+            for tag_name in desired_tags
+            if tag_name not in tags
+        }
+        to_unset = [tag_name for tag_name in tags if tag_name not in desired_tags]
+
+        if to_unset:
+            actions = ", ".join(
+                governance_settings.fqn(tag_name) for tag_name in to_unset
+            )
+            cursor.execute(f"ALTER TABLE {self.fqn} UNSET TAG {actions}")
+        if to_set:
+            actions = ", ".join(
+                f"{governance_settings.fqn(tag_name)} = '{tag_value}'"
+                for tag_name, tag_value in to_set.items()
+            )
+            cursor.execute(f"ALTER TABLE {self.fqn} SET TAG {actions}")
 
     def _unset_table_tag(self, cursor, tag_name):
         cursor.execute(
@@ -572,26 +592,67 @@ class Table(BaseModel):
             ].tags.items()
         }
 
-        for tag in existing_tags:
-            if tag not in desired_tags:
-                column, tag_name, _value = existing_tags[tag]
-                self._unset_column_tag(cursor, column, tag_name)
+        to_unset = [
+            (existing_tags[tag][0], existing_tags[tag][1])
+            for tag in existing_tags
+            if tag not in desired_tags
+        ]
+        to_set = [desired_tags[tag] for tag in desired_tags if tag not in existing_tags]
 
-        for tag in desired_tags:
-            if tag not in existing_tags:
-                self._set_column_tag(cursor, *desired_tags[tag])
+        self._unset_column_tags_batch(cursor, to_unset)
+        self._set_column_tags_batch(cursor, to_set)
+
+    def _set_column_tags_batch(
+        self,
+        cursor: SnowflakeCursor,
+        changes: list[tuple[str, str, str]],
+    ) -> None:
+        """Apply many column SET TAG actions in as few ALTER TABLE statements as possible.
+
+        ``changes`` is a list of ``(column, tag_name, tag_value)`` tuples.
+        """
+        actions = [
+            f"""MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
+            for column, tag_name, tag_value in changes
+        ]
+        self._execute_column_tag_actions(cursor, actions)
+
+    def _unset_column_tags_batch(
+        self,
+        cursor: SnowflakeCursor,
+        changes: list[tuple[str, str]],
+    ) -> None:
+        """Apply many column UNSET TAG actions in as few ALTER TABLE statements as possible.
+
+        ``changes`` is a list of ``(column, tag_name)`` tuples.
+        """
+        actions = [
+            f'MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag_name)}'
+            for column, tag_name in changes
+        ]
+        self._execute_column_tag_actions(cursor, actions)
+
+    def _execute_column_tag_actions(
+        self, cursor: SnowflakeCursor, actions: list[str]
+    ) -> None:
+        """Emit batched ``ALTER TABLE ... <action>, <action>, ...`` statements.
+
+        No-op when ``actions`` is empty. Actions are chunked so no single
+        statement exceeds ``_MAX_TAG_ACTIONS_PER_STATEMENT``, keeping each
+        statement well under Snowflake's statement-size limit even for very
+        wide tables.
+        """
+        for start in range(0, len(actions), self._MAX_TAG_ACTIONS_PER_STATEMENT):
+            chunk = actions[start : start + self._MAX_TAG_ACTIONS_PER_STATEMENT]
+            cursor.execute(f"ALTER TABLE {self.fqn} {', '.join(chunk)}")
 
     def _set_column_tag(
         self, cursor: SnowflakeCursor, column: str, tag_name: str, tag_value: str
     ) -> None:
-        cursor.execute(
-            f"""ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
-        )
+        self._set_column_tags_batch(cursor, [(column, tag_name, tag_value)])
 
     def _unset_column_tag(self, cursor: SnowflakeCursor, column: str, tag: str) -> None:
-        cursor.execute(
-            f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag)}'
-        )
+        self._unset_column_tags_batch(cursor, [(column, tag)])
 
     def copy_custom(
         self,
