@@ -612,7 +612,7 @@ class Table(BaseModel):
         ``changes`` is a list of ``(column, tag_name, tag_value)`` tuples.
         """
         actions = [
-            f"""MODIFY COLUMN "{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
+            f""""{column.upper()}" SET TAG {governance_settings.fqn(tag_name)} = '{tag_value}'"""
             for column, tag_name, tag_value in changes
         ]
         self._execute_column_tag_actions(cursor, actions)
@@ -622,29 +622,39 @@ class Table(BaseModel):
         cursor: SnowflakeCursor,
         changes: list[tuple[str, str]],
     ) -> None:
-        """Apply many column UNSET TAG actions in as few ALTER TABLE statements as possible.
+        """Emit one ``ALTER TABLE ... MODIFY COLUMN`` UNSET statement per column.
 
-        ``changes`` is a list of ``(column, tag_name)`` tuples.
+        ``changes`` is a list of ``(column, tag_name)`` tuples. Snowflake rejects
+        multi-column UNSET TAG, so actions cannot be batched across columns the way
+        SET TAG can. Tags belonging to the same column are combined into that
+        column's single statement.
         """
-        actions = [
-            f'MODIFY COLUMN "{column.upper()}" UNSET TAG {governance_settings.fqn(tag_name)}'
-            for column, tag_name in changes
-        ]
-        self._execute_column_tag_actions(cursor, actions)
+        tags_by_column: dict[str, list[str]] = {}
+        for column, tag_name in changes:
+            tags_by_column.setdefault(column.upper(), []).append(
+                governance_settings.fqn(tag_name)
+            )
+
+        for column, tags in tags_by_column.items():
+            cursor.execute(
+                f'ALTER TABLE {self.fqn} MODIFY COLUMN "{column}" '
+                f"UNSET TAG {', '.join(tags)}"
+            )
 
     def _execute_column_tag_actions(
         self, cursor: SnowflakeCursor, actions: list[str]
     ) -> None:
         """Emit batched ``ALTER TABLE ... <action>, <action>, ...`` statements.
 
-        No-op when ``actions`` is empty. Actions are chunked so no single
-        statement exceeds ``_MAX_TAG_ACTIONS_PER_STATEMENT``, keeping each
+        Used for SET TAG actions, which Snowflake allows to span multiple columns
+        in one statement. No-op when ``actions`` is empty. Actions are chunked so
+        no single statement exceeds ``_MAX_TAG_ACTIONS_PER_STATEMENT``, keeping each
         statement well under Snowflake's statement-size limit even for very
         wide tables.
         """
         for start in range(0, len(actions), self._MAX_TAG_ACTIONS_PER_STATEMENT):
             chunk = actions[start : start + self._MAX_TAG_ACTIONS_PER_STATEMENT]
-            cursor.execute(f"ALTER TABLE {self.fqn} {', '.join(chunk)}")
+            cursor.execute(f"ALTER TABLE {self.fqn} MODIFY COLUMN {', '.join(chunk)}")
 
     def _set_column_tag(
         self, cursor: SnowflakeCursor, column: str, tag_name: str, tag_value: str

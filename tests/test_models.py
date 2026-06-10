@@ -1278,12 +1278,11 @@ def test_sync_tags_columns_batches_sets_into_single_alter():
     assert len(alters) == 1, alters
     statement = alters[0]
     assert statement.count("SET TAG") == 3
-    assert (
-        "MODIFY COLUMN \"ID\" SET TAG governance.public.pii = 'personal'" in statement
-    )
-    assert (
-        "MODIFY COLUMN \"EMAIL\" SET TAG governance.public.pii = 'contact'" in statement
-    )
+    # MODIFY COLUMN appears exactly once, then comma-separated bare column clauses
+    assert statement.count("MODIFY COLUMN") == 1
+    assert "MODIFY COLUMN " in statement
+    assert "\"ID\" SET TAG governance.public.pii = 'personal'" in statement
+    assert "\"EMAIL\" SET TAG governance.public.pii = 'contact'" in statement
 
 
 def test_sync_tags_columns_separates_set_and_unset():
@@ -1298,7 +1297,9 @@ def test_sync_tags_columns_separates_set_and_unset():
     assert len(alters) == 2, alters
     unset_stmt = next(s for s in alters if "UNSET TAG" in s)
     set_stmt = next(s for s in alters if "SET TAG" in s and "UNSET" not in s)
+    assert unset_stmt.count("MODIFY COLUMN") == 1
     assert 'MODIFY COLUMN "NAME" UNSET TAG governance.public.pii' in unset_stmt
+    assert set_stmt.count("MODIFY COLUMN") == 1
     assert "MODIFY COLUMN \"ID\" SET TAG governance.public.pii = 'personal'" in set_stmt
 
 
@@ -1328,6 +1329,54 @@ def test_sync_tags_columns_chunks_wide_tables(monkeypatch):
     alters = _alter_calls(cursor)
     assert len(alters) == 3  # 5 actions / cap 2 -> 2 + 2 + 1
     assert sum(s.count("SET TAG") for s in alters) == 5
+
+
+def test_sync_tags_columns_unset_one_statement_per_column():
+    """Multi-column UNSET emits one ALTER per column (Snowflake rejects multi-column UNSET)."""
+    table = _make_tag_table({"id": {}, "name": {}, "email": {}})  # no desired tags
+    cursor = make_mock_cursor(
+        fetchall_return=[
+            ("id", "pii", "personal"),
+            ("name", "pii", "personal"),
+            ("email", "pii", "contact"),
+        ]
+    )
+    table.sync_tags_columns(cursor)
+
+    alters = _alter_calls(cursor)
+    assert len(alters) == 3, alters
+    assert all("UNSET TAG" in s for s in alters)
+    assert all(s.count("MODIFY COLUMN") == 1 for s in alters)
+    assert any(
+        'MODIFY COLUMN "ID" UNSET TAG governance.public.pii' in s for s in alters
+    )
+    assert any(
+        'MODIFY COLUMN "NAME" UNSET TAG governance.public.pii' in s for s in alters
+    )
+    assert any(
+        'MODIFY COLUMN "EMAIL" UNSET TAG governance.public.pii' in s for s in alters
+    )
+
+
+def test_sync_tags_columns_unset_combines_multiple_tags_per_column():
+    """Multiple tags on one column are combined into that column's single UNSET statement."""
+    table = _make_tag_table({"id": {}})  # no desired tags
+    cursor = make_mock_cursor(
+        fetchall_return=[
+            ("id", "pii", "personal"),
+            ("id", "domain", "finance"),
+        ]
+    )
+    table.sync_tags_columns(cursor)
+
+    alters = _alter_calls(cursor)
+    assert len(alters) == 1, alters
+    stmt = alters[0]
+    assert stmt.count("MODIFY COLUMN") == 1
+    assert stmt.count("UNSET TAG") == 1  # single keyword, comma-separated tags
+    assert 'MODIFY COLUMN "ID" UNSET TAG ' in stmt
+    assert "governance.public.pii" in stmt
+    assert "governance.public.domain" in stmt
 
 
 def test_sync_tags_table_batches_multiple_tags():
