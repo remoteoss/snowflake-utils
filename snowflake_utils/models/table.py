@@ -1,10 +1,14 @@
 import logging
 from collections import defaultdict
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from functools import partial
 from typing import ClassVar
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
+from snowflake.connector import SnowflakeConnection
 from snowflake.connector.cursor import SnowflakeCursor
 
 from ..queries import execute_statement
@@ -21,6 +25,18 @@ from .enums import MatchByColumnName, TagLevel
 from .file_format import FileFormat, InlineFileFormat
 from .table_structure import TableStructure
 
+_session: ContextVar[SnowflakeConnection | None] = ContextVar("_session", default=None)
+
+
+@contextmanager
+def _connection() -> Iterator[SnowflakeConnection]:
+    """Reuse the session opened by `Table._merge`, otherwise open a new connection."""
+    if (shared := _session.get()) is not None:
+        yield shared
+    else:
+        with connect() as connection:
+            yield connection
+
 
 class Table(BaseModel):
     name: str
@@ -30,6 +46,7 @@ class Table(BaseModel):
     database: str | None = None
     include_metadata: list[MetadataColumn] = Field(default_factory=list)
     enable_schema_evolution: bool = False
+    temporary: bool = False
     existing_column_tags: dict[str, dict[str, str]] | None = None
     existing_table_tags: dict[str, str] | None = None
     _file_format: FileFormat | None = None
@@ -122,8 +139,14 @@ class Table(BaseModel):
     ) -> str:
         logging.debug(f"Creating table: {self.fqn}")
         copy_grants_clause = " COPY GRANTS" if copy_grants and full_refresh else ""
+        kind = "TEMPORARY TABLE" if self.temporary else "TABLE"
+        create = (
+            f"CREATE OR REPLACE {kind}"
+            if full_refresh
+            else f"CREATE {kind} IF NOT EXISTS"
+        )
         if self.table_structure:
-            return f"{'CREATE OR REPLACE TABLE' if full_refresh else 'CREATE TABLE IF NOT EXISTS'} {self.fqn}{copy_grants_clause} ({self.table_structure.parsed_columns})"
+            return f"{create} {self.fqn}{copy_grants_clause} ({self.table_structure.parsed_columns})"
         else:
             template = """ARRAY_AGG(
                 OBJECT_CONSTRUCT(
@@ -150,7 +173,7 @@ class Table(BaseModel):
 
             stage_query = f"LOCATION => '@{self.stage}'"
             return f"""
-            {"CREATE OR REPLACE TABLE" if full_refresh else "CREATE TABLE IF NOT EXISTS"} {self.fqn}{copy_grants_clause}
+            {create} {self.fqn}{copy_grants_clause}
             USING TEMPLATE (
                 SELECT {template}
                 FROM TABLE(
@@ -168,7 +191,7 @@ class Table(BaseModel):
         records,
         full_refresh: bool = False,
     ) -> None:
-        with connect() as connection:
+        with _connection() as connection:
             cursor = connection.cursor()
             _execute_statement = partial(execute_statement, cursor)
             _execute_statement(self.get_create_schema_statement())
@@ -198,7 +221,7 @@ class Table(BaseModel):
         create_table: bool = True,
         copy_grants: bool = True,
     ) -> None:
-        with connect() as connection:
+        with _connection() as connection:
             cursor = connection.cursor()
             execute = self.setup_connection(
                 path, storage_integration, cursor, file_format, stage
@@ -299,7 +322,7 @@ class Table(BaseModel):
         )
         if not qualify:
             return result
-        with connect() as connection:
+        with _connection() as connection:
             cursor = connection.cursor()
             self.qualify(
                 cursor=cursor,
@@ -356,28 +379,30 @@ class Table(BaseModel):
         sync_tags: bool = True,
         target_columns: list[str] | None = None,
     ) -> None:
+        # one session for the whole load: the temp table only exists inside it and
+        # Snowflake drops it when the session ends, even if the process is killed
         with connect() as connection:
-            cursor = connection.cursor()
-            if not self.exists(cursor):
-                copy_callable(self, sync_tags=sync_tags)
-                if qualify:
-                    self.qualify(cursor, primary_keys, replication_keys)
-                    if sync_tags and self.table_structure:
-                        self.sync_tags(cursor)
-                return None
+            token = _session.set(connection)
+            try:
+                cursor = connection.cursor()
+                if not self.exists(cursor):
+                    copy_callable(self, sync_tags=sync_tags)
+                    if qualify:
+                        self.qualify(cursor, primary_keys, replication_keys)
+                        if sync_tags and self.table_structure:
+                            self.sync_tags(cursor)
+                    return None
 
-        temp_table = self.model_copy(
-            update={"name": f"{self.name}_temp_{uuid4().hex[:8]}"}
-        )
-        try:
-            copy_callable(temp_table, sync_tags=False)
-            if qualify:
-                with connect() as connection:
-                    cursor = connection.cursor()
+                temp_table = self.model_copy(
+                    update={
+                        "name": f"{self.name}_temp_{uuid4().hex[:8]}",
+                        "temporary": True,
+                    }
+                )
+                copy_callable(temp_table, sync_tags=False)
+                if qualify:
                     temp_table.qualify(cursor, primary_keys, replication_keys)
 
-            with connect() as connection:
-                cursor = connection.cursor()
                 old_columns = {x.name: x.data_type for x in self.get_columns(cursor)}
                 new_columns = temp_table.get_columns(cursor)
 
@@ -410,10 +435,8 @@ class Table(BaseModel):
                 if sync_tags and self.table_structure:
                     self.sync_tags(cursor)
                 temp_table.drop(cursor)
-        except BaseException:
-            with connect() as connection:
-                connection.cursor().execute(f"drop table if exists {temp_table.fqn}")
-            raise
+            finally:
+                _session.reset(token)
 
     def merge(
         self,
@@ -501,7 +524,7 @@ class Table(BaseModel):
         )
         return cursor.execute(
             f"""
-        create or replace table {self.fqn} as (
+        create or replace {"temporary " if self.temporary else ""}table {self.fqn} as (
             select * from {self.fqn}
             qualify row_number() over (partition by {qualify_partition} order by {qualify_order}) = 1
             )
