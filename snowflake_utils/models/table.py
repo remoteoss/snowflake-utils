@@ -2,13 +2,21 @@ import logging
 from collections import defaultdict
 from functools import partial
 from typing import ClassVar
+from uuid import uuid4
 
 from pydantic import BaseModel, Field
 from snowflake.connector.cursor import SnowflakeCursor
 
 from ..queries import execute_statement
 from ..settings import SnowflakeSettings, connect, governance_settings
-from .column import Column, MetadataColumn, _inserts, _matched, _type_cast
+from .column import (
+    Column,
+    MetadataColumn,
+    _inserts,
+    _is_newer_or_equal,
+    _matched,
+    _type_cast,
+)
 from .enums import MatchByColumnName, TagLevel
 from .file_format import FileFormat, InlineFileFormat
 from .table_structure import TableStructure
@@ -275,6 +283,7 @@ class Table(BaseModel):
                 replication_keys,
                 qualify=True,
                 sync_tags=sync_tags,
+                target_columns=target_columns,
             )
 
         result = self._copy(
@@ -345,6 +354,7 @@ class Table(BaseModel):
         replication_keys: list[str] | None = None,
         qualify: bool = False,
         sync_tags: bool = True,
+        target_columns: list[str] | None = None,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
@@ -356,32 +366,54 @@ class Table(BaseModel):
                         self.sync_tags(cursor)
                 return None
 
-        temp_table = self.model_copy(update={"name": f"{self.name}_temp"})
-        with connect() as connection:
-            connection.cursor().execute(f"drop table if exists {temp_table.fqn}")
-        copy_callable(temp_table, sync_tags=False)
-        if qualify:
+        temp_table = self.model_copy(
+            update={"name": f"{self.name}_temp_{uuid4().hex[:8]}"}
+        )
+        try:
+            copy_callable(temp_table, sync_tags=False)
+            if qualify:
+                with connect() as connection:
+                    cursor = connection.cursor()
+                    temp_table.qualify(cursor, primary_keys, replication_keys)
+
             with connect() as connection:
                 cursor = connection.cursor()
-                temp_table.qualify(cursor, primary_keys, replication_keys)
+                old_columns = {x.name: x.data_type for x in self.get_columns(cursor)}
+                new_columns = temp_table.get_columns(cursor)
 
-        with connect() as connection:
-            cursor = connection.cursor()
-            old_columns = {x.name: x.data_type for x in self.get_columns(cursor)}
-            new_columns = temp_table.get_columns(cursor)
+                for column in new_columns:
+                    if column.name not in old_columns:
+                        self.add_column(cursor, column)
 
-            for column in new_columns:
-                if column.name not in old_columns:
-                    self.add_column(cursor, column)
-
-            cursor.execute(
-                self._merge_statement(
-                    temp_table, new_columns, old_columns, primary_keys
+                loaded = {
+                    c.upper()
+                    for c in [
+                        *(target_columns or []),
+                        *primary_keys,
+                        *(m.name for m in self.include_metadata),
+                    ]
+                }
+                merge_columns = [
+                    c
+                    for c in new_columns
+                    if not target_columns or c.name.upper() in loaded
+                ]
+                cursor.execute(
+                    self._merge_statement(
+                        temp_table,
+                        merge_columns,
+                        old_columns,
+                        primary_keys,
+                        replication_keys if qualify else None,
+                    )
                 )
-            )
-            if sync_tags and self.table_structure:
-                self.sync_tags(cursor)
-            temp_table.drop(cursor)
+                if sync_tags and self.table_structure:
+                    self.sync_tags(cursor)
+                temp_table.drop(cursor)
+        except BaseException:
+            with connect() as connection:
+                connection.cursor().execute(f"drop table if exists {temp_table.fqn}")
+            raise
 
     def merge(
         self,
@@ -482,9 +514,13 @@ class Table(BaseModel):
         columns: list[Column],
         old_columns: dict[str, str],
         primary_keys: list[str],
+        replication_keys: list[str] | None = None,
     ) -> str:
         pkes = " and ".join(
             f'dest."{c.upper()}" = tmp."{c.upper()}"' for c in primary_keys
+        )
+        update_condition = (
+            f" and {_is_newer_or_equal(replication_keys)}" if replication_keys else ""
         )
         matched = _matched(columns, old_columns)
         column_names = ",".join(f'"{c.name}"' for c in columns)
@@ -498,7 +534,7 @@ class Table(BaseModel):
             merge into {self.fqn} as dest 
             using {temp_table.fqn} tmp
             ON {pkes}
-            when matched then update set {matched}
+            when matched{update_condition} then update set {matched}
             when not matched then insert ({column_names}) VALUES ({inserts})
         """
 
