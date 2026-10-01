@@ -1,6 +1,7 @@
 import inspect
 import logging
 import os
+import re
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -425,7 +426,7 @@ def test_copy_into_qualify_merges_instead_of_copying_into_live_table(
     mock_copy.assert_not_called()
     mock_merge.assert_called_once()
     _, kwargs = mock_merge.call_args
-    assert kwargs == {"qualify": True, "sync_tags": True}
+    assert kwargs == {"qualify": True, "sync_tags": True, "target_columns": None}
 
 
 @patch.object(Table, "qualify")
@@ -540,13 +541,117 @@ def test_copy_into_qualify_never_rebuilds_live_table(
         s.lower().startswith("create or replace table public.pytest_temp")
         for s in statements
     )
-    assert "drop table if exists PUBLIC.PYTEST_temp" in statements
     assert any(
         s.lower().startswith("merge into public.pytest as dest") for s in statements
     )
     # the live table is only ever written by the MERGE: COPY targets the temp table
-    assert "PUBLIC.PYTEST_temp" in mock_copy.call_args.args[0]
+    assert "PUBLIC.PYTEST_temp_" in mock_copy.call_args.args[0]
+    mock_drop.assert_called_once()
     mock_sync_tags.assert_not_called()
+
+
+def run_qualified_copy_into(table: Table, **kwargs) -> MagicMock:
+    mock_cursor = make_mock_cursor()
+    with patch("snowflake_utils.models.table.connect") as mock_connect:
+        mock_connect.return_value = make_mock_conn(cursor=mock_cursor)
+        table.copy_into(
+            path=path,
+            file_format=parquet_file_format,
+            storage_integration=storage_integration,
+            primary_keys=["id"],
+            qualify=True,
+            **kwargs,
+        )
+    return mock_cursor
+
+
+def executed_statements(mock_cursor: MagicMock) -> list[str]:
+    return [" ".join(c.args[0].split()) for c in mock_cursor.execute.call_args_list]
+
+
+@patch.object(Table, "drop")
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy")
+def test_copy_into_qualify_only_updates_loaded_columns(
+    mock_copy, mock_exists, mock_get_columns, mock_drop
+):
+    mock_get_columns.return_value = [
+        Column(name=n, data_type="text") for n in ("id", "name", "last_name")
+    ]
+
+    statements = executed_statements(
+        run_qualified_copy_into(test_table, target_columns=["name"])
+    )
+
+    merge = next(s for s in statements if s.lower().startswith("merge into"))
+    update_clause = merge.split("when matched")[1].split("when not matched")[0]
+    assert 'dest."name"' in update_clause and 'dest."id"' in update_clause
+    assert "last_name" not in update_clause
+
+
+def test_merge_statement_updates_only_newer_rows_with_replication_keys():
+    columns = [Column(name="id", data_type="text")]
+    temp = test_table.model_copy(update={"name": "PYTEST_temp"})
+
+    with_keys = " ".join(
+        test_table._merge_statement(
+            temp, columns, {}, ["id"], ["updated_at", "etl_file_ingested_at"]
+        ).split()
+    )
+    without_keys = " ".join(
+        test_table._merge_statement(temp, columns, {}, ["id"]).split()
+    )
+
+    condition = with_keys.split("when matched")[1].split("then update")[0]
+    assert 'tmp."UPDATED_AT" > dest."UPDATED_AT"' in condition
+    assert 'tmp."ETL_FILE_INGESTED_AT" >= dest."ETL_FILE_INGESTED_AT"' in condition
+    assert "when matched then update" in without_keys
+
+
+@patch.object(Table, "drop")
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy")
+def test_copy_into_qualify_uses_a_new_temp_table_per_run(
+    mock_copy, mock_exists, mock_get_columns, mock_drop
+):
+    mock_get_columns.return_value = [Column(name="id", data_type="text")]
+
+    run_qualified_copy_into(test_table)
+    run_qualified_copy_into(test_table)
+
+    temp_names = {
+        re.search(r"PYTEST_temp_[0-9a-f]{8}", c.args[0]).group()
+        for c in mock_copy.call_args_list
+    }
+    assert len(temp_names) == 2
+
+
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy", side_effect=RuntimeError("copy failed"))
+def test_copy_into_qualify_drops_temp_table_when_the_load_fails(
+    mock_copy, mock_exists, mock_get_columns
+):
+    mock_cursor = make_mock_cursor()
+    with patch("snowflake_utils.models.table.connect") as mock_connect:
+        mock_connect.return_value = make_mock_conn(cursor=mock_cursor)
+        with pytest.raises(RuntimeError, match="copy failed"):
+            test_table.copy_into(
+                path=path,
+                file_format=parquet_file_format,
+                storage_integration=storage_integration,
+                primary_keys=["id"],
+                qualify=True,
+            )
+
+    statements = executed_statements(mock_cursor)
+    assert any(
+        re.fullmatch(r"drop table if exists PUBLIC\.PYTEST_temp_[0-9a-f]{8}", s)
+        for s in statements
+    )
+    assert not any(s.lower().startswith("merge into") for s in statements)
 
 
 @patch("snowflake_utils.settings.connect")

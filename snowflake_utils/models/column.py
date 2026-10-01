@@ -25,6 +25,18 @@ def _matched(columns: list[Column], old_columns: dict[str, str]):
     )
 
 
+def _is_newer_or_equal(keys: list[str]) -> str:
+    *head, last = (k.upper() for k in keys)
+    expr = f'(dest."{last}" is null or tmp."{last}" >= dest."{last}")'
+    for key in reversed(head):
+        dest, tmp = f'dest."{key}"', f'tmp."{key}"'
+        expr = (
+            f"(({dest} is null and {tmp} is not null) or {tmp} > {dest}"
+            f" or (equal_null({tmp}, {dest}) and {expr}))"
+        )
+    return expr
+
+
 def _inserts(columns: list[Column], old_columns: dict[str, str]) -> str:
     return ",".join(
         _possibly_cast(f'tmp."{c.name}"', old_columns.get(c.name), c.data_type)
