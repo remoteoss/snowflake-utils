@@ -254,8 +254,7 @@ class Table(BaseModel):
                 {self._include_metadata()}
                 """
         if qualify and not full_refresh:
-            # Dedup in a temp table and merge, so readers never see the live
-            # table holding duplicates between the COPY and the QUALIFY.
+            # dedupe in a temp table so the live table never holds duplicates
             def copy_callable(table: Table, sync_tags: bool) -> None:
                 return table.copy_into(
                     path=path,
@@ -277,39 +276,29 @@ class Table(BaseModel):
                 qualify=True,
                 sync_tags=sync_tags,
             )
-        elif qualify:
-            self._copy(
-                copy_query,
-                path,
-                file_format,
-                storage_integration,
-                full_refresh,
-                sync_tags,
-                stage,
-                create_table,
-                copy_grants,
+
+        result = self._copy(
+            copy_query,
+            path,
+            file_format,
+            storage_integration,
+            full_refresh,
+            sync_tags,
+            stage,
+            create_table,
+            copy_grants,
+        )
+        if not qualify:
+            return result
+        with connect() as connection:
+            cursor = connection.cursor()
+            self.qualify(
+                cursor=cursor,
+                primary_keys=primary_keys,
+                replication_keys=replication_keys,
             )
-            with connect() as connection:
-                cursor = connection.cursor()
-                self.qualify(
-                    cursor=cursor,
-                    primary_keys=primary_keys,
-                    replication_keys=replication_keys,
-                )
-                if sync_tags and self.table_structure:
-                    self.sync_tags(cursor)
-        else:
-            return self._copy(
-                copy_query,
-                path,
-                file_format,
-                storage_integration,
-                full_refresh,
-                sync_tags,
-                stage,
-                create_table,
-                copy_grants,
-            )
+            if sync_tags and self.table_structure:
+                self.sync_tags(cursor)
 
     def create_table(
         self, full_refresh: bool, execute_statement: callable, copy_grants: bool = True
@@ -368,6 +357,8 @@ class Table(BaseModel):
                 return None
 
         temp_table = self.model_copy(update={"name": f"{self.name}_temp"})
+        with connect() as connection:
+            connection.cursor().execute(f"drop table if exists {temp_table.fqn}")
         copy_callable(temp_table, sync_tags=False)
         if qualify:
             with connect() as connection:
