@@ -367,9 +367,6 @@ class Table(BaseModel):
 
         with connect() as connection:
             cursor = connection.cursor()
-            cursor.execute(
-                self.get_create_table_statement(full_refresh=False, copy_grants=True)
-            )
             old_columns = {x.name: x.data_type for x in self.get_columns(cursor)}
             new_columns = temp_table.get_columns(cursor)
 

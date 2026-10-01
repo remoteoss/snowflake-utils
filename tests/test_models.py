@@ -481,6 +481,34 @@ def test_copy_into_qualify_always_creates_temp_table(
     assert "COPY INTO PUBLIC.PYTEST_temp (id)" in temp_call["query"].replace("\n", " ")
 
 
+@patch.object(Table, "drop")
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy")
+def test_copy_into_qualify_existing_table_without_structure(
+    mock_copy, mock_exists, mock_get_columns, mock_drop
+):
+    mock_get_columns.return_value = [Column(name="id", data_type="integer")]
+    mock_cursor = make_mock_cursor()
+    inferred_table = Table(name="PYTEST_INFERRED", schema_name="PUBLIC")
+    with patch("snowflake_utils.models.table.connect") as mock_connect:
+        mock_connect.return_value = make_mock_conn(cursor=mock_cursor)
+        inferred_table.copy_into(
+            path=path,
+            file_format=parquet_file_format,
+            storage_integration=storage_integration,
+            primary_keys=["id"],
+            qualify=True,
+        )
+
+    statements = [
+        " ".join(c.args[0].split()) for c in mock_cursor.execute.call_args_list
+    ]
+    assert any(
+        s.lower().startswith("merge into public.pytest_inferred") for s in statements
+    )
+
+
 @patch.object(Table, "sync_tags")
 @patch.object(Table, "drop")
 @patch.object(Table, "get_columns")
