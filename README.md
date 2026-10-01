@@ -68,7 +68,7 @@ Available (public) methods:
   - whether the table should be fully refreshed
   - a list of target columns, if not all the columns are present in the file to be loaded (or not all need to be written)
   - whether to sync tags (provided in the table structure) to the table/columns
-  - whether to perform a qualify on the table after loading the data. If this is used, a list of primary keys (and optionally of replication keys) should also be provided. If only the primary keys are supplied, those will also be used to determine which records are kept (non deterministic).
+  - whether to dedupe the loaded data (qualify). If this is used, a list of primary keys (and optionally of replication keys) should also be provided. If only the primary keys are supplied, those will also be used to determine which records are kept (non deterministic). Unless `full_refresh` is set, the data is copied to a uniquely named `<table>_temp_<id>` table, deduped there and merged into the destination (updating only the loaded columns, and only rows that are not older by the replication keys), so the destination never holds duplicates visible to readers. With `full_refresh` the table is copied into directly and then rebuilt with the qualify.
   - a stage parameter to use an existing stage instead of creating a temporary one
 - *create_table*: runs the create table statement, with optional full refresh to recreate an existing table.
 - *setup_file_format*: given a file format object, creates the corresponding resource in Snowflake
