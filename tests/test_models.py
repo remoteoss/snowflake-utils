@@ -407,6 +407,115 @@ def test_merge(mock_merge, mock_copy):
             }
 
 
+@patch.object(Table, "_copy")
+@patch.object(Table, "_merge")
+def test_copy_into_qualify_merges_instead_of_copying_into_live_table(
+    mock_merge, mock_copy
+):
+    test_table.copy_into(
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        primary_keys=["id"],
+        qualify=True,
+        sync_tags=True,
+    )
+
+    mock_copy.assert_not_called()
+    mock_merge.assert_called_once()
+    _, kwargs = mock_merge.call_args
+    assert kwargs == {"qualify": True, "sync_tags": True}
+
+
+@patch.object(Table, "qualify")
+@patch.object(Table, "_copy")
+@patch.object(Table, "_merge")
+def test_copy_into_qualify_full_refresh_keeps_copy_then_qualify(
+    mock_merge, mock_copy, mock_qualify
+):
+    with patch("snowflake_utils.models.table.connect") as mock_connect:
+        mock_connect.return_value = make_mock_conn()
+        test_table.copy_into(
+            path=path,
+            file_format=parquet_file_format,
+            storage_integration=storage_integration,
+            primary_keys=["id"],
+            qualify=True,
+            full_refresh=True,
+        )
+
+    mock_merge.assert_not_called()
+    mock_copy.assert_called_once()
+    mock_qualify.assert_called_once()
+
+
+@pytest.mark.parametrize("create_table", [True, False])
+@patch.object(Table, "_copy")
+@patch.object(Table, "_merge")
+def test_copy_into_qualify_always_creates_temp_table(
+    mock_merge, mock_copy, create_table
+):
+    test_table.copy_into(
+        path=path,
+        file_format=parquet_file_format,
+        storage_integration=storage_integration,
+        target_columns=["id"],
+        qualify=True,
+        create_table=create_table,
+    )
+    copy_callable = mock_merge.call_args.args[0]
+
+    copy_callable(
+        test_table.model_copy(update={"name": "PYTEST_temp"}), sync_tags=False
+    )
+    copy_callable(test_table, sync_tags=True)
+
+    temp_call, live_call = mock_copy.call_args_list
+    # positional args of _copy: ..., sync_tags, stage, create_table, copy_grants
+    assert temp_call.args[5] is False and temp_call.args[7] is True
+    assert live_call.args[5] is True and live_call.args[7] is create_table
+    assert "COPY INTO PUBLIC.PYTEST_temp (id)" in temp_call.args[0].replace("\n", " ")
+
+
+@patch.object(Table, "sync_tags")
+@patch.object(Table, "drop")
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy")
+def test_copy_into_qualify_never_rebuilds_live_table(
+    mock_copy, mock_exists, mock_get_columns, mock_drop, mock_sync_tags
+):
+    mock_get_columns.return_value = [Column(name="id", data_type="integer")]
+    mock_cursor = make_mock_cursor()
+    with patch("snowflake_utils.models.table.connect") as mock_connect:
+        mock_connect.return_value = make_mock_conn(cursor=mock_cursor)
+        test_table.copy_into(
+            path=path,
+            file_format=parquet_file_format,
+            storage_integration=storage_integration,
+            primary_keys=["id"],
+            qualify=True,
+        )
+
+    statements = [
+        " ".join(c.args[0].split()) for c in mock_cursor.execute.call_args_list
+    ]
+    assert not any(
+        s.lower().startswith("create or replace table public.pytest ")
+        for s in statements
+    )
+    assert any(
+        s.lower().startswith("create or replace table public.pytest_temp")
+        for s in statements
+    )
+    assert any(
+        s.lower().startswith("merge into public.pytest as dest") for s in statements
+    )
+    # the live table is only ever written by the MERGE: COPY targets the temp table
+    assert "PUBLIC.PYTEST_temp" in mock_copy.call_args.args[0]
+    mock_sync_tags.assert_not_called()
+
+
 @patch("snowflake_utils.settings.connect")
 def test_single_column_update(mock_connect):
     mock_cursor = make_mock_cursor()

@@ -253,7 +253,31 @@ class Table(BaseModel):
                 {files_clause}
                 {self._include_metadata()}
                 """
-        if qualify:
+        if qualify and not full_refresh:
+            # Dedup in a temp table and merge, so readers never see the live
+            # table holding duplicates between the COPY and the QUALIFY.
+            def copy_callable(table: Table, sync_tags: bool) -> None:
+                return table.copy_into(
+                    path=path,
+                    file_format=file_format,
+                    storage_integration=storage_integration,
+                    match_by_column_name=match_by_column_name,
+                    target_columns=target_columns,
+                    sync_tags=sync_tags,
+                    stage=stage,
+                    files=files,
+                    create_table=create_table or table is not self,
+                    copy_grants=copy_grants,
+                )
+
+            return self._merge(
+                copy_callable,
+                primary_keys,
+                replication_keys,
+                qualify=True,
+                sync_tags=sync_tags,
+            )
+        elif qualify:
             self._copy(
                 copy_query,
                 path,
@@ -331,13 +355,16 @@ class Table(BaseModel):
         primary_keys: list[str] = ["id"],
         replication_keys: list[str] | None = None,
         qualify: bool = False,
+        sync_tags: bool = True,
     ) -> None:
         with connect() as connection:
             cursor = connection.cursor()
             if not self.exists(cursor):
-                copy_callable(self, sync_tags=True)
+                copy_callable(self, sync_tags=sync_tags)
                 if qualify:
                     self.qualify(cursor, primary_keys, replication_keys)
+                    if sync_tags and self.table_structure:
+                        self.sync_tags(cursor)
                 return None
 
         temp_table = self.model_copy(update={"name": f"{self.name}_temp"})
@@ -364,7 +391,7 @@ class Table(BaseModel):
                     temp_table, new_columns, old_columns, primary_keys
                 )
             )
-            if self.table_structure:
+            if sync_tags and self.table_structure:
                 self.sync_tags(cursor)
             temp_table.drop(cursor)
 
