@@ -17,6 +17,7 @@ from snowflake_utils.models import (
     TableStructure,
 )
 from snowflake_utils.models.column import MetadataColumn
+from snowflake_utils.models.table import _connection, _session
 
 test_table_schema = TableStructure(
     columns={
@@ -538,7 +539,7 @@ def test_copy_into_qualify_never_rebuilds_live_table(
         for s in statements
     )
     assert any(
-        s.lower().startswith("create or replace table public.pytest_temp")
+        s.lower().startswith("create or replace temporary table public.pytest_temp_")
         for s in statements
     )
     assert any(
@@ -628,15 +629,47 @@ def test_copy_into_qualify_uses_a_new_temp_table_per_run(
     assert len(temp_names) == 2
 
 
+@patch.object(Table, "drop")
+@patch.object(Table, "get_columns")
+@patch.object(Table, "exists", return_value=True)
+@patch.object(Table, "_copy", autospec=True)
+def test_copy_into_qualify_runs_everything_in_one_session(
+    mock_copy, mock_exists, mock_get_columns, mock_drop
+):
+    mock_get_columns.return_value = [Column(name="id", data_type="text")]
+    sessions = []
+
+    def copy_in_session(self, *args, **kwargs):
+        with _connection() as connection:
+            sessions.append((self.temporary, connection))
+
+    mock_copy.side_effect = copy_in_session
+    mock_conn = make_mock_conn()
+    with patch(
+        "snowflake_utils.models.table.connect", return_value=mock_conn
+    ) as connect:
+        test_table.copy_into(
+            path=path,
+            file_format=parquet_file_format,
+            storage_integration=storage_integration,
+            primary_keys=["id"],
+            qualify=True,
+        )
+
+    connect.assert_called_once()
+    assert sessions == [(True, mock_conn)]
+    mock_conn.__exit__.assert_called_once()
+
+
 @patch.object(Table, "get_columns")
 @patch.object(Table, "exists", return_value=True)
 @patch.object(Table, "_copy", side_effect=RuntimeError("copy failed"))
-def test_copy_into_qualify_drops_temp_table_when_the_load_fails(
+def test_copy_into_qualify_failure_closes_the_session_without_merging(
     mock_copy, mock_exists, mock_get_columns
 ):
     mock_cursor = make_mock_cursor()
-    with patch("snowflake_utils.models.table.connect") as mock_connect:
-        mock_connect.return_value = make_mock_conn(cursor=mock_cursor)
+    mock_conn = make_mock_conn(cursor=mock_cursor)
+    with patch("snowflake_utils.models.table.connect", return_value=mock_conn):
         with pytest.raises(RuntimeError, match="copy failed"):
             test_table.copy_into(
                 path=path,
@@ -646,12 +679,41 @@ def test_copy_into_qualify_drops_temp_table_when_the_load_fails(
                 qualify=True,
             )
 
-    statements = executed_statements(mock_cursor)
-    assert any(
-        re.fullmatch(r"drop table if exists PUBLIC\.PYTEST_temp_[0-9a-f]{8}", s)
-        for s in statements
+    mock_conn.__exit__.assert_called_once()
+    assert _session.get() is None
+    assert not any(
+        s.lower().startswith("merge into") for s in executed_statements(mock_cursor)
     )
-    assert not any(s.lower().startswith("merge into") for s in statements)
+
+
+@pytest.mark.parametrize(
+    "full_refresh, expected",
+    [
+        (False, "CREATE TEMPORARY TABLE IF NOT EXISTS PUBLIC.PYTEST_temp_1 ("),
+        (True, "CREATE OR REPLACE TEMPORARY TABLE PUBLIC.PYTEST_temp_1 ("),
+    ],
+)
+def test_temporary_table_create_statement(full_refresh, expected):
+    temp = test_table.model_copy(update={"name": "PYTEST_temp_1", "temporary": True})
+
+    statement = temp.get_create_table_statement(full_refresh, copy_grants=False)
+
+    assert statement.startswith(expected)
+    assert "TEMPORARY" not in test_table.get_create_table_statement()
+
+
+@pytest.mark.parametrize("temporary", [True, False])
+def test_qualify_recreates_the_table_with_the_same_kind(temporary):
+    mock_cursor = make_mock_cursor()
+    table = test_table.model_copy(update={"temporary": temporary})
+
+    table.qualify(mock_cursor, ["id"], None)
+
+    statement = " ".join(mock_cursor.execute.call_args.args[0].split()).lower()
+    expected = (
+        "create or replace temporary table" if temporary else "create or replace table"
+    )
+    assert statement.startswith(expected)
 
 
 @patch("snowflake_utils.settings.connect")
