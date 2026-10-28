@@ -165,7 +165,7 @@ def test_replay_fails_when_sql_changes(pytester, fake_snowflake):
         "--snowflake-vcr-mode=rewrite",
     ).assert_outcomes(passed=1)
     fake_snowflake.stop()
-    pytester.makepyfile(test_inner=INNER_TEST.replace("select 1", "select 2"))
+    pytester.makepyfile(test_inner=INNER_TEST.replace("select 1", "select 100"))
     replayed = _run(pytester, fake_snowflake.port, {"password": PASSWORD})
     replayed.assert_outcomes(failed=1)
 
@@ -181,6 +181,44 @@ def test_rewrite_replaces_instead_of_appending(pytester, fake_snowflake):
         ).assert_outcomes(passed=1)
     text = (pytester.path / "cassettes" / "test_query.yaml").read_text()
     assert text.count("/queries/v1/query-request") == 1
+
+
+def test_cassette_bodies_are_stored_readable(pytester, fake_snowflake):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    _run(
+        pytester,
+        fake_snowflake.port,
+        {"password": PASSWORD},
+        "--snowflake-vcr-mode=rewrite",
+    ).assert_outcomes(passed=1)
+    text = (pytester.path / "cassettes" / "test_query.yaml").read_text()
+    assert "qid-1" in text
+    assert "!!binary" not in text
+
+
+def test_recording_fails_when_a_secret_survives_scrubbing(pytester, fake_snowflake):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    pytester.makeconftest(
+        """
+        import pytest
+
+
+        @pytest.fixture(scope="module")
+        def snowflake_vcr_config():
+            return {"before_record_request": lambda request: request}
+        """
+    )
+    result = _run(
+        pytester,
+        fake_snowflake.port,
+        {"password": PASSWORD},
+        "--snowflake-vcr-mode=rewrite",
+    )
+    result.assert_outcomes(passed=1, errors=1)
+    result.stdout.fnmatch_lines(
+        ["*Secrets found in test_query.yaml*login-field:PASSWORD*"]
+    )
+    assert PASSWORD not in result.stdout.str()
 
 
 def test_rewrite_is_refused_in_ci(pytester):
