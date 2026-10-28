@@ -1,7 +1,7 @@
 import gzip
 import json
 import re
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 VOID = "00000000-0000-0000-0000-000000000000"
 SCRUBBED = "SCRUBBED"
@@ -38,8 +38,8 @@ _SECRET_HEADER_PREFIXES = (
     "x-amz-request-id",
     "x-amz-version-id",
 )
-_SECRET_LOGIN_FIELDS = ("PASSWORD", "TOKEN", "PROOF_KEY", "LOGIN_NAME", "ACCOUNT_NAME")
-_SECRET_RESPONSE_FIELDS = frozenset(
+SECRET_LOGIN_FIELDS = ("PASSWORD", "TOKEN", "PROOF_KEY", "LOGIN_NAME", "ACCOUNT_NAME")
+SECRET_RESPONSE_FIELDS = frozenset(
     {"token", "masterToken", "idToken", "mfaToken", "remMeToken", "qrmk"}
 )
 _DROPPED_RESPONSE_FIELDS = frozenset({"chunkHeaders"})
@@ -48,6 +48,10 @@ _SIGNED_URL_PARAM = re.compile(
 )
 _SNOWFLAKE_SUFFIX = ".snowflakecomputing.com"
 _AWS_SUFFIX = ".amazonaws.com"
+_ACCOUNT_HOST = re.compile(
+    r"(?<![A-Za-z0-9.-])(?!ocsp\.)[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*"
+    + re.escape(_SNOWFLAKE_SUFFIX)
+)
 
 
 def plain_body(body: bytes | str | None) -> bytes | None:
@@ -68,7 +72,14 @@ def canonical_uri(uri: str) -> str:
         host = VOID + "." + host.split(".", 1)[1]
         path = re.sub(r"(/results/)[^/]+", rf"\g<1>{VOID}", path)
     netloc = host if parts.port is None else f"{host}:{parts.port}"
-    return urlunsplit(parts._replace(netloc=netloc, path=path))
+    query = urlencode(
+        [
+            (key, value)
+            for key, value in parse_qsl(parts.query, keep_blank_values=True)
+            if key not in FILTERED_QUERY_PARAMS
+        ]
+    )
+    return urlunsplit(parts._replace(netloc=netloc, path=path, query=query))
 
 
 def is_secret_header(name: str) -> bool:
@@ -78,7 +89,7 @@ def is_secret_header(name: str) -> bool:
 def scrub_login_body(body: bytes) -> bytes:
     payload = json.loads(body)
     data = payload.get("data", {})
-    for field in _SECRET_LOGIN_FIELDS:
+    for field in SECRET_LOGIN_FIELDS:
         if field in data:
             data[field] = SCRUBBED
     data["AUTHENTICATOR"] = SCRUBBED
@@ -90,7 +101,7 @@ def _scrub_json(node):
     if isinstance(node, dict):
         return {
             key: SCRUBBED
-            if key in _SECRET_RESPONSE_FIELDS and value
+            if key in SECRET_RESPONSE_FIELDS and value
             else _scrub_json(value)
             for key, value in node.items()
             if key not in _DROPPED_RESPONSE_FIELDS
@@ -98,7 +109,8 @@ def _scrub_json(node):
     if isinstance(node, list):
         return [_scrub_json(item) for item in node]
     if isinstance(node, str):
-        return _SIGNED_URL_PARAM.sub(rf"\1={SCRUBBED}", node)
+        node = _SIGNED_URL_PARAM.sub(rf"\1={SCRUBBED}", node)
+        return _ACCOUNT_HOST.sub(VOID + _SNOWFLAKE_SUFFIX, node)
     return node
 
 
@@ -120,12 +132,21 @@ def before_record_request(request):
 
 
 def before_record_response(response):
-    response["headers"] = {
+    headers = {
         name: value
         for name, value in response["headers"].items()
         if not is_secret_header(name)
     }
     body = response["body"]["string"]
+    if isinstance(body, bytes) and body[:2] == b"\x1f\x8b":
+        body = gzip.decompress(body)
+        headers = {
+            name: value
+            for name, value in headers.items()
+            if name.lower() not in {"content-encoding", "content-length"}
+        }
+    response["headers"] = headers
+    response["body"]["string"] = body
     try:
         text = body.decode() if isinstance(body, bytes) else body
         response["body"]["string"] = json.dumps(_scrub_json(json.loads(text))).encode()

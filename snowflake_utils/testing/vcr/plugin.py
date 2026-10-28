@@ -82,14 +82,23 @@ def snowflake_vcr_cassette(
         **{"record_mode": "all" if rewrite else "none", **kwargs},
     )
     install_patches()
+    filename = name if name.endswith(".yaml") else f"{name}.yaml"
+    path = Path(snowflake_vcr_cassette_dir, filename)
     with ExitStack() as stack:
         from ._recorder import connector_overrides
 
         stack.enter_context(connector_overrides(replay=not rewrite))
         if rewrite:
-            filename = name if name.endswith(".yaml") else f"{name}.yaml"
-            Path(snowflake_vcr_cassette_dir, filename).unlink(missing_ok=True)
+            path.unlink(missing_ok=True)
         yield stack.enter_context(recorder.use_cassette(name))
+    if rewrite:
+        from ._scan import scan_cassette
+
+        kinds = sorted({finding.kind for finding in scan_cassette(path)})
+        if kinds:
+            pytest.fail(
+                f"Secrets found in {path.name}: {', '.join(kinds)}", pytrace=False
+            )
 
 
 @pytest.fixture
