@@ -6,7 +6,7 @@ authors = [
     { name = "Eli Yarson", email = "eli.yarsonnabhan@remote.com" },
     { name = "Paolo Quadri", email = "paolo.quadri@remote.com" },
 ]
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.12,<4.0"
 readme = "README.md"
 dependencies = [
     "snowflake-connector-python[secure-local-storage]>=4.7.1",
