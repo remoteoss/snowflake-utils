@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-vcr = ["vcrpy~=9.2.0", "urllib3>=2"]
+vcr = ["vcrpy~=9.2.0", "urllib3>=2", "snowflake-connector-python<5"]
 
 [project.entry-points.pytest11]
 snowflake_utils_vcr = "snowflake_utils.testing.vcr.plugin"

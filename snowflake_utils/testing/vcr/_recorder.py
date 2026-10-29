@@ -23,6 +23,7 @@ _AUTH_KWARGS = (
     "private_key_password",
 )
 _installed = False
+installed_stubs = None
 
 
 class UnsupportedConnectorError(RuntimeError):
@@ -52,7 +53,7 @@ def _vcrpy_version() -> str:
 
 def install_patches() -> None:
     """Make vcrpy intercept the connector's vendored urllib3, once per process."""
-    global _installed
+    global _installed, installed_stubs
     if _installed:
         return
     try:
@@ -89,6 +90,7 @@ def install_patches() -> None:
     CassettePatcherBuilder.build = lambda self: itertools.chain(
         build(self), urllib3_patchers(self, sf_cpool, sf_conn, stubs)
     )
+    installed_stubs = stubs
     _installed = True
 
 

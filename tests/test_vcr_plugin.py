@@ -1,3 +1,4 @@
+import gzip
 import json
 import sys
 import threading
@@ -90,8 +91,13 @@ class FakeSnowflake:
                     "/queries/v1/query-request": QUERY_RESPONSE,
                 }.get(path, {"data": None, "success": True})
                 payload = json.dumps(body).encode()
+                compress = path == "/queries/v1/query-request"
+                if compress:
+                    payload = gzip.compress(payload)
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
+                if compress:
+                    self.send_header("Content-Encoding", "gzip")
                 self.send_header("Content-Length", str(len(payload)))
                 self.end_headers()
                 self.wfile.write(payload)
@@ -216,7 +222,7 @@ def test_recording_fails_when_a_secret_survives_scrubbing(pytester, fake_snowfla
     )
     result.assert_outcomes(passed=1, errors=1)
     result.stdout.fnmatch_lines(
-        ["*Secrets found in test_query.yaml*login-field:PASSWORD*"]
+        ["*Secrets found in test_query.yaml*secret-field:password*"]
     )
     assert PASSWORD not in result.stdout.str()
 

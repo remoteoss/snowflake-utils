@@ -83,11 +83,11 @@ def legacy_dir(tmp_path):
 def test_scan_flags_unscrubbed_legacy_cassette(legacy_dir):
     kinds = {finding.kind for finding in scan_cassette(legacy_dir / "test_legacy.yaml")}
     assert {
-        "login-field:PASSWORD",
-        "login-field:LOGIN_NAME",
-        "login-field:ACCOUNT_NAME",
-        "response-field:token",
-        "response-field:masterToken",
+        "secret-field:password",
+        "secret-field:loginname",
+        "secret-field:accountname",
+        "secret-field:token",
+        "secret-field:mastertoken",
         "session-token",
         "account-host",
     } <= kinds
@@ -120,7 +120,7 @@ def test_convert_is_idempotent(legacy_dir):
 
 def test_check_command_fails_on_secrets_and_passes_when_clean(legacy_dir, capsys):
     assert main(["check", str(legacy_dir)]) == 1
-    assert "login-field:PASSWORD" in capsys.readouterr().out
+    assert "secret-field:password" in capsys.readouterr().out
     convert_cassette(legacy_dir / "test_legacy.yaml")
     assert main(["check", str(legacy_dir)]) == 0
 

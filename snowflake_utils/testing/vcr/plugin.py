@@ -1,5 +1,6 @@
 """pytest plugin; loaded for every install, so only pytest and the stdlib at import."""
 
+import importlib.util
 import os
 from contextlib import ExitStack
 from pathlib import Path
@@ -11,7 +12,16 @@ SELECTIONS = ("annotated", "all", "disable")
 MODE_ENV = "SNOWFLAKE_VCR_MODE"
 
 
+def _legacy_plugin_installed() -> bool:
+    try:
+        return importlib.util.find_spec("snowflake.vcrpy") is not None
+    except (ImportError, ValueError):
+        return False
+
+
 def pytest_addoption(parser):
+    if _legacy_plugin_installed():
+        return  # registering the same options would crash pytest; configure reports it
     group = parser.getgroup("snowflake-vcr")
     group.addoption(
         "--snowflake-vcr-mode",
@@ -38,6 +48,11 @@ def _mode(config) -> str:
 
 
 def pytest_configure(config):
+    if _legacy_plugin_installed():
+        raise pytest.UsageError(
+            "snowflake-vcrpy is installed and conflicts with snowflake-utils[vcr]. "
+            "Uninstall it: see docs/migrating-from-snowflake-vcrpy.md"
+        )
     config.addinivalue_line(
         "markers", "snowflake_vcr: Mark the test as using Snowflake VCR."
     )
@@ -62,6 +77,33 @@ def snowflake_vcr_cassette_name(request) -> str:
     return request.node.name
 
 
+def _check_record_mode(kwargs: dict) -> None:
+    requested = kwargs.pop("record_mode", "none")
+    requested = getattr(requested, "value", requested)
+    if requested != "none":
+        pytest.fail(
+            f"record_mode={requested!r} is not supported: "
+            f"record with --snowflake-vcr-mode=rewrite",
+            pytrace=False,
+        )
+
+
+@pytest.fixture(scope="module")
+def snowflake_vcr(request, snowflake_vcr_config, snowflake_vcr_cassette_dir):
+    from ._recorder import build_vcr
+
+    kwargs = dict(snowflake_vcr_config)
+    _check_record_mode(kwargs)
+    match_sql = kwargs.pop("match_sql", True)
+    rewrite = _mode(request.config) == "rewrite"
+    return build_vcr(
+        cassette_dir=snowflake_vcr_cassette_dir,
+        record_mode="all" if rewrite else "none",
+        match_sql=match_sql,
+        **kwargs,
+    )
+
+
 @pytest.fixture
 def snowflake_vcr_cassette(
     request,
@@ -69,29 +111,32 @@ def snowflake_vcr_cassette(
     snowflake_vcr_cassette_dir,
     snowflake_vcr_cassette_name,
 ):
-    from ._recorder import build_vcr, install_patches
+    from ._recorder import build_vcr, connector_overrides, install_patches
 
     marker = request.node.get_closest_marker("snowflake_vcr")
     kwargs = {**snowflake_vcr_config, **(marker.kwargs if marker else {})}
+    _check_record_mode(kwargs)
     match_sql = kwargs.pop("match_sql", True)
     name = kwargs.pop("path", snowflake_vcr_cassette_name)
     rewrite = _mode(request.config) == "rewrite"
+    cassette_root = Path(snowflake_vcr_cassette_dir).resolve()
+    filename = name if name.endswith(".yaml") else f"{name}.yaml"
+    path = (cassette_root / filename).resolve()
+    if cassette_root not in path.parents:
+        pytest.fail(f"Cassette {name!r} is outside {cassette_root}", pytrace=False)
     recorder = build_vcr(
         cassette_dir=snowflake_vcr_cassette_dir,
+        record_mode="all" if rewrite else "none",
         match_sql=match_sql,
-        **{"record_mode": "all" if rewrite else "none", **kwargs},
+        **kwargs,
     )
     install_patches()
-    filename = name if name.endswith(".yaml") else f"{name}.yaml"
-    path = Path(snowflake_vcr_cassette_dir, filename)
     with ExitStack() as stack:
-        from ._recorder import connector_overrides
-
         stack.enter_context(connector_overrides(replay=not rewrite))
         if rewrite:
             path.unlink(missing_ok=True)
         yield stack.enter_context(recorder.use_cassette(name))
-    if rewrite:
+    if rewrite and path.exists():
         from ._scan import scan_cassette
 
         kinds = sorted({finding.kind for finding in scan_cassette(path)})
