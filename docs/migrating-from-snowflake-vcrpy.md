@@ -4,7 +4,7 @@
 
 ## Why migrate
 
-- `snowflake-vcrpy` is unmaintained, vendors its own copy of vcrpy and forces a `urllib3<2` pin.
+- `snowflake-vcrpy` is unmaintained, vendors its own copy of vcrpy and breaks on `urllib3` 2.x, so consumers had to keep a `urllib3<2` pin.
 - Replay was order-based and ignored request bodies, so a changed query could silently replay the wrong response.
 - Request and response bodies were never scrubbed. Passwords, session tokens and account names ended up in cassettes, and the gzipped bodies hid them from grep.
 - `--snowflake-vcr-mode` was declared but never read, so the mode was always vcrpy's `once`.
@@ -12,12 +12,12 @@
 ## Requirements
 
 - Python 3.12 or newer.
-- `snowflake-connector-python` 4.x. Connector 5.x is a different driver with no Python HTTP layer, and the plugin raises a clear error on it. Check the connector version in your lockfile before migrating.
+- `snowflake-connector-python` 4.x. Connector 5.x is a different driver with no Python HTTP layer, so the `[vcr]` extra caps the connector below 5 and the plugin raises a clear error if it meets 5.x anyway. Check the connector version in your lockfile before migrating.
 - `urllib3` 2.x. The extra requires it, so remove any `urllib3<2` pin.
 
 ## Steps
 
-1. **Swap the dependencies** in one commit.
+1. **Swap the dependencies** in one commit. Do not bump `snowflake-utils` first and remove `snowflake-vcrpy` later: while both are installed pytest stops with `snowflake-vcrpy is installed and conflicts with snowflake-utils[vcr]` for the whole suite.
    - Remove `snowflake-vcrpy`, its `[tool.uv.sources]` git entry, any `urllib3<2` pin and any separate `vcrpy` pin.
    - Add `snowflake-utils[vcr]` (in the dev group, or as the extra on the dependency you already have).
    - Move the pin to a release that ships the plugin, then re-lock only that package so the connector does not jump a major version:
@@ -26,7 +26,7 @@
      uv lock --upgrade-package snowflake-utils
      ```
 
-2. **Clean up `conftest.py`.** The plugin registers the `snowflake_vcr` marker itself, so remove the manual registration and any `import snowflake.vcrpy...`. Both fixture names `snowflake_vcr_cassette` and `vcr_cassette` exist. `snowflake_vcr_config`, `snowflake_vcr_cassette_dir` and `snowflake_vcr_cassette_name` can be overridden as before.
+2. **Clean up `conftest.py`.** The plugin registers the `snowflake_vcr` marker itself, so remove the manual registration and any `import snowflake.vcrpy...`. The fixtures `snowflake_vcr` (the module-scoped VCR instance), `snowflake_vcr_cassette` and its alias `vcr_cassette` exist. `snowflake_vcr_config`, `snowflake_vcr_cassette_dir` and `snowflake_vcr_cassette_name` can be overridden as before. `snowflake_vcr_config` takes vcrpy options plus `match_sql`; setting `before_record_request` or `before_record_response` there replaces the built-in scrubbing, and recording still fails if the scan finds a secret.
 
 3. **Convert the cassettes.**
 
@@ -44,9 +44,9 @@
 
 | Before | Now |
 | ------ | --- |
-| Mode was always `once`: a missing cassette recorded silently | Default `none`: replay only, a missing cassette fails. `--snowflake-vcr-mode=rewrite` is the only way to record |
+| Mode was always `once`: a missing cassette recorded silently | Default `none`: replay only, so a request that is not in the cassette fails (a test that makes no request needs no cassette). `--snowflake-vcr-mode=rewrite` is the only way to record, and a `record_mode` other than `none` in the marker or `snowflake_vcr_config` is rejected |
 | Re-recording appended to the existing cassette | `rewrite` deletes the cassette first |
-| Recording was possible in CI | `rewrite` refuses to run when `CI` is set |
+| Recording was possible in CI | `rewrite` refuses to run when `CI` is set to any non-empty value |
 | Requests matched on method, host, path and query only | Also on the SQL text of query requests, whitespace-normalized. Opt out per test with `@pytest.mark.snowflake_vcr(match_sql=False)` or in `snowflake_vcr_config` |
 | Replay ran the real auth code, so it needed matching credentials | Replay uses a stub authenticator: no browser, key or password. The authenticator only matters when recording |
 | The login request recorded the authenticator's traffic | One canonical login per cassette. Recording with `externalbrowser` and replaying with keypair or password works |
@@ -81,8 +81,13 @@
 | `UnsupportedConnectorError` | The connector has no vendored `urllib3` (connector 5.x) or vcrpy's internals changed. The message names both versions |
 | `CannotOverwriteExistingCassetteException` | No recorded interaction matched. Compare the SQL, or re-record with `--snowflake-vcr-mode=rewrite` |
 | Test fails with `SQL differs` | The query changed since recording. Re-record, or set `match_sql=False` while migrating |
-| `Secrets found in <cassette>` | The scan found a credential, token, signed URL parameter or account host after recording. Do not commit the cassette: report the kind named in the message |
-| Empty cassette after recording | The test never reached Snowflake through the connector's HTTP layer |
+| `Secrets found in <cassette>` | The scan found a known credential field, token, signed URL parameter or account host after recording. Do not commit the cassette: report the kind named in the message. The scan only knows the fields it lists, so review new cassettes before committing |
+| `unsupported-auth-flow` in that message | The traffic used Okta or OAuth, which the plugin cannot scrub. Record with `externalbrowser`, keypair or password |
+| No cassette file after recording | The test made no request through the connector's HTTP layer, so nothing was written. A test that makes no request needs no cassette |
+| `record_mode=... is not supported` | The marker or `snowflake_vcr_config` sets a `record_mode` other than `none`. Remove it and record with `--snowflake-vcr-mode=rewrite` |
+| `Cassette ... is outside ...` | The cassette `path` resolves outside `snowflake_vcr_cassette_dir` |
+| `snowflake-vcrpy is installed and conflicts` | Both packages are installed. Remove `snowflake-vcrpy` (and the old `urllib3<2` pin) in the same commit that bumps `snowflake-utils` |
+| Replay hits the real Snowflake | The connection came from a fixture scoped wider than a function, so it was opened before the cassette. Make the fixture function-scoped |
 
 ## Old cassettes already in git history
 

@@ -168,6 +168,11 @@ def _write_cassette(tmp_path, request=None, response=None):
     [
         ({"uri": "https://x.okta.com/api/v1/authn"}, None, "unsupported-auth-flow"),
         (
+            {"uri": "https://x.okta.com/app/snowflake/abc/sso/saml"},
+            None,
+            "unsupported-auth-flow",
+        ),
+        (
             {"uri": "https://127.0.0.1/oauth/token-request"},
             None,
             "unsupported-auth-flow",
@@ -200,6 +205,23 @@ def _write_cassette(tmp_path, request=None, response=None):
 def test_scanner_flags_leak_classes(tmp_path, request_part, response_part, kind):
     _write_cassette(tmp_path, request_part, response_part)
     assert kind in {finding.kind for finding in scan_dir(tmp_path)}
+
+
+def test_hosts_and_signed_params_in_text_bodies_are_scrubbed():
+    body = b"see https://acme.snowflakecomputing.com/x?sig=abcdef123456 now"
+    scrubbed = _scrub.before_record_request(_request(body=body)).body.decode()
+    assert "acme" not in scrubbed
+    assert "abcdef123456" not in scrubbed
+
+
+def test_legacy_plugin_detection_uses_the_import_system(monkeypatch):
+    assert plugin._legacy_plugin_installed() is False
+    monkeypatch.setattr(
+        plugin.importlib.util,
+        "find_spec",
+        lambda name: object() if name == "snowflake.vcrpy" else None,
+    )
+    assert plugin._legacy_plugin_installed() is True
 
 
 def test_scanner_ignores_yaml_that_is_not_a_cassette(tmp_path):

@@ -241,12 +241,12 @@ def test_something(): ...
 
 | Command | What it does |
 | ------- | ------------ |
-| `pytest` | Replays `cassettes/<test name>.yaml` next to the test file. Fails if the cassette is missing or the SQL changed. |
-| `pytest --snowflake-vcr-mode=rewrite` | Re-records the selected tests with your `SNOWFLAKE_*` settings. Refuses to run when `CI` is set. Also available as `SNOWFLAKE_VCR_MODE=rewrite`. |
+| `pytest` | Replays `cassettes/<test name>.yaml` next to the test file. Fails if a request is not in the cassette or the SQL changed. |
+| `pytest --snowflake-vcr-mode=rewrite` | Re-records the selected tests with your `SNOWFLAKE_*` settings. Refuses to run when `CI` is non-empty. Also available as `SNOWFLAKE_VCR_MODE=rewrite`. |
 | `python -m snowflake_utils.testing.vcr check <dir>` | Fails if a cassette holds credentials, tokens, signed URL parameters or account hostnames. Recording runs the same check. |
 | `python -m snowflake_utils.testing.vcr convert <dir>` | Converts `snowflake-vcrpy` cassettes in place. |
 
-Supports `snowflake-connector-python` 4.x. Record only against a non-sensitive test schema: response bodies contain the query results. See [migrating from snowflake-vcrpy](docs/migrating-from-snowflake-vcrpy.md).
+Supports `snowflake-connector-python` 4.x (the extra caps it below 5). Connections opened by fixtures scoped wider than a function bypass the cassette. Record only against a non-sensitive test schema: response bodies contain the query results. See [migrating from snowflake-vcrpy](docs/migrating-from-snowflake-vcrpy.md).
 
 ## File formats
 
