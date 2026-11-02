@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from ._scrub import (
+    HOME_PATH_PREFIX,
     SCRUBBED,
     VOID,
     is_secret_header,
@@ -29,6 +30,7 @@ _PATTERNS = {
         r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*\.snowflakecomputing\.(?:com|cn)",
         re.IGNORECASE,
     ),
+    "home-path": re.compile(rf"{HOME_PATH_PREFIX}(?!USER(?:[/\\\"\s]|$))[^/\\\"\s]+"),
     "account-url": re.compile(
         rf"app\.snowflake\.com/(?!{VOID}/)[^/\s\"]+/[^/\s\"]+", re.IGNORECASE
     ),

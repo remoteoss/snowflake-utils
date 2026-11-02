@@ -103,6 +103,8 @@ _ACCOUNT_HOST = re.compile(
     r"\.snowflakecomputing\.(com|cn)",
     re.IGNORECASE,
 )
+HOME_PATH_PREFIX = r"(?:/Users/|/home/|\\+Users\\+)"
+_HOME_PATH = re.compile(rf"({HOME_PATH_PREFIX})(?!USER(?:[/\\\"\s]|$))[^/\\\"\s]+")
 _ACCOUNT_URL = re.compile(r"(app\.snowflake\.com)/[^/\s\"]+/[^/\s\"]+", re.IGNORECASE)
 _AWS_SUFFIX = ".amazonaws.com"
 
@@ -168,6 +170,7 @@ def _scrub_string(text: str) -> str:
     text = _ACCOUNT_HOST.sub(
         lambda match: f"{VOID}.snowflakecomputing.{match.group(1).lower()}", text
     )
+    text = _HOME_PATH.sub(r"\1USER", text)
     return _ACCOUNT_URL.sub(rf"\1/{VOID}/{VOID}", text)
 
 

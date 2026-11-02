@@ -416,6 +416,34 @@ def test_account_hosts_with_underscores_are_scrubbed_and_scanned(tmp_path):
     assert [f.kind for f in scan_dir(tmp_path)] == ["account-host"]
 
 
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/Users/jane.doe/repo/.venv/lib/libsf_mini_core.dylib",
+        "/home/jane/work/libsf.so",
+        "C:\\Users\\jane\\AppData\\libsf.dll",
+    ],
+)
+def test_home_directory_paths_are_scrubbed_and_scanned(tmp_path, path):
+    body = _scrubbed_json({"data": {"CORE_FILE_NAME": path}})
+    assert "jane" not in json.dumps(body)
+    assert "USER" in body["data"]["CORE_FILE_NAME"]
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": json.dumps({"p": path})}},
+                    }
+                ]
+            }
+        )
+    )
+    assert [f.kind for f in scan_dir(tmp_path)] == ["home-path"]
+
+
 def test_underscores_anywhere_in_an_account_host_are_scrubbed():
     text = _scrub._scrub_string(
         "https://acct.my_region.privatelink.snowflakecomputing.com"

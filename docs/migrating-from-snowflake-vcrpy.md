@@ -81,7 +81,7 @@
 | `UnsupportedConnectorError` | The connector has no vendored `urllib3` (connector 5.x) or vcrpy's internals changed. The message names both versions |
 | `CannotOverwriteExistingCassetteException` | No recorded interaction matched. Compare the SQL, or re-record with `--snowflake-vcr-mode=rewrite` |
 | Test fails with `SQL differs` | The query changed since recording. Re-record, or set `match_sql=False` while migrating |
-| `Secrets found in <cassette>` | The scan found a known credential field, token, signed URL parameter or account host after recording. Do not commit the cassette: report the kind named in the message. The scan only knows the fields it lists, so review new cassettes before committing |
+| `Secrets found in <cassette>` | The scan found a known credential field, token, signed URL parameter, account host or home-directory path (`home-path`, from connector telemetry) after recording. Do not commit the cassette: report the kind named in the message. The scan only knows the fields it lists, so review new cassettes before committing |
 | `unsupported-auth-flow` in that message | The traffic used Okta or OAuth, which the plugin cannot scrub. Record with `externalbrowser`, keypair or password |
 | No cassette file after recording | The test made no request through the connector's HTTP layer, so nothing was written. A test that makes no request needs no cassette |
 | `record_mode=... is not supported` | The marker or `snowflake_vcr_config` sets a `record_mode` other than `none`. Remove it and record with `--snowflake-vcr-mode=rewrite` |
