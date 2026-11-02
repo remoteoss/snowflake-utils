@@ -416,6 +416,74 @@ def test_account_hosts_with_underscores_are_scrubbed_and_scanned(tmp_path):
     assert [f.kind for f in scan_dir(tmp_path)] == ["account-host"]
 
 
+def test_underscores_anywhere_in_an_account_host_are_scrubbed():
+    text = _scrub._scrub_string(
+        "https://acct.my_region.privatelink.snowflakecomputing.com"
+    )
+    assert "acct" not in text and "my_region" not in text
+
+
+def test_scanner_flags_privatelink_ocsp_hosts_but_not_the_shared_one(tmp_path):
+    def kinds(uri):
+        path = tmp_path / "c.yaml"
+        path.write_text(
+            yaml.safe_dump(
+                {
+                    "interactions": [
+                        {
+                            "request": {"uri": uri, "body": None, "headers": {}},
+                            "response": {"body": {"string": ""}},
+                        }
+                    ]
+                }
+            )
+        )
+        return [f.kind for f in scan_dir(tmp_path)]
+
+    assert kinds("http://ocsp.snowflakecomputing.com/x") == []
+    assert kinds("http://ocsp.acct.privatelink.snowflakecomputing.com/x") == [
+        "account-host"
+    ]
+
+
+def test_marker_options_reach_the_cassette(pytester, fake_snowflake):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=1
+    )
+    fake_snowflake.stop()
+    changed = INNER_TEST.replace("select 1", "select 100").replace(
+        "@pytest.mark.snowflake_vcr\n", "@pytest.mark.snowflake_vcr(match_sql=False)\n"
+    )
+    pytester.makepyfile(test_inner=changed)
+    _run(pytester, fake_snowflake.port, {"password": PASSWORD}).assert_outcomes(
+        passed=1
+    )
+
+
+def test_scan_reads_the_file_the_recorder_wrote(pytester, fake_snowflake):
+    pytester.makeconftest(
+        """
+        import pytest
+
+        from snowflake_utils.testing.vcr._recorder import build_vcr
+
+
+        @pytest.fixture(scope="module")
+        def snowflake_vcr(request, tmp_path_factory):
+            return build_vcr(
+                cassette_dir=str(tmp_path_factory.mktemp("elsewhere")),
+                record_mode="all",
+                before_record_request=lambda r: r,
+            )
+        """
+    )
+    pytester.makepyfile(test_inner=INNER_TEST)
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(passed=1, errors=1)
+    result.stdout.fnmatch_lines(["*Secrets found in test_query.yaml*"])
+
+
 def test_only_the_shared_ocsp_host_is_exempt():
     shared = "http://ocsp.snowflakecomputing.com/ocsp_response_cache.json"
     private = "http://ocsp.acct.us-east-1.privatelink.snowflakecomputing.com/x"
