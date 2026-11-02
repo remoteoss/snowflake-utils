@@ -70,6 +70,7 @@ SECRET_KEYS = frozenset(
         "proofkey",
         "loginname",
         "accountname",
+        "displayusername",
         "awskeyid",
         "awssecretkey",
         "awstoken",
@@ -97,7 +98,8 @@ _SECRET_JSON_FIELD = re.compile(
     r'\s*:\s*)"[^"]*"'
 )
 _ACCOUNT_HOST = re.compile(
-    r"(?<![A-Za-z0-9.-])(?!ocsp\.)[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*"
+    r"(?<![A-Za-z0-9._-])(?!ocsp\.snowflakecomputing\.)[A-Za-z0-9_-]+"
+    r"(?:\.[A-Za-z0-9_-]+)*"
     r"\.snowflakecomputing\.(com|cn)",
     re.IGNORECASE,
 )
@@ -131,7 +133,7 @@ def canonical_uri(uri: str) -> str:
     host = parts.hostname or ""
     path = parts.path
     account = re.fullmatch(r".+\.snowflakecomputing\.(com|cn)", host)
-    if account and not host.startswith("ocsp."):
+    if account and host != IGNORED_HOSTS[0]:
         host = f"{VOID}.snowflakecomputing.{account.group(1)}"
     elif host.endswith(_AWS_SUFFIX):
         host = VOID + "." + host.split(".", 1)[1]

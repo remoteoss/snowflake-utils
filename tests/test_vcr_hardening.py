@@ -394,3 +394,112 @@ def test_fixture_aliases_and_vcr_instance_are_available(pytester):
         """
     )
     _run(pytester, 1, {}, "--snowflake-vcr-mode=rewrite").assert_outcomes(passed=1)
+
+
+def test_account_hosts_with_underscores_are_scrubbed_and_scanned(tmp_path):
+    host = "myorg-my_account.snowflakecomputing.com"
+    text = _scrub._scrub_string(f"see https://{host}/x")
+    assert "myorg" not in text and "my_account" not in text
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": f"https://{host}/x"}},
+                    }
+                ]
+            }
+        )
+    )
+    assert [f.kind for f in scan_dir(tmp_path)] == ["account-host"]
+
+
+def test_only_the_shared_ocsp_host_is_exempt():
+    shared = "http://ocsp.snowflakecomputing.com/ocsp_response_cache.json"
+    private = "http://ocsp.acct.us-east-1.privatelink.snowflakecomputing.com/x"
+    assert _scrub.canonical_uri(shared) == shared
+    assert _scrub.canonical_uri(private) == f"http://{VOID}.snowflakecomputing.com/x"
+    assert "acct" not in _scrub._scrub_string(private)
+
+
+def test_display_user_name_is_scrubbed():
+    body = _scrubbed_json({"data": {"displayUserName": "PAOLO.QUADRI@REMOTE.COM"}})
+    assert body["data"]["displayUserName"] == SCRUBBED
+
+
+def test_convert_skips_files_that_are_not_cassettes(tmp_path):
+    from snowflake_utils.testing.vcr._convert import convert_dir
+
+    (tmp_path / "aaa_config.yaml").write_text("key: value\n")
+    cassette = tmp_path / "zzz.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "version": 1,
+                "interactions": [
+                    {
+                        "request": {
+                            "method": "POST",
+                            "uri": "https://acme.snowflakecomputing.com/x",
+                            "body": None,
+                            "headers": {},
+                        },
+                        "response": {
+                            "status": {"code": 200, "message": "OK"},
+                            "headers": {},
+                            "body": {"string": "{}"},
+                        },
+                    }
+                ],
+            }
+        )
+    )
+    assert convert_dir(tmp_path) == 1
+    assert (tmp_path / "aaa_config.yaml").read_text() == "key: value\n"
+    assert "acme" not in cassette.read_text()
+
+
+@pytest.mark.parametrize("option", ["cassette_library_dir", "path_transformer"])
+def test_options_that_move_the_cassette_are_refused(pytester, fake_snowflake, option):
+    pytester.makeconftest(
+        f"""
+        import pytest
+
+
+        @pytest.fixture(scope="module")
+        def snowflake_vcr_config():
+            return {{{option!r}: "elsewhere"}}
+        """
+    )
+    pytester.makepyfile(test_inner=INNER_TEST)
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(errors=1)
+    result.stdout.fnmatch_lines([f"*{option} cannot be overridden*"])
+    marked = INNER_TEST.replace(
+        "@pytest.mark.snowflake_vcr\n",
+        f'@pytest.mark.snowflake_vcr({option}="elsewhere")\n',
+    )
+    pytester.makeconftest("")
+    pytester.makepyfile(test_inner=marked)
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(errors=1)
+    result.stdout.fnmatch_lines([f"*{option} cannot be overridden*"])
+
+
+def test_overriding_the_snowflake_vcr_fixture_takes_effect(pytester, fake_snowflake):
+    pytester.makeconftest(
+        """
+        import pytest
+
+
+        @pytest.fixture(scope="module")
+        def snowflake_vcr():
+            raise RuntimeError("custom snowflake_vcr was used")
+        """
+    )
+    pytester.makepyfile(test_inner=INNER_TEST)
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(errors=1)
+    result.stdout.fnmatch_lines(["*custom snowflake_vcr was used*"])

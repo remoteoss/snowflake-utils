@@ -10,6 +10,7 @@ import pytest
 MODES = ("none", "rewrite")
 SELECTIONS = ("annotated", "all", "disable")
 MODE_ENV = "SNOWFLAKE_VCR_MODE"
+FIXED_OPTIONS = ("cassette_library_dir", "path_transformer")
 
 
 def _legacy_plugin_installed() -> bool:
@@ -77,7 +78,13 @@ def snowflake_vcr_cassette_name(request) -> str:
     return request.node.name
 
 
-def _check_record_mode(kwargs: dict) -> None:
+def _check_options(kwargs: dict) -> None:
+    for key in FIXED_OPTIONS:
+        if key in kwargs:
+            pytest.fail(
+                f"{key} cannot be overridden: the plugin scans the cassette it writes",
+                pytrace=False,
+            )
     requested = kwargs.pop("record_mode", "none")
     requested = getattr(requested, "value", requested)
     if requested != "none":
@@ -93,7 +100,7 @@ def snowflake_vcr(request, snowflake_vcr_config, snowflake_vcr_cassette_dir):
     from ._recorder import build_vcr
 
     kwargs = dict(snowflake_vcr_config)
-    _check_record_mode(kwargs)
+    _check_options(kwargs)
     match_sql = kwargs.pop("match_sql", True)
     rewrite = _mode(request.config) == "rewrite"
     return build_vcr(
@@ -107,42 +114,40 @@ def snowflake_vcr(request, snowflake_vcr_config, snowflake_vcr_cassette_dir):
 @pytest.fixture
 def snowflake_vcr_cassette(
     request,
-    snowflake_vcr_config,
+    snowflake_vcr,
     snowflake_vcr_cassette_dir,
     snowflake_vcr_cassette_name,
 ):
-    from ._recorder import build_vcr, connector_overrides, install_patches
+    from ._recorder import connector_overrides, install_patches
 
     marker = request.node.get_closest_marker("snowflake_vcr")
-    kwargs = {**snowflake_vcr_config, **(marker.kwargs if marker else {})}
-    _check_record_mode(kwargs)
-    match_sql = kwargs.pop("match_sql", True)
+    kwargs = dict(marker.kwargs) if marker else {}
+    _check_options(kwargs)
     name = kwargs.pop("path", snowflake_vcr_cassette_name)
+    if "match_sql" in kwargs:
+        match_on = [item for item in snowflake_vcr.match_on if item != "sql"]
+        kwargs["match_on"] = match_on + (["sql"] if kwargs.pop("match_sql") else [])
     rewrite = _mode(request.config) == "rewrite"
     cassette_root = Path(snowflake_vcr_cassette_dir).resolve()
     filename = name if name.endswith(".yaml") else f"{name}.yaml"
     path = (cassette_root / filename).resolve()
     if cassette_root not in path.parents:
         pytest.fail(f"Cassette {name!r} is outside {cassette_root}", pytrace=False)
-    recorder = build_vcr(
-        cassette_dir=snowflake_vcr_cassette_dir,
-        record_mode="all" if rewrite else "none",
-        match_sql=match_sql,
-        **kwargs,
-    )
     install_patches()
     with ExitStack() as stack:
         stack.enter_context(connector_overrides(replay=not rewrite))
         if rewrite:
             path.unlink(missing_ok=True)
-        yield stack.enter_context(recorder.use_cassette(name))
-    if rewrite and path.exists():
+        cassette = stack.enter_context(snowflake_vcr.use_cassette(name, **kwargs))
+        written = Path(cassette._path)
+        yield cassette
+    if rewrite and written.exists():
         from ._scan import scan_cassette
 
-        kinds = sorted({finding.kind for finding in scan_cassette(path)})
+        kinds = sorted({finding.kind for finding in scan_cassette(written)})
         if kinds:
             pytest.fail(
-                f"Secrets found in {path.name}: {', '.join(kinds)}", pytrace=False
+                f"Secrets found in {written.name}: {', '.join(kinds)}", pytrace=False
             )
 
 

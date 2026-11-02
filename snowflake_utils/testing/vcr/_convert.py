@@ -3,12 +3,18 @@ from pathlib import Path
 from ._scrub import before_record_request, before_record_response
 
 
-def convert_cassette(path: Path) -> None:
-    """Rewrite a snowflake-vcrpy cassette in place: gunzip and scrub bodies."""
+def convert_cassette(path: Path) -> bool:
+    """Rewrite a snowflake-vcrpy cassette in place: gunzip and scrub bodies.
+
+    Returns False and leaves the file alone when it is not a cassette.
+    """
     from vcr.serialize import deserialize, serialize
     from vcr.serializers import yamlserializer
 
-    requests, responses = deserialize(path.read_text(), yamlserializer)
+    try:
+        requests, responses = deserialize(path.read_text(), yamlserializer)
+    except KeyError:
+        return False
     kept_requests, kept_responses = [], []
     for request, response in zip(requests, responses):
         scrubbed = before_record_request(request)
@@ -20,10 +26,8 @@ def convert_cassette(path: Path) -> None:
             {"requests": kept_requests, "responses": kept_responses}, yamlserializer
         )
     )
+    return True
 
 
 def convert_dir(directory: Path) -> int:
-    paths = sorted(directory.rglob("*.yaml"))
-    for path in paths:
-        convert_cassette(path)
-    return len(paths)
+    return sum(convert_cassette(path) for path in sorted(directory.rglob("*.yaml")))

@@ -26,7 +26,7 @@
      uv lock --upgrade-package snowflake-utils
      ```
 
-2. **Clean up `conftest.py`.** The plugin registers the `snowflake_vcr` marker itself, so remove the manual registration and any `import snowflake.vcrpy...`. The fixtures `snowflake_vcr` (the module-scoped VCR instance), `snowflake_vcr_cassette` and its alias `vcr_cassette` exist. `snowflake_vcr_config`, `snowflake_vcr_cassette_dir` and `snowflake_vcr_cassette_name` can be overridden as before. `snowflake_vcr_config` takes vcrpy options plus `match_sql`; setting `before_record_request` or `before_record_response` there replaces the built-in scrubbing, and recording still fails if the scan finds a secret.
+2. **Clean up `conftest.py`.** The plugin registers the `snowflake_vcr` marker itself, so remove the manual registration and any `import snowflake.vcrpy...`. The fixtures `snowflake_vcr` (the module-scoped VCR instance every cassette is built from), `snowflake_vcr_cassette` and its alias `vcr_cassette` exist. `snowflake_vcr_config`, `snowflake_vcr_cassette_dir` and `snowflake_vcr_cassette_name` can be overridden as before. `snowflake_vcr_config` takes vcrpy options plus `match_sql`; setting `before_record_request` or `before_record_response` there replaces the built-in scrubbing, and recording still fails if the scan finds a secret. `cassette_library_dir` and `path_transformer` cannot be set in the config or the marker, because the scan has to read the file that was written: use `snowflake_vcr_cassette_dir` to move cassettes.
 
 3. **Convert the cassettes.**
 
@@ -47,7 +47,7 @@
 | Mode was always `once`: a missing cassette recorded silently | Default `none`: replay only, so a request that is not in the cassette fails (a test that makes no request needs no cassette). `--snowflake-vcr-mode=rewrite` is the only way to record, and a `record_mode` other than `none` in the marker or `snowflake_vcr_config` is rejected |
 | Re-recording appended to the existing cassette | `rewrite` deletes the cassette first |
 | Recording was possible in CI | `rewrite` refuses to run when `CI` is set to any non-empty value |
-| Requests matched on method, host, path and query only | Also on the SQL text of query requests, whitespace-normalized. Opt out per test with `@pytest.mark.snowflake_vcr(match_sql=False)` or in `snowflake_vcr_config` |
+| Requests matched on method, host, path and query | Method, scheme, host, port and path, plus the SQL text of query requests, whitespace-normalized. The query string is no longer matched. Opt out per test with `@pytest.mark.snowflake_vcr(match_sql=False)` or in `snowflake_vcr_config` |
 | Replay ran the real auth code, so it needed matching credentials | Replay uses a stub authenticator: no browser, key or password. The authenticator only matters when recording |
 | The login request recorded the authenticator's traffic | One canonical login per cassette. Recording with `externalbrowser` and replaying with keypair or password works |
 | Token cache could change what a recording contained | The connector's token cache is disabled while the plugin is active, so every recording starts with a full login |
@@ -57,7 +57,7 @@
 
 ## Recording a cassette
 
-1. Use a dedicated, non-sensitive test database, schema and role. Response bodies hold the query results, and scrubbing hides credentials, not data.
+1. Use a dedicated, non-sensitive test database, schema and role. Response bodies hold the query results, and scrubbing hides credentials, not data. Scrubbing also rewrites values inside result rows that look like credentials or account hosts (`token=...`, `*.snowflakecomputing.com`), so a test asserting on such a value passes when recorded and fails on replay.
 2. Set your `SNOWFLAKE_*` variables as usual, for example `SNOWFLAKE_AUTHENTICATOR=externalbrowser` with the login name that matches your SSO identity.
 3. Run `SNOWFLAKE_VCR_MODE=rewrite uv run pytest path/to/test.py::test_name`.
 4. Commit the cassette. Replay it once with different credentials, or none, to confirm it stands alone.
@@ -85,6 +85,7 @@
 | `unsupported-auth-flow` in that message | The traffic used Okta or OAuth, which the plugin cannot scrub. Record with `externalbrowser`, keypair or password |
 | No cassette file after recording | The test made no request through the connector's HTTP layer, so nothing was written. A test that makes no request needs no cassette |
 | `record_mode=... is not supported` | The marker or `snowflake_vcr_config` sets a `record_mode` other than `none`. Remove it and record with `--snowflake-vcr-mode=rewrite` |
+| `cassette_library_dir cannot be overridden` (or `path_transformer`) | The marker or `snowflake_vcr_config` sets it. Override the `snowflake_vcr_cassette_dir` fixture instead |
 | `Cassette ... is outside ...` | The cassette `path` resolves outside `snowflake_vcr_cassette_dir` |
 | `snowflake-vcrpy is installed and conflicts` | Both packages are installed. Remove `snowflake-vcrpy` (and the old `urllib3<2` pin) in the same commit that bumps `snowflake-utils` |
 | Replay hits the real Snowflake | The connection came from a fixture scoped wider than a function, so it was opened before the cassette. Make the fixture function-scoped |

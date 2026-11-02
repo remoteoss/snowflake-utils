@@ -25,8 +25,8 @@ _PATTERNS = {
         rf"=(?!{SCRUBBED})[^&\"\s]{{8,}}"
     ),
     "account-host": re.compile(
-        rf"(?<![A-Za-z0-9.-])(?!ocsp\.)(?!{VOID}\.)[A-Za-z0-9-]+"
-        r"(?:\.[A-Za-z0-9-]+)*\.snowflakecomputing\.(?:com|cn)",
+        rf"(?<![A-Za-z0-9._-])(?!ocsp\.snowflakecomputing\.)(?!{VOID}\.)"
+        r"[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*\.snowflakecomputing\.(?:com|cn)",
         re.IGNORECASE,
     ),
     "account-url": re.compile(
