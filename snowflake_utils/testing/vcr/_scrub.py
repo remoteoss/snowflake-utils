@@ -85,6 +85,8 @@ SECRET_KEYS = frozenset(
     }
 )
 _DROPPED_KEYS = frozenset({"chunkheaders"})
+ZERO_KEY = "AAAAAAAAAAAAAAAAAAAAAA=="
+_KEY_PLACEHOLDERS = {"querystagemasterkey": ZERO_KEY, "masterkey": ZERO_KEY}
 _SIGNED_URL_PARAM = re.compile(
     r"(Signature|AWSAccessKeyId|Expires|X-Amz-[A-Za-z-]+|X-Goog-[A-Za-z-]+"
     r"|(?<=[?&])(?:sig|token|sessionToken|onetimetoken|access_token))"
@@ -140,7 +142,8 @@ def canonical_uri(uri: str) -> str:
     if account and host != IGNORED_HOSTS[0]:
         host = f"{VOID}.snowflakecomputing.{account.group(1)}"
     elif host.endswith(_AWS_SUFFIX):
-        host = VOID + "." + host.split(".", 1)[1]
+        host = f"{VOID}{_AWS_SUFFIX}"
+        path = re.sub(r"^/(?!results/)[^/]+", f"/{VOID}", path)
         path = re.sub(r"(/results/)[^/]+", rf"\g<1>{VOID}", path)
     netloc = host if parts.port is None else f"{host}:{parts.port}"
     query = urlencode(
@@ -179,7 +182,9 @@ def _scrub_string(text: str) -> str:
 def _scrub_node(node):
     if isinstance(node, dict):
         return {
-            key: SCRUBBED if is_secret_key(key) and value else _scrub_node(value)
+            key: _KEY_PLACEHOLDERS.get(normalize_key(key), SCRUBBED)
+            if is_secret_key(key) and value
+            else _scrub_node(value)
             for key, value in node.items()
             if normalize_key(key) not in _DROPPED_KEYS
         }

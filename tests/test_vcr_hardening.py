@@ -66,7 +66,7 @@ def test_stage_credentials_are_scrubbed():
     assert set(data["stageInfo"]["creds"].values()) == {SCRUBBED}
     assert data["stageInfo"]["location"] == "bucket/prefix"
     assert data["encryptionMaterial"] == {
-        "queryStageMasterKey": SCRUBBED,
+        "queryStageMasterKey": _scrub.ZERO_KEY,
         "queryId": "q",
     }
 
@@ -618,6 +618,34 @@ def test_aws_id_and_key_stage_fields_are_scrubbed_and_scanned(tmp_path):
     )
     kinds = {f.kind for f in scan_dir(tmp_path)}
     assert {"secret-field:awsid", "secret-field:awskey"} <= kinds
+
+
+@pytest.mark.parametrize("existing", ["real" + "k" * 20 + "==", SCRUBBED])
+def test_stage_master_key_keeps_a_valid_aes_key_length(existing, tmp_path):
+    import base64
+
+    body = _scrubbed_json(
+        {"data": {"encryptionMaterial": {"queryStageMasterKey": existing}}}
+    )
+    key = body["data"]["encryptionMaterial"]["queryStageMasterKey"]
+    assert len(base64.b64decode(key)) == 16
+    assert key == _scrub.ZERO_KEY
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": json.dumps(body)}},
+                    }
+                ]
+            }
+        )
+    )
+    assert scan_dir(tmp_path) == []
+    cassette.write_text(cassette.read_text().replace(key, "real" + "k" * 20 + "=="))
+    assert [f.kind for f in scan_dir(tmp_path)] == ["secret-field:querystagemasterkey"]
 
 
 def test_display_user_name_is_scrubbed():
