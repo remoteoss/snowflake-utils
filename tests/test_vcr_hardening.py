@@ -444,6 +444,82 @@ def test_home_directory_paths_are_scrubbed_and_scanned(tmp_path, path):
     assert [f.kind for f in scan_dir(tmp_path)] == ["home-path"]
 
 
+@pytest.mark.parametrize("text", ["", "- a\n- b\n", "interactions: [unclosed\n"])
+def test_convert_tolerates_unparseable_yaml_and_the_scan_reports_it(tmp_path, text):
+    from snowflake_utils.testing.vcr import _cli
+
+    (tmp_path / "x.yaml").write_text(text)
+    assert _cli.main(["convert", str(tmp_path)]) == (1 if "[" in text else 0)
+
+
+@pytest.mark.parametrize("command", ["check", "convert"])
+def test_cli_rejects_a_missing_directory(tmp_path, command, capsys):
+    from snowflake_utils.testing.vcr import _cli
+
+    assert _cli.main([command, str(tmp_path / "nope")]) == 2
+    assert "is not a directory" in capsys.readouterr().err
+
+
+def test_failed_rewrite_restores_the_previous_cassette(pytester, fake_snowflake):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=1
+    )
+    cassette = pytester.path / "cassettes" / "test_query.yaml"
+    before = cassette.read_bytes()
+    failing = INNER_TEST.replace("conn.close()", "conn.close()\n    assert False")
+    pytester.makepyfile(test_inner=failing)
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(failed=1)
+    assert cassette.read_bytes() == before
+
+
+def test_failed_first_recording_leaves_no_partial_cassette(pytester, fake_snowflake):
+    failing = INNER_TEST.replace("conn.close()", "conn.close()\n    assert False")
+    pytester.makepyfile(test_inner=failing)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        failed=1
+    )
+    assert not (pytester.path / "cassettes" / "test_query.yaml").exists()
+
+
+def test_rewrite_without_traffic_keeps_the_existing_cassette(pytester):
+    cassettes = pytester.path / "cassettes"
+    cassettes.mkdir()
+    (cassettes / "test_no_traffic.yaml").write_text("keep")
+    pytester.makepyfile(
+        test_inner="""
+        import pytest
+
+
+        @pytest.mark.snowflake_vcr
+        def test_no_traffic():
+            pass
+        """
+    )
+    _run(pytester, 1, {}, "--snowflake-vcr-mode=rewrite").assert_outcomes(passed=1)
+    assert (cassettes / "test_no_traffic.yaml").read_text() == "keep"
+
+
+def test_tests_sharing_a_cassette_path_all_record_into_it(pytester, fake_snowflake):
+    shared = INNER_TEST.replace(
+        "@pytest.mark.snowflake_vcr\n", '@pytest.mark.snowflake_vcr(path="shared")\n'
+    )
+    second = shared.replace("test_query", "test_query_two").replace(
+        "select 1", "select 2"
+    )
+    pytester.makepyfile(test_inner=shared + "\n\n" + second)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=2
+    )
+    text = (pytester.path / "cassettes" / "shared.yaml").read_text()
+    assert "select 1" in text and "select 2" in text
+    fake_snowflake.stop()
+    _run(pytester, fake_snowflake.port, {"password": PASSWORD}).assert_outcomes(
+        passed=2
+    )
+
+
 def test_underscores_anywhere_in_an_account_host_are_scrubbed():
     text = _scrub._scrub_string(
         "https://acct.my_region.privatelink.snowflakecomputing.com"

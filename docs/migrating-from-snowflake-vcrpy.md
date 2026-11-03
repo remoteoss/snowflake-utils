@@ -60,6 +60,7 @@
 1. Use a dedicated, non-sensitive test database, schema and role. Response bodies hold the query results, and scrubbing hides credentials, not data. Scrubbing also rewrites values inside result rows that look like credentials or account hosts (`token=...`, `*.snowflakecomputing.com`), so a test asserting on such a value passes when recorded and fails on replay.
 2. Set your `SNOWFLAKE_*` variables as usual, for example `SNOWFLAKE_AUTHENTICATOR=externalbrowser` with the login name that matches your SSO identity.
 3. Run `SNOWFLAKE_VCR_MODE=rewrite uv run pytest path/to/test.py::test_name`.
+   If the test fails, or makes no request, the previous cassette is restored. Tests that share a cassette through `path=` all record into it in the same run.
 4. Commit the cassette. Replay it once with different credentials, or none, to confirm it stands alone.
 
 ## Notes for specific repos

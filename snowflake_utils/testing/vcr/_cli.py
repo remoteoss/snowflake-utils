@@ -1,4 +1,5 @@
 import argparse
+import sys
 from pathlib import Path
 
 from ._convert import convert_dir
@@ -22,6 +23,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     convert.add_argument("directory", type=Path)
     args = parser.parse_args(argv)
+    if not args.directory.is_dir():
+        print(f"{args.directory} is not a directory", file=sys.stderr)
+        return 2
     if args.command == "convert":
         print(f"converted {convert_dir(args.directory)} cassettes")
     return _report(args.directory)

@@ -8,12 +8,13 @@ def convert_cassette(path: Path) -> bool:
 
     Returns False and leaves the file alone when it is not a cassette.
     """
+    import yaml
     from vcr.serialize import deserialize, serialize
     from vcr.serializers import yamlserializer
 
     try:
         requests, responses = deserialize(path.read_text(), yamlserializer)
-    except KeyError:
+    except (KeyError, TypeError, UnicodeDecodeError, yaml.YAMLError):
         return False
     kept_requests, kept_responses = [], []
     for request, response in zip(requests, responses):
