@@ -8,6 +8,7 @@ from ._scrub import (
     HOME_PATH_PREFIX,
     SCRUBBED,
     VOID,
+    ZERO_KEY,
     is_secret_header,
     is_secret_key,
     normalize_key,
@@ -60,7 +61,7 @@ def _secret_field_kinds(node) -> set[str]:
     found = set()
     if isinstance(node, dict):
         for key, value in node.items():
-            if is_secret_key(key) and value not in (None, "", SCRUBBED):
+            if is_secret_key(key) and value not in (None, "", SCRUBBED, ZERO_KEY):
                 found.add(f"secret-field:{normalize_key(key)}")
             found |= _secret_field_kinds(value)
     elif isinstance(node, list):

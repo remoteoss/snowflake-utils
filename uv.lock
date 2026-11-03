@@ -753,7 +753,7 @@ secure-local-storage = [
 
 [[package]]
 name = "snowflake-utils"
-version = "1.27.3"
+version = "1.28.0"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic-settings" },

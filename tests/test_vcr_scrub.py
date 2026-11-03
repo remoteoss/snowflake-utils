@@ -41,7 +41,15 @@ def _login_body():
         ),
         (
             "https://bucket.s3.amazonaws.com/p/results/abc/main/data_0",
-            f"https://{_scrub.VOID}.s3.amazonaws.com/p/results/{_scrub.VOID}/main/data_0",
+            f"https://{_scrub.VOID}.amazonaws.com/{_scrub.VOID}/results/{_scrub.VOID}/main/data_0",
+        ),
+        (
+            "https://bucket.s3.us-east-1.amazonaws.com/9aij0000-s/tables/1/f.csv",
+            f"https://{_scrub.VOID}.amazonaws.com/{_scrub.VOID}/tables/1/f.csv",
+        ),
+        (
+            f"https://{_scrub.VOID}.amazonaws.com/{_scrub.VOID}/tables/1/f.csv",
+            f"https://{_scrub.VOID}.amazonaws.com/{_scrub.VOID}/tables/1/f.csv",
         ),
         ("http://127.0.0.1:8080/queries", "http://127.0.0.1:8080/queries"),
     ],

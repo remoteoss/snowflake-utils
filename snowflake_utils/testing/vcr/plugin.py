@@ -13,7 +13,7 @@ MODE_ENV = "SNOWFLAKE_VCR_MODE"
 FIXED_OPTIONS = ("cassette_library_dir", "path_transformer")
 
 
-_recorded: set[str] = set()
+_recorded: dict[str, bytes] = {}
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -149,12 +149,9 @@ def snowflake_vcr_cassette(
         pytest.fail(f"Cassette {name!r} is outside {cassette_root}", pytrace=False)
     install_patches()
     original = path.read_bytes() if path.exists() else None
-    shared = str(path) in _recorded
-    if shared:
-        kwargs["record_mode"] = "new_episodes"
     with ExitStack() as stack:
         stack.enter_context(connector_overrides(replay=not rewrite))
-        if rewrite and not shared:
+        if rewrite:
             path.unlink(missing_ok=True)
         cassette = stack.enter_context(snowflake_vcr.use_cassette(name, **kwargs))
         written = Path(cassette._path)
@@ -162,13 +159,17 @@ def snowflake_vcr_cassette(
     if not rewrite:
         return
     report = getattr(request.node, "_snowflake_vcr_call", None)
-    if (report is not None and report.failed) or not written.exists():
+    if report is None or not report.passed or not written.exists():
         if original is None:
             written.unlink(missing_ok=True)
         else:
             written.write_bytes(original)
         return
-    _recorded.add(str(path))
+    if str(path) in _recorded:
+        from ._recorder import merge_cassettes
+
+        written.write_bytes(merge_cassettes(_recorded[str(path)], written.read_bytes()))
+    _recorded[str(path)] = written.read_bytes()
     from ._scan import scan_cassette
 
     kinds = sorted({finding.kind for finding in scan_cassette(written)})

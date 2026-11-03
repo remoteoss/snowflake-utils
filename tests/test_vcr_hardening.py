@@ -66,7 +66,7 @@ def test_stage_credentials_are_scrubbed():
     assert set(data["stageInfo"]["creds"].values()) == {SCRUBBED}
     assert data["stageInfo"]["location"] == "bucket/prefix"
     assert data["encryptionMaterial"] == {
-        "queryStageMasterKey": SCRUBBED,
+        "queryStageMasterKey": _scrub.ZERO_KEY,
         "queryId": "q",
     }
 
@@ -520,6 +520,43 @@ def test_tests_sharing_a_cassette_path_all_record_into_it(pytester, fake_snowfla
     )
 
 
+def test_shared_cassette_tests_each_log_in_for_real(pytester, fake_snowflake):
+    shared = INNER_TEST.replace(
+        "@pytest.mark.snowflake_vcr\n", '@pytest.mark.snowflake_vcr(path="shared")\n'
+    )
+    second = shared.replace("test_query", "test_query_two").replace(
+        "select 1", "select 2"
+    )
+    pytester.makepyfile(test_inner=shared + "\n\n" + second)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=2
+    )
+    assert fake_snowflake.paths.count("/session/v1/login-request") == 2
+
+
+def test_setup_failure_after_the_cassette_restores_the_previous_one(
+    pytester, fake_snowflake
+):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=1
+    )
+    cassette = pytester.path / "cassettes" / "test_query.yaml"
+    before = cassette.read_bytes()
+    connect = INNER_TEST.split("def test_query():")[1].split("conn.close()")[0]
+    pytester.makepyfile(
+        test_inner=INNER_TEST.split("@pytest.mark.snowflake_vcr")[0]
+        + "@pytest.fixture\n"
+        + "def broken(snowflake_vcr_cassette):"
+        + connect
+        + "conn.close()\n    raise RuntimeError('setup failed')\n\n\n"
+        + "@pytest.mark.snowflake_vcr\ndef test_query(broken):\n    pass\n"
+    )
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(errors=1)
+    assert cassette.read_bytes() == before
+
+
 def test_underscores_anywhere_in_an_account_host_are_scrubbed():
     text = _scrub._scrub_string(
         "https://acct.my_region.privatelink.snowflakecomputing.com"
@@ -594,6 +631,58 @@ def test_only_the_shared_ocsp_host_is_exempt():
     assert _scrub.canonical_uri(shared) == shared
     assert _scrub.canonical_uri(private) == f"http://{VOID}.snowflakecomputing.com/x"
     assert "acct" not in _scrub._scrub_string(private)
+
+
+def test_aws_id_and_key_stage_fields_are_scrubbed_and_scanned(tmp_path):
+    creds = {"AWS_ID": "ASIAABCDEFGHIJKLMNOP", "AWS_KEY": "s" * 40}
+    body = _scrubbed_json({"data": {"stageInfo": {"creds": creds}}})
+    assert body["data"]["stageInfo"]["creds"] == {
+        "AWS_ID": SCRUBBED,
+        "AWS_KEY": SCRUBBED,
+    }
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": json.dumps({"creds": creds})}},
+                    }
+                ]
+            }
+        )
+    )
+    kinds = {f.kind for f in scan_dir(tmp_path)}
+    assert {"secret-field:awsid", "secret-field:awskey"} <= kinds
+
+
+@pytest.mark.parametrize("existing", ["real" + "k" * 20 + "==", SCRUBBED])
+def test_stage_master_key_keeps_a_valid_aes_key_length(existing, tmp_path):
+    import base64
+
+    body = _scrubbed_json(
+        {"data": {"encryptionMaterial": {"queryStageMasterKey": existing}}}
+    )
+    key = body["data"]["encryptionMaterial"]["queryStageMasterKey"]
+    assert len(base64.b64decode(key)) == 16
+    assert key == _scrub.ZERO_KEY
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": json.dumps(body)}},
+                    }
+                ]
+            }
+        )
+    )
+    assert scan_dir(tmp_path) == []
+    cassette.write_text(cassette.read_text().replace(key, "real" + "k" * 20 + "=="))
+    assert [f.kind for f in scan_dir(tmp_path)] == ["secret-field:querystagemasterkey"]
 
 
 def test_display_user_name_is_scrubbed():
