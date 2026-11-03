@@ -154,6 +154,17 @@ def connector_overrides(*, replay: bool):
             patch.stop()
 
 
+def merge_cassettes(previous: bytes, current: bytes) -> bytes:
+    import yaml
+
+    merged = yaml.safe_load(current)
+    merged["interactions"] = [
+        *yaml.safe_load(previous)["interactions"],
+        *merged["interactions"],
+    ]
+    return yaml.safe_dump(merged, sort_keys=False).encode()
+
+
 def build_vcr(*, cassette_dir: str, record_mode: str, match_sql: bool = True, **extra):
     import vcr
 

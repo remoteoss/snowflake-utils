@@ -520,6 +520,43 @@ def test_tests_sharing_a_cassette_path_all_record_into_it(pytester, fake_snowfla
     )
 
 
+def test_shared_cassette_tests_each_log_in_for_real(pytester, fake_snowflake):
+    shared = INNER_TEST.replace(
+        "@pytest.mark.snowflake_vcr\n", '@pytest.mark.snowflake_vcr(path="shared")\n'
+    )
+    second = shared.replace("test_query", "test_query_two").replace(
+        "select 1", "select 2"
+    )
+    pytester.makepyfile(test_inner=shared + "\n\n" + second)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=2
+    )
+    assert fake_snowflake.paths.count("/session/v1/login-request") == 2
+
+
+def test_setup_failure_after_the_cassette_restores_the_previous_one(
+    pytester, fake_snowflake
+):
+    pytester.makepyfile(test_inner=INNER_TEST)
+    _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite").assert_outcomes(
+        passed=1
+    )
+    cassette = pytester.path / "cassettes" / "test_query.yaml"
+    before = cassette.read_bytes()
+    connect = INNER_TEST.split("def test_query():")[1].split("conn.close()")[0]
+    pytester.makepyfile(
+        test_inner=INNER_TEST.split("@pytest.mark.snowflake_vcr")[0]
+        + "@pytest.fixture\n"
+        + "def broken(snowflake_vcr_cassette):"
+        + connect
+        + "conn.close()\n    raise RuntimeError('setup failed')\n\n\n"
+        + "@pytest.mark.snowflake_vcr\ndef test_query(broken):\n    pass\n"
+    )
+    result = _record(pytester, fake_snowflake, "--snowflake-vcr-mode=rewrite")
+    result.assert_outcomes(errors=1)
+    assert cassette.read_bytes() == before
+
+
 def test_underscores_anywhere_in_an_account_host_are_scrubbed():
     text = _scrub._scrub_string(
         "https://acct.my_region.privatelink.snowflakecomputing.com"
