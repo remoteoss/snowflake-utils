@@ -596,6 +596,30 @@ def test_only_the_shared_ocsp_host_is_exempt():
     assert "acct" not in _scrub._scrub_string(private)
 
 
+def test_aws_id_and_key_stage_fields_are_scrubbed_and_scanned(tmp_path):
+    creds = {"AWS_ID": "ASIAABCDEFGHIJKLMNOP", "AWS_KEY": "s" * 40}
+    body = _scrubbed_json({"data": {"stageInfo": {"creds": creds}}})
+    assert body["data"]["stageInfo"]["creds"] == {
+        "AWS_ID": SCRUBBED,
+        "AWS_KEY": SCRUBBED,
+    }
+    cassette = tmp_path / "c.yaml"
+    cassette.write_text(
+        yaml.safe_dump(
+            {
+                "interactions": [
+                    {
+                        "request": {"uri": "https://x/", "body": None, "headers": {}},
+                        "response": {"body": {"string": json.dumps({"creds": creds})}},
+                    }
+                ]
+            }
+        )
+    )
+    kinds = {f.kind for f in scan_dir(tmp_path)}
+    assert {"secret-field:awsid", "secret-field:awskey"} <= kinds
+
+
 def test_display_user_name_is_scrubbed():
     body = _scrubbed_json({"data": {"displayUserName": "PAOLO.QUADRI@REMOTE.COM"}})
     assert body["data"]["displayUserName"] == SCRUBBED

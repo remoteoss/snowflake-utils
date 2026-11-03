@@ -72,6 +72,8 @@ SECRET_KEYS = frozenset(
         "accountname",
         "displayusername",
         "awskeyid",
+        "awsid",
+        "awskey",
         "awssecretkey",
         "awstoken",
         "azuresastoken",
