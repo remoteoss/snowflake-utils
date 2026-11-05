@@ -132,6 +132,7 @@ def snowflake_vcr_cassette(
     snowflake_vcr_cassette_dir,
     snowflake_vcr_cassette_name,
 ):
+    from . import _core_recorder
     from ._recorder import connector_overrides, install_patches
 
     marker = request.node.get_closest_marker("snowflake_vcr")
@@ -147,13 +148,20 @@ def snowflake_vcr_cassette(
     path = (cassette_root / filename).resolve()
     if cassette_root not in path.parents:
         pytest.fail(f"Cassette {name!r} is outside {cassette_root}", pytrace=False)
-    install_patches()
     original = path.read_bytes() if path.exists() else None
     with ExitStack() as stack:
-        stack.enter_context(connector_overrides(replay=not rewrite))
-        if rewrite:
-            path.unlink(missing_ok=True)
-        cassette = stack.enter_context(snowflake_vcr.use_cassette(name, **kwargs))
+        if _core_recorder.supported():
+            cassette = stack.enter_context(
+                _core_recorder.cassette(
+                    path, rewrite=rewrite, match_sql="sql" in snowflake_vcr.match_on
+                )
+            )
+        else:
+            install_patches()
+            stack.enter_context(connector_overrides(replay=not rewrite))
+            if rewrite:
+                path.unlink(missing_ok=True)
+            cassette = stack.enter_context(snowflake_vcr.use_cassette(name, **kwargs))
         written = Path(cassette._path)
         yield cassette
     if not rewrite:

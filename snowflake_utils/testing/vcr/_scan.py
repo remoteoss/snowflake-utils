@@ -57,11 +57,23 @@ def _text(body) -> str:
     return "" if raw is None else raw.decode("utf-8", errors="replace")
 
 
+_PLACEHOLDERS = (None, "", SCRUBBED, ZERO_KEY)
+
+
+def _is_scrubbed(value) -> bool:
+    """True when *value* is a placeholder, at any nesting depth."""
+    if isinstance(value, dict):
+        return all(_is_scrubbed(item) for item in value.values())
+    if isinstance(value, list):
+        return all(_is_scrubbed(item) for item in value)
+    return value in _PLACEHOLDERS
+
+
 def _secret_field_kinds(node) -> set[str]:
     found = set()
     if isinstance(node, dict):
         for key, value in node.items():
-            if is_secret_key(key) and value not in (None, "", SCRUBBED, ZERO_KEY):
+            if is_secret_key(key) and not _is_scrubbed(value):
                 found.add(f"secret-field:{normalize_key(key)}")
             found |= _secret_field_kinds(value)
     elif isinstance(node, list):
